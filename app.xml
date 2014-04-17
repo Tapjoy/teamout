@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<Module>
+	<ModulePrefs title="Hangout Starter">
+		<Require feature="rpc" />
+		<Require feature="views" />
+		<Require feature="locked-domain" />
+	</ModulePrefs>
+	<Content type="html"><![CDATA[
+<!DOCTYPE html>
+<html style="height: 100%" lang="en">
+  <head>
+    <link href="//netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap.min.css" rel="stylesheet">
+    <link href="//netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap-theme.min.css" rel="stylesheet">
+    <link href="//raw.github.com/jamesflorentino/nanoScrollerJS/master/bin/css/nanoscroller.css" rel="stylesheet">
+    <link href="//hangjoy-799317505.us-west-2.elb.amazonaws.com/assets/css/application.css?1" rel="stylesheet">
+  </head>
+  <body style="height: 100%">
+    <ul class="nav nav-tabs menubar">
+      <li class="active"><a href="#participants" data-toggle="tab"><span class="glyphicon glyphicon-user"></span></a></li>
+      <li><a href="#chat" data-toggle="tab"><span class="glyphicon glyphicon-list"></span></a></li>
+      <li><a href="#settings" data-toggle="tab"><span class="glyphicon glyphicon-cog"></span></a></li>
+      <li class="dropdown">
+        <a href="#" id="rooms" class="dropdown-toggle" data-toggle="dropdown">Rooms <b class="caret"></b></a>
+        <ul class="dropdown-menu" role="menu" aria-labelledby="rooms">
+          <li><a href="#room-architecture" tabindex="-1" data-toggle="tab">@architecture</a></li>
+          <li><a href="#room-operations" tabindex="-1" data-toggle="tab">@operations</a></li>
+        </ul>
+      </li>
+    </ul>
+
+    <div class="tab-content">
+      <div class="tab-pane active" id="participants">
+      </div>
+      <div class="tab-pane" id="chat">
+        Chat here
+      </div>
+      <div class="tab-pane" id="settings">
+        Settings here
+      </div>
+    </div>
+
+    <p style="position: absolute; bottom: 0">asdfsdfasdfa</p>
+
+    <script src="//plus.google.com/hangouts/_/api/v1/hangout.js"></script>
+    <script src="//ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
+    <script src="//netdna.bootstrapcdn.com/bootstrap/3.1.1/js/bootstrap.min.js"></script>
+    <script src="//hangjoy-799317505.us-west-2.elb.amazonaws.com/assets/js/application.js?1"></script>
+  </body>
+]]>
+</Content>
+</Module>

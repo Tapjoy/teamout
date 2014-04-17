@@ -1,0 +1,1 @@
+scp -r * apfeifer@54.184.241.79:/usr/share/nginx/html/
