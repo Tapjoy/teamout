@@ -11,7 +11,7 @@
   <head>
     <link href="//netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap.min.css" rel="stylesheet">
     <link href="//netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap-theme.min.css" rel="stylesheet">
-    <link href="//raw.github.com/jamesflorentino/nanoScrollerJS/master/bin/css/nanoscroller.css" rel="stylesheet">
+    <link href="//jamesflorentino.github.io/nanoScrollerJS/css/nanoscroller.css" rel="stylesheet">
     <link href="//hangjoy-799317505.us-west-2.elb.amazonaws.com/assets/css/application.css?1" rel="stylesheet">
   </head>
   <body style="height: 100%">
@@ -29,22 +29,27 @@
     </ul>
 
     <div class="tab-content">
-      <div class="tab-pane active" id="participants">
+      <div class="tab-pane active nano" id="participants">
+        <div class="nano-content">
+          <ul>
+          </ul>
+        </div>
       </div>
-      <div class="tab-pane" id="chat">
-        Chat here
+      <div class="tab-pane nano" id="chat">
+        <div class="nano-content">
+        </div>
       </div>
       <div class="tab-pane" id="settings">
-        Settings here
+        <div class="nano-content">
+        </div>
       </div>
     </div>
 
-    <p style="position: absolute; bottom: 0">asdfsdfasdfa</p>
-
-    <script src="//plus.google.com/hangouts/_/api/v1/hangout.js"></script>
-    <script src="//ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
-    <script src="//netdna.bootstrapcdn.com/bootstrap/3.1.1/js/bootstrap.min.js"></script>
-    <script src="//hangjoy-799317505.us-west-2.elb.amazonaws.com/assets/js/application.js?1"></script>
+    <script type="text/javascript" src="//plus.google.com/hangouts/_/api/v1/hangout.js"></script>
+    <script type="text/javascript" src="//ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
+    <script type="text/javascript" src="//netdna.bootstrapcdn.com/bootstrap/3.1.1/js/bootstrap.min.js"></script>
+    <script type="text/javascript" src="//jamesflorentino.github.io/nanoScrollerJS/javascripts/jquery.nanoscroller.js"></script>
+    <script type="text/javascript" src="//hangjoy-799317505.us-west-2.elb.amazonaws.com/assets/js/application.js?1"></script>
   </body>
 ]]>
 </Content>

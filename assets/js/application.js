@@ -50,7 +50,7 @@ var app = {
         var participant = gapi.hangout.getParticipantById(participantId);
 
         if (participant) {
-          this.participants.update(participant);
+          this.participants.updateAvatar(participant);
         }
       }
     }
@@ -63,7 +63,19 @@ var app = {
      */
     init: function() {
       gapi.hangout.layout.setChatPaneVisible(false);
-    }
+
+      $('.menubar > li > a').click($.proxy(this.initScrollers, this));
+      this.initScrollers();
+    },
+
+    /**
+     * Initializes scroll panes on the page
+     */
+    initScrollers: function() {
+      setTimeout(function() {
+        $('.nano:visible').nanoScroller({alwaysVisible: true});
+      }, 0);
+    },
   },
 
   // Represents the current, local participant
@@ -186,7 +198,14 @@ var app = {
           }
         }
 
-        // TODO: Actually update the image!
+        // $('<li />')
+        // <div class="col-xs-6 col-md-3">
+        //   <a href="#" class="thumbnail">
+        //     <img data-src="holder.js/100%x180" alt="...">
+        //   </a>
+        // </div>
+        // // TODO: Actually update the image!
+        // <img src="..." alt="..." class="img-rounded">
       }
     }
   },
@@ -207,13 +226,13 @@ var app = {
      * Refreshes the image representing the local participant
      */
     refresh: function() {
-      if (this.canRefresh()) {
-        navigator.getMedia(
-          {video: true},
-          $.proxy(this.refreshWithStream, this),
-          $.proxy(this.onError, this)
-        );
-      }
+      // if (this.canRefresh()) {
+      //   navigator.getMedia(
+      //     {video: true},
+      //     $.proxy(this.refreshWithStream, this),
+      //     $.proxy(this.onError, this)
+      //   );
+      // }
     },
 
     /**

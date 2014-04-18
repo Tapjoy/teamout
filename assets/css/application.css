@@ -59,3 +59,14 @@ body {
 .menubar.nav-tabs .dropdown-menu > li > a:focus {
   background: #2a9fd6
 }
+
+.tab-content {
+  position: absolute;
+  top: 45px;
+  right: 0;
+  bottom: 1px;
+  left: 0;
+}
+
+.nano .nano-pane   { background: #888; }
+.nano .nano-slider { background: #111; }
