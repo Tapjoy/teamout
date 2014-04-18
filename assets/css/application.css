@@ -96,6 +96,8 @@ body {
   right: 0;
   bottom: 0;
   left: 0;
+  height: 191px;
+  max-width: 254px;
   padding: 0;
   z-index: 1;
   -webkit-transition: none;

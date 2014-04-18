@@ -191,19 +191,27 @@ var app = {
      */
     updateAvatar: function(participant) {
       if (participant.id != gapi.hangout.getLocalParticipant().id) {
-        // Build the image data url
+        var url = participant.person.image.url;
+
         var data = gapi.hangout.data.getValue(participant.id + '/avatar');
-        if (!data) { return; }
+        if (data) {
+          // Build the image data url
+          var avatarId = data.split(',')[0];
+          var partsCount = parseInt(data.split(',')[1]);
 
-        var avatarId = data.split(',')[0];
-        var partsCount = parseInt(data.split(',')[1]);
+          var dataUrl = '';
+          for (var i = 0; i < partsCount; i++) {
+            var part = gapi.hangout.data.getValue(participant.id + '/avatars/' + avatarId + '/parts/' + i);
+            if (!part) {
+              dataUrl = null;
+              break;
+            }
+            dataUrl += part;
+          }
 
-        var imageDataUrl = '';
-        for (var i = 0; i < partsCount; i++) {
-          var part = gapi.hangout.data.getValue(participant.id + '/avatars/' + avatarId + '/parts/' + i);
-          if (!part) { return; }
-
-          imageDataUrl += part;
+          if (dataUrl) {
+            url = dataUrl;
+          }
         }
 
         var $participants = $('.participants');
@@ -212,7 +220,7 @@ var app = {
           // Fade in the new avatar
           var $previousAvatar = $participant.find('img').css({zIndex: 0});
           var $newAvatar = $('<img />')
-            .attr({src: imageDataUrl})
+            .attr({src: url})
             .css({zIndex: 1, opacity: 0.0})
             .addClass('img-thumbnail')
             .prependTo($participant.find('a'))
@@ -223,7 +231,7 @@ var app = {
             .attr({href: '#'})
             .addClass('thumbnail')
             .append(
-              $('<img />').attr({src: imageDataUrl}).addClass('img-thumbnail'),
+              $('<img />').attr({src: url}).addClass('img-thumbnail'),
               $('<div />').addClass('action').append(
                 $('<span />').addClass('glyphicon glyphicon-facetime-video'),
                 $('<span />').text('Start Conversation')
@@ -346,11 +354,11 @@ var app = {
         this.convertToBW(canvas, context);
 
         // Save the image and kill the video
-        var imageDataUrl = canvas.toDataURL('image/jpeg', this.quality);
+        var url = canvas.toDataURL('image/jpeg', this.quality);
         video.pause();
         stream.stop();
 
-        success(imageDataUrl);
+        success(url);
       } catch(e) {
         if (e.name == 'NS_ERROR_NOT_AVAILABLE') {
           setTimeout($.proxy(this.captureImage, this, video, stream, success, error), 1000);
@@ -381,9 +389,9 @@ var app = {
     /**
      * Updates the current participant's avatar with the given url
      */
-    update: function(imageDataUrl) {
+    update: function(url) {
       var participant = gapi.hangout.getLocalParticipant();
-      gapi.hangout.av.setAvatar(participant.id, imageDataUrl);
+      gapi.hangout.av.setAvatar(participant.id, url);
 
       // Clear out old avatar keys
       var oldAvatarKeys = gapi.hangout.data.getKeys();
@@ -397,13 +405,13 @@ var app = {
       var avatarId = app.now();
 
       // Send a notification to other participants of the updated image
-      for (var i = 0; i < imageDataUrl.length; i += this.partSize) {
+      for (var i = 0; i < url.length; i += this.partSize) {
         var partId = i / this.partSize;
-        var data = imageDataUrl.substr(i, Math.min(imageDataUrl.length - i, this.partSize));
+        var data = url.substr(i, Math.min(url.length - i, this.partSize));
         gapi.hangout.data.setValue(participant.id + '/avatars/' + avatarId + '/parts/' + partId, data)
       }
 
-      var partsCount = Math.ceil(imageDataUrl.length / this.partSize);
+      var partsCount = Math.ceil(url.length / this.partSize);
       gapi.hangout.data.setValue(participant.id + '/avatar', avatarId + ',' + partsCount);
     }
   }
