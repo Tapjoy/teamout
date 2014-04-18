@@ -38,7 +38,6 @@ var app = {
    * Callback when the state of this extension has changed
    */
   onStateChanged: function(event) {
-    console.log(event);
     var keys = event.addedKeys;
     for (var i = 0; i < keys.length; i++) {
       var key = keys[i].key;
@@ -101,6 +100,13 @@ var app = {
       this.muteAll();
       gapi.hangout.onParticipantsAdded.add($.proxy(this.onAdded, this));
       gapi.hangout.onParticipantsRemoved.add($.proxy(this.onRemoved, this));
+    },
+
+    /**
+     * Generates an HTML-safe identifier for the given participant
+     */
+    safeId: function(participant) {
+      return participant.id.replace(/[^a-zA-Z0-9]/g, '');
     },
 
     /**
@@ -184,7 +190,7 @@ var app = {
      * Updates the image for the given participant
      */
     updateAvatar: function(participant) {
-      // if (participant.id != gapi.hangout.getLocalParticipant().id) {
+      if (participant.id != gapi.hangout.getLocalParticipant().id) {
         // Build the image data url
         var data = gapi.hangout.data.getValue(participant.id + '/avatar');
         if (!data) { return; }
@@ -201,7 +207,7 @@ var app = {
         }
 
         var $participants = $('.participants');
-        var $participant = $('#' + participant.person.id);
+        var $participant = $('#' + this.safeId(participant));
         if ($participant.length) {
           // Fade in the new avatar
           var $previousAvatar = $participant.find('img').css({zIndex: 0});
@@ -227,19 +233,19 @@ var app = {
             .click($.proxy(this.onJoinRequest, this));
 
           $('<li />')
-            .attr({id: participant.person.id})
+            .attr({id: this.safeId(participant)})
             .addClass('list-group-item')
             .append($link)
             .appendTo($participants);
         }
-      // }
+      }
     },
 
     /**
      * Removes the given user's avatar from the participants list
      */
     removeAvatar: function(participant) {
-      $('#' + participant.person.id).remove();
+      $('#' + this.safeId(participant)).remove();
     },
 
     /**
