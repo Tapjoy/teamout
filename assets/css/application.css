@@ -127,8 +127,16 @@ body {
   text-align: center;
   color: #ffffff;
   font-size: 1.2em;
-  background: rgba(42, 159, 214, 0.2);
+  background: rgba(42, 159, 214, 0.3);
   z-index: 2;
+}
+
+.participants .joined.list-group-item .action {
+  display: block;
+}
+
+.participants .joined.list-group-item .action * {
+  display: none;
 }
 
 .participants .action .glyphicon {
@@ -137,7 +145,8 @@ body {
   margin: 55px 0 10px;
 }
 
-.participants .thumbnail:hover .action {
+.participants .thumbnail:hover .action,
+.participants .thumbnail:hover .action * {
   display: block;
 }
 

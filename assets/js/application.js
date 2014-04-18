@@ -25,34 +25,122 @@ var app = {
    */
   onReady: function(event) {
     if (event.isApiReady) {
-      this.participant.init();
-      this.participants.init();
-      this.layout.init();
-      this.avatar.init();
+      this.data.init();
       this.settings.init();
+      this.layout.init();
       this.hangout.init();
 
-      gapi.hangout.data.onStateChanged.add($.proxy(this.onStateChanged, this));
+      // Participant data
+      this.participants.init();
+      this.participant.init();
+      this.avatar.init();
     }
   },
 
-  /**
-   * Callback when the state of this extension has changed
-   */
-  onStateChanged: function(event) {
-    var keys = event.addedKeys;
-    for (var i = 0; i < keys.length; i++) {
-      var key = keys[i].key;
+  data: {
+    // Represents the local version of the state
+    state: {},
 
-      if (key.match(/\/avatar/)) {
-        var participantId = key.match(/(.*)\/avatar/)[1];
-        var participant = gapi.hangout.getParticipantById(participantId);
+    init: function() {
+      // Set initial state
+      this.state = gapi.hangout.data.getState();
 
-        if (participant) {
-          this.participants.updateAvatar(participant);
+      // Remove keys belonging to participants no longer in this hangout
+      var participantIds = $.map(gapi.hangout.getParticipants(), function(participant) { return participant.id; });
+      var keys = this.keys();
+      for (var i = 0; i < keys.length; i++) {
+        var key = keys[i];
+        var participantId = key.match(/^([^\/]+)\//)[1];
+        if ($.inArray(participantId, participantIds) == -1) {
+          this.clear(key);
         }
       }
-    }
+
+      gapi.hangout.data.onStateChanged.add($.proxy(this.onChanged, this));
+    },
+
+    set: function(key, value) {
+      this.state[key] = value;
+      gapi.hangout.data.setValue(key, value);
+    },
+
+    get: function(key) {
+      return this.state[key];
+    },
+
+    clear: function(key) {
+      delete this.state[key];
+      gapi.hangout.data.clearValue(key);
+    },
+
+    keys: function() {
+      return gapi.hangout.data.getKeys();
+    },
+
+    sync: function(addedKeys, removedKeys) {
+      for (var i = 0; i < addedKeys.length; i++) {
+        var key = addedKeys[i];
+        this.set(key.key, key.value)
+      }
+
+      for (var i = 0; i < removedKeys.length; i++) {
+        var key = removedKeys[i];
+        this.clear(key);
+      }
+    },
+
+    /**
+     * Callback when the state of this extension has changed
+     */
+    onChanged: function(event) {
+      this.sync(event.addedKeys, event.removedKeys);
+
+      var keys = event.addedKeys;
+      for (var i = 0; i < keys.length; i++) {
+        var key = keys[i].key;
+        var participantId = key.match(/^([^\/]+)\//)[1];
+        var participant = gapi.hangout.getParticipantById(participantId);
+
+        if (participant && participant.id != app.participant.id) {
+          if (key.match(/\/avatar/)) {
+            // Avatar updated
+            app.participants.updateAvatar(participant);
+          } else if (key.match(/\/participants/)) {
+            var participantIds = this.get(key).split(',');
+            if ($.inArray(app.participant.id, participantIds) >= 0) {
+              // Participant joined in hangout with this user
+              app.participants.join(participant, false);
+            } else {
+              // Participant joined in hangout with another user
+              app.participants.inConversation(participant);
+            }
+          }
+        }
+      }
+
+      var keys = event.removedKeys;
+      for (var i = 0; i < keys.length; i++) {
+        var key = keys[i];
+        var participantId = key.match(/^([^\/]+)\//)[1];
+        var participant = gapi.hangout.getParticipantById(participantId);
+
+        if (participant && participant.id != app.participant.id) {
+          if (key.match(/\/participants/)) {
+            var participantIds = this.get(app.participant.id + '/participants');
+            participantIds = participantIds ? participantIds.split(',') : [];
+            if ($.inArray(participant.id, participantIds) >= 0) {
+              // Participant left a hangout with this user
+              app.participants.leave(participant);
+            } else {
+              // Participant is no longer in a hangout
+              app.participants.outOfConversation(participant);
+            }
+          } else {
+            // TODO: Anything here?
+          }
+        }
+      }
+    },
   },
 
   // Represents the layout of the hangout
@@ -80,6 +168,8 @@ var app = {
   // Represents the current, local participant
   participant: {
     init: function() {
+      this.id = gapi.hangout.getLocalParticipant().id;
+      this.resetData();
       this.mute();
       gapi.hangout.av.setLocalAudioNotificationsMute(true);
       gapi.hangout.av.setLocalParticipantVideoMirrored(false);
@@ -93,6 +183,19 @@ var app = {
 
       gapi.hangout.av.setCameraMute(muted);
       gapi.hangout.av.setMicrophoneMute(muted);
+    },
+
+    /**
+     * Resets all data associated with this participant
+     */
+    resetData: function() {
+      var keys = app.data.keys();
+      for (var i = 0; i < keys.length; i++) {
+        var key = keys[i];
+        if (key.indexOf(this.id) == 0) {
+          app.data.clear(key);
+        }
+      }
     }
   },
 
@@ -147,15 +250,20 @@ var app = {
      * Removes the given participant from the hangout
      */
     remove: function(participant) {
-      var keys = gapi.hangout.data.getKeys();
+      var keys = app.data.keys();
       for (var i = 0; i < keys.length; i++) {
         var key = keys[i];
         if (key.indexOf(participant) >= 0) {
-          gapi.hangout.data.clearValue(key);
+          app.data.clear(key);
         }
       }
 
       this.removeAvatar(participant);
+
+      // Remove them from the conversation
+      if (app.participants.isJoined(participant)) {
+        app.participants.leave(participant);
+      }
     },
 
     /**
@@ -175,8 +283,8 @@ var app = {
     mute: function(participant, muted) {
       if (muted === undefined) { muted = true; }
 
-      gapi.hangout.av.setParticipantAudible(participant.id, muted);
-      gapi.hangout.av.setParticipantVisible(participant.id, muted);
+      gapi.hangout.av.setParticipantAudible(participant.id, !muted);
+      gapi.hangout.av.setParticipantVisible(participant.id, !muted);
     },
 
     /**
@@ -194,10 +302,10 @@ var app = {
      * Updates the avatar for the given participant
      */
     updateAvatar: function(participant) {
-      if (participant.id != gapi.hangout.getLocalParticipant().id) {
+      if (participant.id != app.participant.id) {
         var url = participant.person.image.url;
 
-        var data = gapi.hangout.data.getValue(participant.id + '/avatar');
+        var data = app.data.get(participant.id + '/avatar');
         if (data) {
           // Build the image data url
           var avatarId = data.split(',')[0];
@@ -205,7 +313,7 @@ var app = {
 
           var dataUrl = '';
           for (var i = 0; i < partsCount; i++) {
-            var part = gapi.hangout.data.getValue(participant.id + '/avatars/' + avatarId + '/parts/' + i);
+            var part = app.data.get(participant.id + '/avatars/' + avatarId + '/parts/' + i);
             if (!part) {
               dataUrl = null;
               break;
@@ -229,9 +337,7 @@ var app = {
             .addClass('img-thumbnail')
             .prependTo($participant.find('a'))
             .animate({opacity: 1.0}, {duration: 500, complete: $.proxy($previousAvatar.remove, $previousAvatar)});
-        } else {
-          // TODO: Don't add if they're in the live feed hangout
-
+        } else if (!this.isJoined(participant)) {
           // Add a new avatar to the list
           var $link = $('<a />')
             .attr({href: '#'})
@@ -240,20 +346,45 @@ var app = {
               $('<img />').attr({src: url}).addClass('img-thumbnail'),
               $('<div />').addClass('action').append(
                 $('<span />').addClass('glyphicon glyphicon-facetime-video'),
-                $('<span />').text('Start Conversation')
+                $('<span />').text('Join Conversation')
               ),
               $('<span />').addClass('caption').text(participant.person.displayName)
             )
             .click($.proxy(this.onJoinRequest, this));
 
-          var position;
-          // TODO: determine the right position based on alphabetical name
-          $('<li />')
+          // Create the new list item
+          var $item = $('<li />')
             .data({id: participant.id})
             .attr({id: this.safeId(participant)})
             .addClass('list-group-item')
-            .append($link)
-            .appendTo($participants);
+            .append($link);
+
+          // Mark as already in a conversation if this is the case
+          var participantIds = app.data.get(participant.id + '/participants');
+          participantIds = participantIds ? participantIds.split(',') : [];
+          if (participantIds.length) {
+            $item.addClass('joined');
+          }
+
+          // Sort the new list of names
+          var $items = $('.participants .list-group-item');
+          var names = $items.map(function() {
+            var participantId = $(this).data('id');
+            var participant = gapi.hangout.getParticipantById(participantId);
+            return participant.person.displayName;
+          });
+          names.push(participant.person.displayName);
+          names.sort();
+
+          // Add in the right position
+          var position = $.inArray(participant.person.displayName, names);
+          if (position == 0) {
+            $item.prependTo($participants);
+          } else if (position == names.length - 1) {
+            $item.appendTo($participants);
+          } else {
+            $item.insertBefore($items.eq(position));
+          }
         }
       }
     },
@@ -273,6 +404,29 @@ var app = {
       var participantId = $participant.data('id');
       var participant = gapi.hangout.getParticipantById(participantId);
 
+      this.join(participant, true);
+    },
+
+    /**
+     * Adds the given participant to the conversation
+     */
+    join: function(participant, initiatedLocally) {
+      var newConversation = false;
+
+      // Update the current participant's list of joined participants
+      var key = app.participant.id + '/participants';
+      var participantIds = app.data.get(key);
+      participantIds = participantIds ? participantIds.split(',') : [];
+      var newConversation = participantIds.length == 0;
+      if ($.inArray(participant.id, participantIds) == -1) {
+        otherIds = app.data.get(participant.id + '/participants');
+        otherIds = otherIds ? otherIds.split(',') : [];
+        participantIds = $.grep($.unique(participantIds.concat(otherIds).concat([participant.id])), function(id) {
+          return id != app.participant.id;
+        });
+        app.data.set(key, participantIds.join(','));
+      }
+
       // Unmute local and remote participant
       app.participant.mute(false);
       this.mute(participant, false);
@@ -282,6 +436,70 @@ var app = {
 
       // Add a escape hatch
       app.hangout.showLeaveAction();
+
+      // Play a sound to let the user know they're in a new conversation
+      if (newConversation) {
+        if (initiatedLocally) {
+          if (participantIds.length == 1) {
+            // Set the video to the selected participant
+            gapi.hangout.layout.getVideoCanvas().getVideoFeed().setDisplayedParticipant(participant.id);
+          }
+        } else {
+          var chime = new Audio('//hangjoy-799317505.us-west-2.elb.amazonaws.com/assets/audio/chime.ogg');
+          chime.play();
+        }
+      }
+    },
+
+    /**
+     * Marks the given participant as currently in a conversation
+     */
+    inConversation: function(participant) {
+      $('#' + this.safeId(participant)).addClass('joined');
+    },
+
+    /**
+     * Marks the given participant as no longer part of a conversation
+     */
+    outOfConversation: function(participant) {
+      $('#' + this.safeId(participant)).removeClass('joined');
+    },
+
+    /**
+     * Determines whether the given participant is joined into a conversation
+     * with the current user
+     */
+    isJoined: function(participant) {
+      var participantIds = app.data.get(app.participant.id + '/participants');
+      return participantIds && participantIds.indexOf(participant.id) >= 0;
+    },
+
+    /**
+     * Removes the given participant from the conversation
+     */
+    leave: function(participant) {
+      // Update the current participant's list of joined participants
+      var participantIds = app.data.get(app.participant.id + '/participants').split(',');
+      var index = $.inArray(participant.id, participantIds);
+
+      if (index >= 0) {
+        participantIds.splice(index, 1);
+        if (participantIds.length) {
+          app.data.set(app.participant.id + '/participants', participantIds.join(','));
+        } else {
+          app.data.clear(app.participant.id + '/participants');
+        }
+      }
+
+      // Mute the participant
+      this.mute(participant, true);
+
+      // Add the remote participant to the list
+      this.updateAvatar(participant);
+      if (participantIds.length == 0) {
+        // Everyone left; behave as if we left ourselves
+        app.hangout.leave();
+      }
     }
   },
 
@@ -308,11 +526,18 @@ var app = {
      * Leaves the current live feed in the hangout
      */
     leave: function() {
+      // Clear the current user's list of participants
+      app.data.clear(app.participant.id + '/participants');
+
       this.hideLeaveAction();
 
+      // Mute everyone / reset participant list
       app.participant.mute();
       app.participants.muteAll();
       app.participants.updateAllAvatars();
+
+      // Reset the video feed
+      gapi.hangout.layout.getVideoCanvas().getVideoFeed().clearDisplayedParticipant();
     }
   },
 
@@ -442,15 +667,14 @@ var app = {
      * Updates the current participant's avatar with the given url
      */
     update: function(url) {
-      var participant = gapi.hangout.getLocalParticipant();
-      gapi.hangout.av.setAvatar(participant.id, url);
+      gapi.hangout.av.setAvatar(app.participant.id, url);
 
       // Clear out old avatar keys
-      var oldAvatarKeys = gapi.hangout.data.getKeys();
+      var oldAvatarKeys = app.data.keys();
       for (var i = 0; i < oldAvatarKeys.length; i++) {
         var key = oldAvatarKeys[i];
-        if (key.indexOf(participant.id) == 0 && key.indexOf('/avatars') > 0) {
-          gapi.hangout.data.clearValue(key);
+        if (key.indexOf(app.participant.id) == 0 && key.indexOf('/avatars') > 0) {
+          app.data.clear(key);
         }
       }
 
@@ -460,11 +684,11 @@ var app = {
       for (var i = 0; i < url.length; i += this.partSize) {
         var partId = i / this.partSize;
         var data = url.substr(i, Math.min(url.length - i, this.partSize));
-        gapi.hangout.data.setValue(participant.id + '/avatars/' + avatarId + '/parts/' + partId, data)
+        app.data.set(app.participant.id + '/avatars/' + avatarId + '/parts/' + partId, data);
       }
 
       var partsCount = Math.ceil(url.length / this.partSize);
-      gapi.hangout.data.setValue(participant.id + '/avatar', avatarId + ',' + partsCount);
+      app.data.set(app.participant.id + '/avatar', avatarId + ',' + partsCount);
     }
   },
 
