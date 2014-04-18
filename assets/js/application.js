@@ -30,6 +30,7 @@ var app = {
       this.layout.init();
       this.avatar.init();
       this.settings.init();
+      this.hangout.init();
 
       gapi.hangout.data.onStateChanged.add($.proxy(this.onStateChanged, this));
     }
@@ -229,6 +230,8 @@ var app = {
             .prependTo($participant.find('a'))
             .animate({opacity: 1.0}, {duration: 500, complete: $.proxy($previousAvatar.remove, $previousAvatar)});
         } else {
+          // TODO: Don't add if they're in the live feed hangout
+
           // Add a new avatar to the list
           var $link = $('<a />')
             .attr({href: '#'})
@@ -243,6 +246,8 @@ var app = {
             )
             .click($.proxy(this.onJoinRequest, this));
 
+          var position;
+          // TODO: determine the right position based on alphabetical name
           $('<li />')
             .data({id: participant.id})
             .attr({id: this.safeId(participant)})
@@ -268,10 +273,46 @@ var app = {
       var participantId = $participant.data('id');
       var participant = gapi.hangout.getParticipantById(participantId);
 
+      // Unmute local and remote participant
       app.participant.mute(false);
       this.mute(participant, false);
 
+      // Remove the remote participant from the list
       this.removeAvatar(participant);
+
+      // Add a escape hatch
+      app.hangout.showLeaveAction();
+    }
+  },
+
+  hangout: {
+    init: function() {
+      $('.btn-leave').click($.proxy(this.leave, this));
+    },
+
+    /**
+     * Shows an action on the screen for leaving the hangout
+     */
+    showLeaveAction: function() {
+      $('.btn-leave').show();
+    },
+
+    /**
+     * Hides the action for leaving the hangout
+     */
+    hideLeaveAction: function() {
+      $('.btn-leave').hide();
+    },
+
+    /**
+     * Leaves the current live feed in the hangout
+     */
+    leave: function() {
+      this.hideLeaveAction();
+
+      app.participant.mute();
+      app.participants.muteAll();
+      app.participants.updateAllAvatars();
     }
   },
 

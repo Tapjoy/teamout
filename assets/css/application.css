@@ -141,6 +141,14 @@ body {
   display: block;
 }
 
+.btn-leave {
+  display: none;
+  position: absolute;
+  top: 10px;
+  right: 7px;
+  padding: 3px 6px;
+}
+
 #settings form {
   padding: 20px;
 }
