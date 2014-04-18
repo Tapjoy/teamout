@@ -70,3 +70,57 @@ body {
 
 .nano .nano-pane   { background: #888; }
 .nano .nano-slider { background: #111; }
+
+.participants.list-group {
+  background: none;
+  box-shadow: none;
+}
+
+.participants .list-group-item {
+  padding: 10px 20px;
+  border: none;
+  background: none;
+}
+
+.participants .thumbnail {
+  position: relative;
+  padding: 0;
+  margin: 0;
+}
+
+.participants .thumbnail img {
+  padding: 0;
+}
+
+.participants .caption {
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  padding: 5px 9px;
+  color: #ffffff;
+  background: rgba(42, 159, 214, 0.4);
+}
+
+.participants .action {
+  position: absolute;
+  display: none;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  text-align: center;
+  color: #ffffff;
+  font-size: 1.2em;
+  background: rgba(42, 159, 214, 0.2);
+}
+
+.participants .action .glyphicon {
+  display: block;
+  font-size: 2.5em;
+  margin: 55px 0 10px;
+}
+
+.participants .thumbnail:hover .action {
+  display: block;
+}

@@ -31,7 +31,7 @@ var app = {
       this.participant.init();
       this.participants.init();
       this.layout.init();
-      this.avatar.refresh();
+      this.avatar.init();
 
       gapi.hangout.data.onStateChanged.add($.proxy(this.onStateChanged, this));
     }
@@ -45,8 +45,8 @@ var app = {
     for (var i = 0; i < keys.length; i++) {
       var key = keys[i].key;
 
-      if (key.match(/\/avatar$/)) {
-        var participantId = key.replace('/avatar', '');
+      if (key.match(/\/avatar/)) {
+        var participantId = key.match(/(.*)\/avatar/)[1];
         var participant = gapi.hangout.getParticipantById(participantId);
 
         if (participant) {
@@ -187,33 +187,68 @@ var app = {
      * Updates the image for the given participant
      */
     updateAvatar: function(participant) {
-      if (participant.id != gapi.hangout.getLocalParticipant().id) {
-        var partsCount = gapi.hangout.data.getValue(participant.id + '/avatar');
-        if (partsCount != null) {
-          partsCount = parseInt(partsCount.split(',')[1]);
-          var imageDataUrl = '';
-          for (var i = 0; i < partsCount; i++) {
-            var part = gapi.hangout.data.getValue(participant.id + '/avatar/' + i);
-            imageDataUrl += part;
-          }
+      // if (participant.id != gapi.hangout.getLocalParticipant().id) {
+        // Build the image data url
+        var data = gapi.hangout.data.getValue(participant.id + '/avatar');
+        if (!data) { return; }
+
+        var avatarId = data.split(',')[0];
+        var partsCount = parseInt(data.split(',')[1]);
+
+        var imageDataUrl = '';
+        for (var i = 0; i < partsCount; i++) {
+          var part = gapi.hangout.data.getValue(participant.id + '/avatars/' + avatarId + '/parts/' + i);
+          if (!part) { return; }
+
+          imageDataUrl += part;
         }
 
-        // $('<li />')
-        // <div class="col-xs-6 col-md-3">
-        //   <a href="#" class="thumbnail">
-        //     <img data-src="holder.js/100%x180" alt="...">
-        //   </a>
-        // </div>
-        // // TODO: Actually update the image!
-        // <img src="..." alt="..." class="img-rounded">
-      }
+        var $participants = $('.participants');
+        var $participant = $('#' + participant.person.id);
+        if ($participant.length) {
+          // Fade in the new avatar
+          var $previousAvatar = $participant.find('img');
+          var $newAvatar = $('<img />')
+            .attr({src: imageDataUrl})
+            .hide()
+            .addClass('img-rounded')
+            .prependTo($participant)
+            .fadeIn(250, $.proxy($previousAvatar.remove, $previousAvatar));
+        } else {
+          // Add a new avatar to the list
+          var $link = $('<a />')
+            .attr({href: '#'})
+            .addClass('thumbnail')
+            .append(
+              $('<img />').attr({src: imageDataUrl}).addClass('img-thumbnail'),
+              $('<div />').addClass('action').append(
+                $('<span />').addClass('glyphicon glyphicon-facetime-video'),
+                $('<span />').text('Start Conversation')
+              ),
+              $('<span />').addClass('caption').text(participant.person.displayName)
+            )
+            .click($.proxy(this.onJoinRequest, this));
+
+          $('<li />')
+            .addClass('list-group-item')
+            .append($link)
+            .appendTo($participants);
+        }
+      // }
+    },
+
+    /**
+     * Callback when the local participant has requested to join another participant
+     */
+    onJoinRequest: function(event) {
+
     }
   },
 
   avatar: {
     // Dimensions of avatars
-    width: 148,
-    height: 111,
+    width: 300,
+    height: 225,
     quality: 0.7,
 
     // The maximum size avatar parts can be stored in
@@ -222,24 +257,29 @@ var app = {
     // Provides a helper for building URLs from streams
     buildURL: window.webkitURL || window.URL,
 
+    init: function() {
+      this.refresh();
+      // setInterval($.proxy(this.refresh, this), 15000);
+    },
+
     /**
      * Refreshes the image representing the local participant
      */
     refresh: function() {
-      // if (this.canRefresh()) {
-      //   navigator.getMedia(
-      //     {video: true},
-      //     $.proxy(this.refreshWithStream, this),
-      //     $.proxy(this.onError, this)
-      //   );
-      // }
+      if (this.canRefresh()) {
+        navigator.getMedia(
+          {video: true},
+          $.proxy(this.refreshWithStream, this),
+          $.proxy(this.onError, this)
+        );
+      }
     },
 
     /**
      * Determines whether the avatar is capable of being refrehs
      */
     canRefresh: function() {
-      return gapi.hangout.av.getCameraMute() == true && gapi.hangout.av.getMicrophoneMute() == true
+      return gapi.hangout.av.getCameraMute() == true && gapi.hangout.av.getMicrophoneMute() == true;
     },
 
     /**
@@ -323,15 +363,26 @@ var app = {
       var participant = gapi.hangout.getLocalParticipant();
       gapi.hangout.av.setAvatar(participant.id, imageDataUrl);
 
+      // Clear out old avatar keys
+      var oldAvatarKeys = gapi.hangout.data.getKeys();
+      for (var i = 0; i < oldAvatarKeys.length; i++) {
+        var key = oldAvatarKeys[i];
+        if (key.indexOf(participant.id) == 0 && key.indexOf('/avatars') > 0) {
+          gapi.hangout.data.clearValue(key);
+        }
+      }
+
+      var avatarId = app.now();
+
       // Send a notification to other participants of the updated image
       for (var i = 0; i < imageDataUrl.length; i += this.partSize) {
         var partId = i / this.partSize;
         var data = imageDataUrl.substr(i, Math.min(imageDataUrl.length - i, this.partSize));
-        gapi.hangout.data.setValue(participant.id + '/avatar/' + partId, data)
+        gapi.hangout.data.setValue(participant.id + '/avatars/' + avatarId + '/parts/' + partId, data)
       }
 
       var partsCount = Math.ceil(imageDataUrl.length / this.partSize);
-      gapi.hangout.data.setValue(participant.id + '/avatar', app.now() + ',' + partsCount);
+      gapi.hangout.data.setValue(participant.id + '/avatar', avatarId + ',' + partsCount);
     }
   }
 };
