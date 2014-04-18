@@ -140,3 +140,12 @@ body {
 .participants .thumbnail:hover .action {
   display: block;
 }
+
+#settings form {
+  padding: 20px;
+}
+
+#settings .setting-autostart,
+#settings .setting-autostart input {
+  cursor: pointer;
+}

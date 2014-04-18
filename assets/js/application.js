@@ -29,6 +29,7 @@ var app = {
       this.participants.init();
       this.layout.init();
       this.avatar.init();
+      this.settings.init();
 
       gapi.hangout.data.onStateChanged.add($.proxy(this.onStateChanged, this));
     }
@@ -98,6 +99,8 @@ var app = {
   participants: {
     init: function() {
       this.muteAll();
+      this.updateAllAvatars();
+
       gapi.hangout.onParticipantsAdded.add($.proxy(this.onAdded, this));
       gapi.hangout.onParticipantsRemoved.add($.proxy(this.onRemoved, this));
     },
@@ -176,18 +179,18 @@ var app = {
     },
 
     /**
-     * Refreshes snapshots for the current participants
+     * Refreshes avatars for the current participants
      */
-    refresh: function() {
-      // var participants = gapi.hangout.getParticipants();
-      // for (var i = 0; i < participants.length; i++) {
-      //   var participant = participants[0];
-      //   this.updateAvatar(participant);
-      // }
+    updateAllAvatars: function() {
+      var participants = gapi.hangout.getParticipants();
+      for (var i = 0; i < participants.length; i++) {
+        var participant = participants[0];
+        this.updateAvatar(participant);
+      }
     },
 
     /**
-     * Updates the image for the given participant
+     * Updates the avatar for the given participant
      */
     updateAvatar: function(participant) {
       if (participant.id != gapi.hangout.getLocalParticipant().id) {
@@ -241,6 +244,7 @@ var app = {
             .click($.proxy(this.onJoinRequest, this));
 
           $('<li />')
+            .data({id: participant.id})
             .attr({id: this.safeId(participant)})
             .addClass('list-group-item')
             .append($link)
@@ -260,7 +264,14 @@ var app = {
      * Callback when the local participant has requested to join another participant
      */
     onJoinRequest: function(event) {
+      var $participant = $(event.currentTarget).parent('.list-group-item');
+      var participantId = $participant.data('id');
+      var participant = gapi.hangout.getParticipantById(participantId);
 
+      app.participant.mute(false);
+      this.mute(participant, false);
+
+      this.removeAvatar(participant);
     }
   },
 
@@ -281,7 +292,7 @@ var app = {
       navigator.getMedia = navigator.getUserMedia || navigator.webkitGetUserMedia || navigator.mozGetUserMedia;
 
       this.refresh();
-      setInterval($.proxy(this.refresh, this), 15000);
+      setInterval($.proxy(this.refresh, this), 60 * 1000);
     },
 
     /**
@@ -413,6 +424,22 @@ var app = {
 
       var partsCount = Math.ceil(url.length / this.partSize);
       gapi.hangout.data.setValue(participant.id + '/avatar', avatarId + ',' + partsCount);
+    }
+  },
+
+  settings: {
+    init: function() {
+      $('#settings .setting-autostart input')
+        .prop('checked', gapi.hangout.willAutoLoad())
+        .click($.proxy(this.onChangeAutostart, this));
+    },
+
+    /**
+     * Callback when the user has changed the setting for autostarting the extension
+     */
+    onChangeAutostart: function(event) {
+      var $autostart = $(event.target);
+      gapi.hangout.setWillAutoLoad($autostart.is(':checked'));
     }
   }
 };
