@@ -10,6 +10,13 @@ var app = {
   },
 
   /**
+   * Returns the current timestamp
+   */
+  now: function() {
+    return +(new Date());
+  },
+
+  /**
    * Callback when the gadget is ready
    */
   onLoad: function() {
@@ -26,7 +33,7 @@ var app = {
       this.layout.init();
       this.avatar.refresh();
 
-      gapi.hangout.data.onStateChanged($.proxy(this.onStateChanged, this));
+      gapi.hangout.data.onStateChanged.add($.proxy(this.onStateChanged, this));
     }
   },
 
@@ -34,8 +41,19 @@ var app = {
    * Callback when the state of this extension has changed
    */
   onStateChanged: function(event) {
-    console.log('STATE CHANGED');
-    console.log(event);
+    var keys = event.addedKeys;
+    for (var i = 0; i < keys.length; i++) {
+      var key = keys[i].key;
+
+      if (key.match(/\/avatar$/)) {
+        var participantId = key.replace('/avatar', '');
+        var participant = gapi.hangout.getParticipantById(participantId);
+
+        if (participant) {
+          this.participants.update(participant);
+        }
+      }
+    }
   },
 
   // Represents the layout of the hangout
@@ -71,8 +89,8 @@ var app = {
   participants: {
     init: function() {
       this.muteAll();
-      gapi.hangout.onParticipantsAdded($.proxy(this.onAdded, this));
-      gapi.hangout.onParticipantsRemoved($.proxy(this.onRemoved, this));
+      gapi.hangout.onParticipantsAdded.add($.proxy(this.onAdded, this));
+      gapi.hangout.onParticipantsRemoved.add($.proxy(this.onRemoved, this));
     },
 
     /**
@@ -82,17 +100,43 @@ var app = {
       var participants = event.addedParticipants;
       for (var i = 0; i < participants.length; i++) {
         var participant = participants[i];
-        this.mute(participant);
+        this.add(participant);
       }
 
       this.refresh();
     },
 
     /**
+     * Adds the given participant to the hangout
+     */
+    add: function(participant) {
+      this.mute(participant);
+    },
+
+    /**
      * Callback when a participant is removed from the hangout
      */
     onRemoved: function(event) {
+      var participants = event.removedParticipants;
+      for (var i = 0; i < participants.length; i++) {
+        var participant = participants[i];
+        this.remove(participant);
+      }
+
       this.refresh();
+    },
+
+    /**
+     * Removes the given participant from the hangout
+     */
+    remove: function(participant) {
+      var keys = gapi.hangout.data.getKeys();
+      for (var i = 0; i < keys.length; i++) {
+        var key = keys[i];
+        if (key.indexOf(participant) >= 0) {
+          gapi.hangout.data.clearValue(key);
+        }
+      }
     },
 
     /**
@@ -120,25 +164,42 @@ var app = {
      * Refreshes snapshots for the current participants
      */
     refresh: function() {
-      // var participants = gapi.hangout.getParticipants();
-      // var retVal = '<p>Participants: </p><ul>';
+      var participants = gapi.hangout.getParticipants();
+      for (var i = 0; i < participants.length; i++) {
+        var participant = participants[0];
+        this.updateAvatar(participant);
+      }
+    },
 
-      // for (var index in participants) {
-      //   var participant = participants[index];
+    /**
+     * Updates the image for the given participant
+     */
+    updateAvatar: function(participant) {
+      if (participant.id != gapi.hangout.getLocalParticipant().id) {
+        var partsCount = gapi.hangout.data.getValue(participant.id + '/avatar');
+        if (partsCount != null) {
+          partsCount = parseInt(partsCount.split(',')[1]);
+          var imageDataUrl = '';
+          for (var i = 0; i < partsCount; i++) {
+            var part = gapi.hangout.data.getValue(participant.id + '/avatar/' + i);
+            imageDataUrl += part;
+          }
+        }
 
-      //   if (!participant.person) {
-      //     retVal += '<li>A participant not running this app</li>';
-      //   }
-      //   retVal += '<li>' + participant.person.displayName + '</li>';
-      // }
-
-      // retVal += '</ul>';
-      // var div = document.getElementById('participantsDiv');
-      // div.innerHTML = retVal;
+        // TODO: Actually update the image!
+      }
     }
   },
 
   avatar: {
+    // Dimensions of avatars
+    width: 148,
+    height: 111,
+    quality: 0.7,
+
+    // The maximum size avatar parts can be stored in
+    partSize: 8192,
+
     // Provides a helper for building URLs from streams
     buildURL: window.webkitURL || window.URL,
 
@@ -185,7 +246,7 @@ var app = {
      * Loads a video feed for the given url, capturing the first image available
      */
     buildVideo: function(url) {
-      var video = $('<video />').attr({width: 640, height: 480})[0];
+      var video = $('<video />').attr({width: this.width, height: this.height})[0];
       video.src = url;
       video.play();
       return video;
@@ -197,15 +258,15 @@ var app = {
     captureImage: function(video, success, error) {
       try {
         // Draw the video onto our canvas
-        var canvas = $('<canvas />').attr({width: 640, height: 480})[0];
+        var canvas = $('<canvas />').attr({width: this.width, height: this.height})[0];
         var context = canvas.getContext('2d');
-        context.drawImage(video, 0, 0, 640, 480);
+        context.drawImage(video, 0, 0, this.width, this.height);
 
         // Convert to Black & White
         this.convertToBW(canvas, context);
 
         // Save the image and kill the video
-        var imageDataUrl = canvas.toDataURL('image/png');
+        var imageDataUrl = canvas.toDataURL('image/jpeg', this.quality);
         video.pause();
 
         success(imageDataUrl);
@@ -244,7 +305,14 @@ var app = {
       gapi.hangout.av.setAvatar(participant.id, imageDataUrl);
 
       // Send a notification to other participants of the updated image
-      gapi.hangout.data.setValue('participants/' + participant.id + '/avatar', imageDataUrl)
+      for (var i = 0; i < imageDataUrl.length; i += this.partSize) {
+        var partId = i / this.partSize;
+        var data = imageDataUrl.substr(i, Math.min(imageDataUrl.length - i, this.partSize));
+        gapi.hangout.data.setValue(participant.id + '/avatar/' + partId, data)
+      }
+
+      var partsCount = Math.ceil(imageDataUrl.length / this.partSize);
+      gapi.hangout.data.setValue(participant.id + '/avatar', app.now() + ',' + partsCount);
     }
   }
 };
