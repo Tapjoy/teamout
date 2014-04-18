@@ -1,16 +1,10 @@
 Notes:
 
-1. Disable Hangouts video
-2. Start WebRTC video
-3. Take snapshot
-4. Enable Hangouts video
-===
-
-1. Integrate flowdock message chat
-2. Push API for chat
-3. Take snapshots with video API
-4. Display / hide participants
-5. control audio / video mute (locally and remote)
+TODO:
+* Fix SSL issue
+* Invite organization
+* Prepare demo / presentation
+* Add listeners to prevent users from changing mute when not in a conversation
 
 var stream = null;
 navigator.mozGetUserMedia({ "video": true }, function(s) {stream = s}, function() {alert(2)});

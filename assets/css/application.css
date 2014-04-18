@@ -131,11 +131,11 @@ body {
   z-index: 2;
 }
 
-.participants .joined.list-group-item .action {
+.participants .hanging.list-group-item .action {
   display: block;
 }
 
-.participants .joined.list-group-item .action * {
+.participants .hanging.list-group-item .action * {
   display: none;
 }
 
