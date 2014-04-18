@@ -3,9 +3,6 @@ var app = {
    * Initializes the state of the application
    */
   init: function() {
-    // The browser-specific implementation for retrieving a webcam stream
-    navigator.getMedia = navigator.getUserMedia || navigator.webkitGetUserMedia || navigator.mozGetUserMedia;
-
     gadgets.util.registerOnLoadHandler($.proxy(this.onLoad, this));
   },
 
@@ -41,6 +38,7 @@ var app = {
    * Callback when the state of this extension has changed
    */
   onStateChanged: function(event) {
+    console.log(event);
     var keys = event.addedKeys;
     for (var i = 0; i < keys.length; i++) {
       var key = keys[i].key;
@@ -114,8 +112,6 @@ var app = {
         var participant = participants[i];
         this.add(participant);
       }
-
-      this.refresh();
     },
 
     /**
@@ -123,6 +119,7 @@ var app = {
      */
     add: function(participant) {
       this.mute(participant);
+      this.updateAvatar(participant);
     },
 
     /**
@@ -134,8 +131,6 @@ var app = {
         var participant = participants[i];
         this.remove(participant);
       }
-
-      this.refresh();
     },
 
     /**
@@ -149,6 +144,8 @@ var app = {
           gapi.hangout.data.clearValue(key);
         }
       }
+
+      this.removeAvatar(participant);
     },
 
     /**
@@ -176,11 +173,11 @@ var app = {
      * Refreshes snapshots for the current participants
      */
     refresh: function() {
-      var participants = gapi.hangout.getParticipants();
-      for (var i = 0; i < participants.length; i++) {
-        var participant = participants[0];
-        this.updateAvatar(participant);
-      }
+      // var participants = gapi.hangout.getParticipants();
+      // for (var i = 0; i < participants.length; i++) {
+      //   var participant = participants[0];
+      //   this.updateAvatar(participant);
+      // }
     },
 
     /**
@@ -207,13 +204,13 @@ var app = {
         var $participant = $('#' + participant.person.id);
         if ($participant.length) {
           // Fade in the new avatar
-          var $previousAvatar = $participant.find('img');
+          var $previousAvatar = $participant.find('img').css({zIndex: 0});
           var $newAvatar = $('<img />')
             .attr({src: imageDataUrl})
-            .hide()
-            .addClass('img-rounded')
-            .prependTo($participant)
-            .fadeIn(250, $.proxy($previousAvatar.remove, $previousAvatar));
+            .css({zIndex: 1, opacity: 0.0})
+            .addClass('img-thumbnail')
+            .prependTo($participant.find('a'))
+            .animate({opacity: 1.0}, {duration: 500, complete: $.proxy($previousAvatar.remove, $previousAvatar)});
         } else {
           // Add a new avatar to the list
           var $link = $('<a />')
@@ -230,11 +227,19 @@ var app = {
             .click($.proxy(this.onJoinRequest, this));
 
           $('<li />')
+            .attr({id: participant.person.id})
             .addClass('list-group-item')
             .append($link)
             .appendTo($participants);
         }
       // }
+    },
+
+    /**
+     * Removes the given user's avatar from the participants list
+     */
+    removeAvatar: function(participant) {
+      $('#' + participant.person.id).remove();
     },
 
     /**
@@ -258,8 +263,11 @@ var app = {
     buildURL: window.webkitURL || window.URL,
 
     init: function() {
+      // The browser-specific implementation for retrieving a webcam stream
+      navigator.getMedia = navigator.getUserMedia || navigator.webkitGetUserMedia || navigator.mozGetUserMedia;
+
       this.refresh();
-      // setInterval($.proxy(this.refresh, this), 15000);
+      setInterval($.proxy(this.refresh, this), 15000);
     },
 
     /**
@@ -270,7 +278,7 @@ var app = {
         navigator.getMedia(
           {video: true},
           $.proxy(this.refreshWithStream, this),
-          $.proxy(this.onError, this)
+          $.proxy(this.onError, this, null)
         );
       }
     },
@@ -286,18 +294,25 @@ var app = {
      * Callback when the system is ready to refresh
      */
     refreshWithStream: function(stream) {
-      var urlBuilder = window.webkitURL || window.URL;
-      var url = urlBuilder ? urlBuilder.createObjectURL(stream) : stream;
+      var url = window.URL.createObjectURL(stream);
       var video = this.buildVideo(url);
       $(video).on('canplay', $.proxy(function() {
-        this.captureImage(video, $.proxy(this.update, this), $.proxy(this.onError, this));
+        this.captureImage(video, stream, $.proxy(this.update, this), $.proxy(this.onError, this, stream));
       }, this));
     },
 
     /**
      * Callback when an error is encountered updating the avatar
      */
-    onError: function(error) {
+    onError: function(stream, error) {
+      if (stream) {
+        try {
+          stream.stop();
+        } catch(ex) {
+          console.log('Error stopping stream: ', ex);
+        }
+      }
+
       console.log('Error updating avatar: ', error); 
     },
 
@@ -314,7 +329,7 @@ var app = {
     /**
      * Captures the image 
      */
-    captureImage: function(video, success, error) {
+    captureImage: function(video, stream, success, error) {
       try {
         // Draw the video onto our canvas
         var canvas = $('<canvas />').attr({width: this.width, height: this.height})[0];
@@ -327,11 +342,12 @@ var app = {
         // Save the image and kill the video
         var imageDataUrl = canvas.toDataURL('image/jpeg', this.quality);
         video.pause();
+        stream.stop();
 
         success(imageDataUrl);
       } catch(e) {
         if (e.name == 'NS_ERROR_NOT_AVAILABLE') {
-          setTimeout($.proxy(this.captureImage, this, video, success, error), 1000);
+          setTimeout($.proxy(this.captureImage, this, video, stream, success, error), 1000);
         } else {
           error(e);
         }
