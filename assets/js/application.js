@@ -699,6 +699,9 @@ var app = {
       } else {
         $item.insertBefore($items.eq(position));
       }
+
+      // Refresh scroll position
+      app.layout.initScrollers();
     },
 
     /**
@@ -710,6 +713,9 @@ var app = {
       if (!$('.participants > li').length) {
         $('.participants-empty').show();
       }
+
+      // Refresh scroll position
+      app.layout.initScrollers();
     },
 
     /**
