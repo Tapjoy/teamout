@@ -33,7 +33,7 @@ var app = {
 
       // Participant data
       this.participant.init();
-      this.avatar.init();
+      this.photo.init();
       this.participants.init();
 
       this.settings.init();
@@ -115,6 +115,7 @@ var app = {
      * Callback when the state of this extension has changed
      */
     onChanged: function(event) {
+      console.log(event);
       this.sync(event.addedKeys, event.removedKeys);
 
       var keys = event.addedKeys;
@@ -137,9 +138,10 @@ var app = {
       var participant = app.participants.fromKey(key);
 
       if (participant && participant.id != app.participant.id) {
-        if (key.match(/\/avatar/)) {
-          // Avatar updated
-          app.participants.updateAvatar(participant);
+        console.log(key + ' set to ' + value);
+        if (key.match(/\/photo/)) {
+          // Photo updated
+          app.participants.updatePhoto(participant);
         } else if (key.match(/\/hanging_with/)) {
           if (app.participant.isHangingWith(participant, true)) {
             // Participant joined in hangout with this user
@@ -159,6 +161,7 @@ var app = {
       var participant = app.participants.fromKey(key);
 
       if (participant && participant.id != app.participant.id) {
+        console.log(key + ' removed');
         if (key.match(/\/hanging_with/)) {
           if (app.participant.isHangingWith(participant)) {
             // Participant left a hangout with this user
@@ -394,7 +397,22 @@ var app = {
       app.participants.mute(participant, false);
 
       // Remove the remote participant from the list
-      app.participants.removeAvatar(participant);
+      app.participants.removePhoto(participant);
+
+      // Add the remote participant to the active list
+      if (!$('#' + app.participants.safeId(participant) + '-hanging').length) {
+        $('<li />')
+          .data({id: participant.id})
+          .attr({id: app.participants.safeId(participant) + '-hanging'})
+          .addClass('list-group-item')
+          .append(
+            $('<div />')
+              .attr({href: '#'})
+              .addClass('thumbnail')
+              .append($('<img />').attr({src: app.participants.avatarUrl(participant)}).addClass('img-thumbnail'))
+          )
+          .appendTo($('.participants-hanging'));
+      }
 
       // Add a escape hatch
       app.layout.showLeaveAction();
@@ -444,12 +462,17 @@ var app = {
         // Display a notice in the hangout
         app.notification.show('A new conversation has started with ' + participant.person.displayName);
       }
+
+      $('.hanging_with').slideDown(250);
     },
 
     /**
      * Leaves the current live feed in the hangout
      */
     leave: function() {
+      $('.hanging_with').slideUp(250);
+      $('.hanging_with .participants-hanging').empty();
+
       // Clear the current user's list of participants
       this.updateHangingWith([]);
 
@@ -458,7 +481,7 @@ var app = {
       // Mute everyone / reset participant list
       this.mute();
       app.participants.muteAll();
-      app.participants.updateAllAvatars();
+      app.participants.updateAllPhotos();
 
       // Reset the video feed
       gapi.hangout.layout.getVideoCanvas().getVideoFeed().clearDisplayedParticipant();
@@ -469,7 +492,7 @@ var app = {
   participants: {
     init: function() {
       this.muteAll();
-      this.updateAllAvatars();
+      this.updateAllPhotos();
 
       gapi.hangout.onParticipantsAdded.add($.proxy(this.onAdded, this));
       gapi.hangout.onParticipantsRemoved.add($.proxy(this.onRemoved, this));
@@ -520,7 +543,7 @@ var app = {
      */
     add: function(participant) {
       this.mute(participant);
-      this.updateAvatar(participant);
+      this.updatePhoto(participant);
     },
 
     /**
@@ -546,7 +569,7 @@ var app = {
         }
       }
 
-      this.removeAvatar(participant);
+      this.removePhoto(participant);
 
       // Remove them from the conversation
       if (app.participant.isHangingWith(participant)) {
@@ -576,20 +599,27 @@ var app = {
     },
 
     /**
-     * Gets the url for the avatar representing the given user
+     * Gets the Google avatar url for the given user
      */
     avatarUrl: function(participant) {
-      var url = participant.person.image.url;
+      return participant.person.image.url;
+    },
 
-      var data = app.data.get(participant.id + '/avatar');
+    /**
+     * Gets the url for the photo representing the given user
+     */
+    photoUrl: function(participant) {
+      var url = this.avatarUrl(participant);
+
+      var data = app.data.get(participant.id + '/photo');
       if (data) {
         // Build the image data url
-        var avatarId = data.split(',')[0];
+        var photoId = data.split(',')[0];
         var partsCount = parseInt(data.split(',')[1]);
 
         var dataUrl = '';
         for (var i = 0; i < partsCount; i++) {
-          var part = app.data.get(participant.id + '/avatars/' + avatarId + '/parts/' + i);
+          var part = app.data.get(participant.id + '/photos/' + photoId + '/parts/' + i);
           if (!part) {
             dataUrl = null;
             break;
@@ -606,59 +636,59 @@ var app = {
     },
 
     /**
-     * Refreshes avatars for the current participants
+     * Refreshes photos for the current participants
      */
-    updateAllAvatars: function() {
+    updateAllPhotos: function() {
       var participants = gapi.hangout.getParticipants();
       for (var i = 0; i < participants.length; i++) {
         var participant = participants[i];
-        this.updateAvatar(participant);
+        this.updatePhoto(participant);
       }
     },
 
     /**
-     * Updates the avatar for the given participant
+     * Updates the photo for the given participant
      */
-    updateAvatar: function(participant) {
+    updatePhoto: function(participant) {
       if (participant.id != app.participant.id) {
         var $participant = $('#' + this.safeId(participant));
 
         if ($participant.length) {
-          this.replaceAvatar(participant);
+          this.replacePhoto(participant);
         } else if (!app.participant.isHangingWith(participant)) {
-          this.addAvatar(participant);
+          this.addPhoto(participant);
         }
       }
     },
 
     /**
-     * Replaces the avatar currently shown for the participant with the one at
+     * Replaces the photo currently shown for the participant with the one at
      * the given url
      */
-    replaceAvatar: function(participant, url) {
+    replacePhoto: function(participant, url) {
       var $participant = $('#' + this.safeId(participant));
-      var url = this.avatarUrl(participant);
+      var url = this.photoUrl(participant);
 
       if ($participant.length) {
-        // Fade in the new avatar
-        var $previousAvatar = $participant.find('img').css({zIndex: 0});
-        var $newAvatar = $('<img />')
+        // Fade in the new photo
+        var $previousPhoto = $participant.find('img').css({zIndex: 0});
+        var $newPhoto = $('<img />')
           .attr({src: url})
           .css({zIndex: 1, opacity: 0.0})
           .addClass('img-thumbnail')
           .prependTo($participant.find('a'))
-          .animate({opacity: 1.0}, {duration: 500, complete: $.proxy($previousAvatar.remove, $previousAvatar)});
+          .animate({opacity: 1.0}, {duration: 500, complete: $.proxy($previousPhoto.remove, $previousPhoto)});
       }
     },
 
     /**
-     * Adds a new avatar for the participant tied to the given url
+     * Adds a new photo for the participant tied to the given url
      */
-    addAvatar: function(participant, url) {
+    addPhoto: function(participant, url) {
       var $participants = $('.participants');
-      var url = this.avatarUrl(participant);
+      var url = this.photoUrl(participant);
 
-      // Add a new avatar to the list
+      // Add a new photo to the list
       var $link = $('<a />')
         .attr({href: '#'})
         .addClass('thumbnail')
@@ -707,9 +737,9 @@ var app = {
     },
 
     /**
-     * Removes the given user's avatar from the participants list
+     * Removes the given user's photo from the participants list
      */
-    removeAvatar: function(participant) {
+    removePhoto: function(participant) {
       $('#' + this.safeId(participant)).remove();
 
       if (!$('.participants > li').length) {
@@ -778,7 +808,8 @@ var app = {
       this.mute(participant, true);
 
       // Add the remote participant back to the pool
-      this.updateAvatar(participant);
+      this.updatePhoto(participant);
+      $('#' + app.participants.safeId(participant) + '-hanging').remove();
 
       if (!app.participant.isHanging()) {
         app.participant.leave();
@@ -786,14 +817,14 @@ var app = {
     }
   },
 
-  // Represents the current user's avatar
-  avatar: {
-    // Dimensions of avatars
+  // Represents the current user's photo
+  photo: {
+    // Dimensions of photos
     width: 300,
     height: 225,
     quality: 0.7,
 
-    // The maximum size avatar parts can be stored in
+    // The maximum size photo parts can be stored in
     partSize: 8192,
 
     // Provides a helper for building URLs from streams
@@ -821,7 +852,7 @@ var app = {
     },
 
     /**
-     * Determines whether the avatar is capable of being refrehs
+     * Determines whether the photo is capable of being refrehs
      */
     canRefresh: function() {
       return gapi.hangout.av.getCameraMute() == true && gapi.hangout.av.getMicrophoneMute() == true;
@@ -839,7 +870,7 @@ var app = {
     },
 
     /**
-     * Callback when an error is encountered updating the avatar
+     * Callback when an error is encountered updating the photo
      */
     onError: function(stream, error) {
       if (stream) {
@@ -850,7 +881,7 @@ var app = {
         }
       }
 
-      console.log('Error updating avatar: ', error); 
+      console.log('Error updating photo: ', error);
     },
 
     /**
@@ -929,13 +960,13 @@ var app = {
     },
 
     /**
-     * Updates the current participant's avatar with the given url
+     * Updates the current participant's photo with the given url
      */
     update: function(url, squareUrl) {
       var id = app.now();
       gapi.hangout.av.setAvatar(app.participant.id, squareUrl);
 
-      // Clean up old, outdated avatars
+      // Clean up old, outdated photos
       this.cleanup();
 
       // Send a notification to other participants of the updated image.
@@ -944,22 +975,22 @@ var app = {
       for (var i = 0; i < url.length; i += this.partSize) {
         var partId = i / this.partSize;
         var data = url.substr(i, Math.min(url.length - i, this.partSize));
-        app.data.set(app.participant.id + '/avatars/' + id + '/parts/' + partId, data);
+        app.data.set(app.participant.id + '/photos/' + id + '/parts/' + partId, data);
       }
 
-      // Update the reference for the avatar
+      // Update the reference for the photo
       var partsCount = Math.ceil(url.length / this.partSize);
-      app.data.set(app.participant.id + '/avatar', id + ',' + partsCount);
+      app.data.set(app.participant.id + '/photo', id + ',' + partsCount);
     },
 
     /**
-     * Clears out old avatar keys
+     * Clears out old photo keys
      */
     cleanup: function() {
-      var oldAvatarKeys = app.data.keys();
-      for (var i = 0; i < oldAvatarKeys.length; i++) {
-        var key = oldAvatarKeys[i];
-        if (key.indexOf(app.participant.id) == 0 && key.indexOf('/avatars') > 0) {
+      var oldPhotoKeys = app.data.keys();
+      for (var i = 0; i < oldPhotoKeys.length; i++) {
+        var key = oldPhotoKeys[i];
+        if (key.indexOf(app.participant.id) == 0 && key.indexOf('/photos') > 0) {
           app.data.clear(key);
         }
       }

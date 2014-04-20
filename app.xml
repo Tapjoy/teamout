@@ -36,6 +36,11 @@
             <span class="glyphicon glyphicon-user"></span>
             <span class="caption">There are no other participants in the hangout.</span>
           </div>
+          <div class="hanging_with">
+            <span class="title glyphicon glyphicon-facetime-video"></span>
+            <ul class="participants-hanging list-group">
+            </ul>
+          </div>
           <ul class="participants list-group">
           </ul>
         </div>
