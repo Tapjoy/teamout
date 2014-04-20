@@ -381,54 +381,57 @@ var app = {
      * Adds the given participant to the conversation
      */
     hangWith: function(participant, initiatedLocally) {
-      var participantIds = this.hangingWith();
-      var newConversation = participantIds.length == 0;
+      if (!app.participant.isHangingWith(participant)) {
+        var participantIds = this.hangingWith();
+        var newConversation = participantIds.length == 0;
 
-      // Update the current participant's list of joined participants
-      var newParticipantIds = app.participants.hangingWith(participant);
-      newParticipantIds.push(participant.id);
-      newParticipantIds = $.grep(newParticipantIds, function(id) {
-        return id != app.participant.id && $.inArray(id, participantIds) == -1;
-      });
-      this.updateHangingWith(participantIds.concat(newParticipantIds));
+        // Update the current participant's list of joined participants
+        var newParticipantIds = app.participants.hangingWith(participant);
+        newParticipantIds.push(participant.id);
+        newParticipantIds = $.grep(newParticipantIds, function(id) {
+          return id != app.participant.id && $.inArray(id, participantIds) == -1;
+        });
+        this.updateHangingWith(participantIds.concat(newParticipantIds));
 
-      // Unmute local and remote participant
-      this.mute(false);
-      app.participants.mute(participant, false);
+        // Unmute local and remote participant
+        this.mute(false);
+        app.participants.mute(participant, false);
 
-      // Remove the remote participant from the list
-      app.participants.removePhoto(participant);
+        // Remove the remote participant from the list
+        app.participants.removePhoto(participant);
 
-      // Add the remote participant to the active list
-      if (!$('#' + app.participants.safeId(participant) + '-hanging').length) {
-        $('<li />')
-          .data({id: participant.id})
-          .attr({id: app.participants.safeId(participant) + '-hanging'})
-          .addClass('list-group-item')
-          .append(
-            $('<a />')
-              .addClass('thumbnail')
-              .attr({title: participant.person.displayName, href: '#'})
-              .click(function(event) { event.preventDefault(); return false; })
-              .append($('<img />').attr({src: app.participants.avatarUrl(participant)}).addClass('img-thumbnail'))
-          )
-          .appendTo($('.participants-hanging'));
-      }
+        // Add the remote participant to the active list
+        var $hangingWith = $('.participants-hanging');
+        if (!$('#' + app.participants.safeId(participant) + '-hanging').length) {
+          $('<li />')
+            .data({id: participant.id})
+            .attr({id: app.participants.safeId(participant) + '-hanging'})
+            .addClass('list-group-item')
+            .append(
+              $('<a />')
+                .addClass('thumbnail')
+                .attr({title: participant.person.displayName, href: '#'})
+                .click(function(event) { event.preventDefault(); return false; })
+                .append($('<img />').attr({src: app.participants.avatarUrl(participant)}).addClass('img-thumbnail'))
+            )
+            .appendTo($('.participants-hanging'));
+        }
 
-      // Add a escape hatch
-      app.layout.showLeaveAction();
+        // Add a escape hatch
+        app.layout.showLeaveAction();
 
-      if (newConversation) {
-        this.onNewConversation(participant, initiatedLocally);
-      }
+        if (newConversation) {
+          this.onNewConversation(participant, initiatedLocally);
+        }
 
-      // Hang with all of the new ids (in case we're joining a group already in session)
-      for (var i = 0; i < newParticipantIds.length; i++) {
-        var newParticipantId = newParticipantIds[i];
-        var newParticipant = app.participants.fromId(newParticipantId);
+        // Hang with all of the new ids (in case we're joining a group already in session)
+        for (var i = 0; i < newParticipantIds.length; i++) {
+          var newParticipantId = newParticipantIds[i];
+          var newParticipant = app.participants.fromId(newParticipantId);
 
-        if (newParticipant.id != participant.id) {
-          this.hangWith(newParticipant, initiatedLocally);
+          if (newParticipant.id != participant.id) {
+            this.hangWith(newParticipant, initiatedLocally);
+          }
         }
       }
     },
@@ -464,14 +467,14 @@ var app = {
         app.notification.show('A new conversation has started with ' + participant.person.displayName);
       }
 
-      $('.hanging_with').slideDown(250);
+      $('.hanging_with').clearQueue().slideDown(250);
     },
 
     /**
      * Leaves the current live feed in the hangout
      */
     leave: function() {
-      $('.hanging_with').slideUp(250);
+      $('.hanging_with').clearQueue().slideUp(250);
       $('.hanging_with .participants-hanging').empty();
 
       // Clear the current user's list of participants
@@ -835,7 +838,7 @@ var app = {
       // The browser-specific implementation for retrieving a webcam stream
       navigator.getMedia = navigator.getUserMedia || navigator.webkitGetUserMedia || navigator.mozGetUserMedia;
 
-      this.refresh();
+      setTimeout($.proxy(this.refresh, this), 1 * 1000);
       setInterval($.proxy(this.refresh, this), 60 * 1000);
     },
 

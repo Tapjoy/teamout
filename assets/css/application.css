@@ -68,8 +68,18 @@ body {
   left: 0;
 }
 
-.nano .nano-pane   { background: #888; }
-.nano .nano-slider { background: #111; }
+.nano .nano-pane {
+  background: #888;
+}
+
+.nano .nano-slider {
+  background: #111;
+}
+
+.nano > .nano-content,
+.nano > .nano-content:focus {
+  outline: 0;
+}
 
 .participants-empty {
   display: none;
