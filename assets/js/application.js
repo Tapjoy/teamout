@@ -97,17 +97,26 @@ var app = {
     },
 
     /**
-     * Syncs up additions / removals of keys
+     * Syncs up additions / removals of keys.  Only keys added / removed that
+     * are associated with other users will actually get synced here.  The
+     * assumption is that keys associated with the current user get set
+     * directly through calling #set / #remove instead of through a sync.
      */
     sync: function(addedKeys, removedKeys) {
       for (var i = 0; i < addedKeys.length; i++) {
         var key = addedKeys[i];
-        this.set(key.key, key.value)
+        if (key.key.indexOf(app.participant.id) == -1) {
+          this.state[key.key] = key.value;
+          this.onKeyAdded(key.key, key.value);
+        }
       }
 
       for (var i = 0; i < removedKeys.length; i++) {
         var key = removedKeys[i];
-        this.clear(key);
+        if (key.indexOf(app.participant.id) == -1) {
+          delete this.state[key];
+          this.onKeyRemoved(key);
+        }
       }
     },
 
@@ -115,20 +124,7 @@ var app = {
      * Callback when the state of this extension has changed
      */
     onChanged: function(event) {
-      console.log(event);
       this.sync(event.addedKeys, event.removedKeys);
-
-      var keys = event.addedKeys;
-      for (var i = 0; i < keys.length; i++) {
-        var key = keys[i];
-        this.onKeyAdded(key.key, key.value);
-      }
-
-      var keys = event.removedKeys;
-      for (var i = 0; i < keys.length; i++) {
-        var key = keys[i];
-        this.onKeyRemoved(key);
-      }
     },
 
     /**
@@ -137,19 +133,18 @@ var app = {
     onKeyAdded: function(key, value) {
       var participant = app.participants.fromKey(key);
 
-      if (participant && participant.id != app.participant.id) {
-        console.log(key + ' set to ' + value);
-        if (key.match(/\/photo/)) {
-          // Photo updated
-          app.participants.updatePhoto(participant);
-        } else if (key.match(/\/hanging_with/)) {
-          if (app.participant.isHangingWith(participant, true)) {
+      if (key.match(/\/photo/)) {
+        // Photo updated
+        app.participants.updatePhoto(participant);
+      } else if (key.match(/\/hanging_with/)) {
+        if (app.participant.isHangingWith(participant, true)) {
+          if (!app.participant.isHangingWith(participant)) {
             // Participant joined in hangout with this user
             app.participant.hangWith(participant, false);
-          } else {
-            // Participant joined in hangout with another user
-            app.participants.inConversation(participant);
           }
+        } else {
+          // Participant joined in hangout with another user
+          app.participants.inConversation(participant);
         }
       }
     },
@@ -160,16 +155,13 @@ var app = {
     onKeyRemoved: function(key) {
       var participant = app.participants.fromKey(key);
 
-      if (participant && participant.id != app.participant.id) {
-        console.log(key + ' removed');
-        if (key.match(/\/hanging_with/)) {
-          if (app.participant.isHangingWith(participant)) {
-            // Participant left a hangout with this user
-            app.participants.leave(participant);
-          } else {
-            // Participant is no longer in a hangout
-            app.participants.outOfConversation(participant);
-          }
+      if (key.match(/\/hanging_with/)) {
+        if (app.participant.isHangingWith(participant)) {
+          // Participant left a hangout with this user
+          app.participants.leave(participant);
+        } else {
+          // Participant is no longer in a hangout
+          app.participants.outOfConversation(participant);
         }
       }
     }
@@ -390,7 +382,7 @@ var app = {
       this.id = gapi.hangout.getLocalParticipant().id;
       this.googleId = gapi.hangout.getLocalParticipant().person.id;
 
-      this.resetData();
+      this.cleanup();
       this.mute();
       gapi.hangout.av.setLocalAudioNotificationsMute(true);
       gapi.hangout.av.setLocalParticipantVideoMirrored(false);
@@ -402,7 +394,7 @@ var app = {
     /**
      * Resets all data associated with this participant
      */
-    resetData: function() {
+    cleanup: function() {
       var keys = app.data.keys();
       for (var i = 0; i < keys.length; i++) {
         var key = keys[i];
@@ -451,8 +443,8 @@ var app = {
      * Determines whether the given participant is joined into a conversation
      * with the current user
      */
-    isHangingWith: function(participant, bidirectional) {
-      return $.inArray(participant.id, this.hangingWith()) >= 0 || bidirectional && $.inArray(this.id, app.participants.hangingWith(participant)) >= 0;
+    isHangingWith: function(participant, reverse) {
+      return !reverse && $.inArray(participant.id, this.hangingWith()) >= 0 || reverse && $.inArray(this.id, app.participants.hangingWith(participant)) >= 0;
     },
 
     /**3
@@ -466,44 +458,38 @@ var app = {
      * Adds the given participant to the conversation
      */
     hangWith: function(participant, initiatedLocally) {
-      if (!app.participant.isHangingWith(participant)) {
-        var participantIds = this.hangingWith();
-        var newConversation = participantIds.length == 0;
+      var participantIds = this.hangingWith();
+      var newConversation = participantIds.length == 0;
 
-        // Update the current participant's list of joined participants
-        var newParticipantIds = app.participants.hangingWith(participant);
-        newParticipantIds.push(participant.id);
-        newParticipantIds = $.grep(newParticipantIds, function(id) {
-          return id != app.participant.id && $.inArray(id, participantIds) == -1;
-        });
-        this.updateHangingWith(participantIds.concat(newParticipantIds));
+      // Update the current participant's list of joined participants
+      participantIds.push(participant.id);
+      this.updateHangingWith($.unique(participantIds));
 
-        // Unmute local and remote participant
-        this.mute(false);
-        app.participants.mute(participant, false);
+      // Unmute local and remote participant
+      this.mute(false);
+      app.participants.mute(participant, false);
 
-        // Remove the remote participant from the list
-        app.participants.removePhoto(participant);
+      // Remove the remote participant from the list
+      app.participants.removePhoto(participant);
 
-        // Add the remote participant to the active list
-        app.layout.addHangingWith(participant);
+      // Add the remote participant to the active list
+      app.layout.addHangingWith(participant);
 
-        // Add a escape hatch
-        app.layout.showLeaveAction();
+      // Add a escape hatch
+      app.layout.showLeaveAction();
 
-        if (newConversation) {
-          this.onNewConversation(participant, initiatedLocally);
-        }
+      if (newConversation) {
+        this.onNewConversation(participant, initiatedLocally);
+      }
 
-        // Hang with all of the new ids (in case we're joining a group already in session)
-        for (var i = 0; i < newParticipantIds.length; i++) {
-          var newParticipantId = newParticipantIds[i];
-          var newParticipant = app.participants.fromId(newParticipantId);
-
-          if (newParticipant.id != participant.id) {
-            this.hangWith(newParticipant, initiatedLocally);
-          }
-        }
+      // Hang with all of the new ids (in case we're joining a group already in session)
+      var newParticipantIds = $.grep(app.participants.hangingWith(participant), function(id) {
+        return id != app.participant.id && $.inArray(id, participantIds) == -1;
+      });
+      for (var i = 0; i < newParticipantIds.length; i++) {
+        var participantId = newParticipantIds[i];
+        var newParticipant = app.participants.fromId(participantId);
+        this.hangWith(newParticipant, initiatedLocally);
       }
     },
 
