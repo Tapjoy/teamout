@@ -874,12 +874,15 @@ var app = {
         // Convert to Black & White
         this.convertToBW(canvas, context);
 
-        // Save the image and kill the video
+        // Save the image
         var url = canvas.toDataURL('image/jpeg', this.quality);
+        var squareUrl = this.squareImageUrl(canvas);
+
+        // Stop the stream
         video.pause();
         stream.stop();
 
-        success(url);
+        success(url, squareUrl);
       } catch(e) {
         if (e.name == 'NS_ERROR_NOT_AVAILABLE') {
           setTimeout($.proxy(this.captureImage, this, video, stream, success, error), 1000);
@@ -887,6 +890,22 @@ var app = {
           error(e);
         }
       }
+    },
+
+    /**
+     * Resizes the given canvas to a square image and generates a url for that
+     * image
+     */
+    squareImageUrl: function(sourceCanvas) {
+      var size = Math.min(sourceCanvas.width, sourceCanvas.height);
+      var canvas = $('<canvas />').attr({width: size, height: size})[0];
+      var context = canvas.getContext('2d');
+      var x = parseInt((sourceCanvas.width - size) / 2);
+      var y = parseInt((sourceCanvas.height - size) / 2);
+      context.drawImage(sourceCanvas, x, y, size, size, 0, 0, size, size);
+
+      var url = canvas.toDataURL('image/jpeg', this.quality);
+      return url;
     },
 
     /**
@@ -910,9 +929,9 @@ var app = {
     /**
      * Updates the current participant's avatar with the given url
      */
-    update: function(url) {
+    update: function(url, squareUrl) {
       var id = app.now();
-      gapi.hangout.av.setAvatar(app.participant.id, url);
+      gapi.hangout.av.setAvatar(app.participant.id, squareUrl);
 
       // Clean up old, outdated avatars
       this.cleanup();
