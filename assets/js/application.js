@@ -378,12 +378,12 @@ var app = {
       var newConversation = participantIds.length == 0;
 
       // Update the current participant's list of joined participants
-      var otherParticipantIds = app.participants.hangingWith(participant.id);
-      participantIds = participantIds.concat(otherParticipantIds).concat([participant.id]);
-      participantIds = $.grep(participantIds, function(id) {
-        return id != app.participant.id;
+      var newParticipantIds = app.participants.hangingWith(participant.id);
+      newParticipantIds.push(participant.id);
+      newParticipantIds = $.grep(newParticipantIds, function(id) {
+        return id != app.participant.id && $.inArray(id, participantIds) == -1;
       });
-      this.updateHangingWith(participantIds);
+      this.updateHangingWith(participantIds.concat(newParticipantIds));
 
       // Unmute local and remote participant
       this.mute(false);
@@ -397,6 +397,14 @@ var app = {
 
       if (newConversation) {
         this.onNewConversation(participant, initiatedLocally);
+      }
+
+      // Hang with all of the new ids (in case we're joining a group already in session)
+      for (var i = 0; i < newParticipantIds.length; i++) {
+        var participantId = newParticipantIds[i];
+        if (participantId != participant.id) {
+          this.hangWth(participant, initiatedLocally);
+        }
       }
     },
 
