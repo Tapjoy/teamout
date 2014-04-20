@@ -141,7 +141,7 @@ var app = {
           // Avatar updated
           app.participants.updateAvatar(participant);
         } else if (key.match(/\/hanging_with/)) {
-          if (app.participant.isHangingWith(participant)) {
+          if (app.participant.isHangingWith(participant, true)) {
             // Participant joined in hangout with this user
             app.participant.hangWith(participant, false);
           } else {
@@ -359,8 +359,8 @@ var app = {
      * Determines whether the given participant is joined into a conversation
      * with the current user
      */
-    isHangingWith: function(participant) {
-      return $.inArray(participant.id, this.hangingWith()) >= 0 || $.inArray(this.id, app.participants.hangingWith(participant)) >= 0;
+    isHangingWith: function(participant, bidirectional) {
+      return $.inArray(participant.id, this.hangingWith()) >= 0 || bidirectional && $.inArray(this.id, app.participants.hangingWith(participant)) >= 0;
     },
 
     /**3
