@@ -49,6 +49,16 @@
                 <input type="checkbox"> Auto-start when hangout begins
               </label>
             </div>
+            <div class="setting-sounds checkbox">
+              <label>
+                <input type="checkbox"> Mute sounds
+              </label>
+            </div>
+            <div class="setting-notifications checkbox">
+              <label>
+                <input type="checkbox"> Use desktop notifications
+              </label>
+            </div>
           </form>
         </div>
       </div>

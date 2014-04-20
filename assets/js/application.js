@@ -29,13 +29,14 @@ var app = {
   onReady: function(event) {
     if (event.isApiReady) {
       this.data.init();
-      this.settings.init();
       this.layout.init();
 
       // Participant data
       this.participant.init();
       this.avatar.init();
       this.participants.init();
+
+      this.settings.init();
     }
   },
 
@@ -58,7 +59,8 @@ var app = {
       for (var i = 0; i < keys.length; i++) {
         var key = keys[i];
         var participantId = app.participants.idFromKey(key);
-        if ($.inArray(participantId, participantIds) == -1) {
+
+        if (participantId != 'settings' && $.inArray(participantId, participantIds) == -1) {
           this.clear(key);
         }
       }
@@ -224,14 +226,98 @@ var app = {
     }
   },
 
+  notification: {
+    /**
+     * Requests permission to show desktop notifications
+     */
+    requestPermission: function(onSuccess, onError) {
+      if (window.webkitNotifications) {
+        webkitNotifications.requestPermission(function() {
+          if (webkitNotifications.checkPermission() == 0) {
+            onSuccess();
+          } else {
+            onError();
+          }
+        });
+      } else if (window.Notification) {
+        Notification.requestPermission(function(permission){
+          if (permission == 'granted') {
+            onSuccess();
+          } else {
+            onError();
+          }
+        });
+      }
+    },
+
+    /**
+     * Determines whether the app currently has permission to generate desktop
+     * notifications
+     */
+    hasDesktopPermission: function() {
+      var hasPermission = false;
+      if (window.webkitNotifications) {
+        hasPermission = webkitNotifications.checkPermission();
+      } else if (window.Notification) {
+        hasPermission = Notification.permission == 'granted'
+      }
+
+      return hasPermission;
+    },
+
+    /**
+     * Determines whether the app show be display messages as desktop notifications
+     */
+    useDesktopNotifications: function() {
+      return this.hasDesktopPermission() && app.settings.get('useDesktopNotifications') == 'true';
+    },
+
+    /**
+     * Shows a notification with the given message
+     */
+    show: function(message) {
+      if (this.useDesktopNotifications()) {
+        var title = 'Google Hangouts';
+        var icon = 'http://' + app.host + '/assets/images/google-hangouts-icon.png';
+
+        if (window.webkitNotifications) {
+          var notification = webkitNotifications.createNotification(icon, title, message);
+          notification.show();
+        } else {
+          var notification = new Notification(title, {icon: icon, body: message});
+        }
+      } else {
+        gapi.hangout.layout.displayNotice(message);
+      }
+    }
+  },
+
   // Represents the current, local participant
   participant: {
     init: function() {
       this.id = gapi.hangout.getLocalParticipant().id;
+      this.googleId = gapi.hangout.getLocalParticipant().person.id;
+
       this.resetData();
       this.mute();
       gapi.hangout.av.setLocalAudioNotificationsMute(true);
       gapi.hangout.av.setLocalParticipantVideoMirrored(false);
+
+      gapi.hangout.av.onCameraMute.add($.proxy(this.onCameraMute, this));
+      gapi.hangout.av.onMicrophoneMute.add($.proxy(this.onMicrophoneMute, this));
+    },
+
+    /**
+     * Resets all data associated with this participant
+     */
+    resetData: function() {
+      var keys = app.data.keys();
+      for (var i = 0; i < keys.length; i++) {
+        var key = keys[i];
+        if (key.indexOf(this.id) == 0) {
+          app.data.clear(key);
+        }
+      }
     },
 
     /**
@@ -245,15 +331,20 @@ var app = {
     },
 
     /**
-     * Resets all data associated with this participant
+     * Callback when the user has changed whether the camera is muted
      */
-    resetData: function() {
-      var keys = app.data.keys();
-      for (var i = 0; i < keys.length; i++) {
-        var key = keys[i];
-        if (key.indexOf(this.id) == 0) {
-          app.data.clear(key);
-        }
+    onCameraMute: function(event) {
+      if (!this.isHanging() && !event.isCameraMute) {
+        this.mute();
+      }
+    },
+
+    /**
+     * Callback when the user has changed whether the microphone is muted
+     */
+    onMicrophoneMute: function(event) {
+      if (!this.isHanging() && !event.isMicrophoneMute) {
+        this.mute();
       }
     },
 
@@ -305,16 +396,7 @@ var app = {
       app.layout.showLeaveAction();
 
       if (newConversation) {
-        if (initiatedLocally) {
-          if (participantIds.length == 1) {
-            // Set the video to the selected participant since they're the only one
-            gapi.hangout.layout.getVideoCanvas().getVideoFeed().setDisplayedParticipant(participant.id);
-          }
-        } else {
-          // Play a sound to let the user know they're in a new conversation
-          var chime = new Audio('//' + app.host + '/assets/audio/chime.ogg');
-          chime.play();
-        }
+        this.onNewConversation(participant, initiatedLocally);
       }
     },
 
@@ -326,6 +408,27 @@ var app = {
         app.data.set(this.id + '/hanging_with', ids.join(','));
       } else {
         app.data.clear(this.id + '/hanging_with');
+      }
+    },
+
+    /**
+     * Callback when a new conversation has been started
+     */
+    onNewConversation: function(participant, initiatedLocally) {
+      if (initiatedLocally) {
+        if (this.hangingWith().length == 1) {
+          // Set the video to the selected participant since they're the only one
+          gapi.hangout.layout.getVideoCanvas().getVideoFeed().setDisplayedParticipant(participant.id);
+        }
+      } else {
+        if (app.settings.get('muteSounds') == 'true') {
+          // Play a sound to let the user know they're in a new conversation
+          var chime = new Audio('//' + app.host + '/assets/audio/chime.ogg');
+          chime.play();
+        }
+
+        // Display a notice in the hangout
+        app.notification.show('A new conversation has started with ' + participant.person.displayName);
       }
     },
 
@@ -549,7 +652,7 @@ var app = {
           $('<img />').attr({src: url}).addClass('img-thumbnail'),
           $('<div />').addClass('action').append(
             $('<span />').addClass('glyphicon glyphicon-facetime-video'),
-            $('<span />').text('Join Conversation')
+            $('<span />').addClass('action-start').text('Start Conversation')
           ),
           $('<span />').addClass('caption').text(participant.person.displayName)
         )
@@ -620,14 +723,18 @@ var app = {
      * Marks the given participant as currently in a conversation
      */
     inConversation: function(participant) {
-      $('#' + this.safeId(participant)).addClass('hanging');
+      var $participant = $('#' + this.safeId(participant));
+      $participant.addClass('hanging');
+      $participant.find('.action-start').text('Join Conversation');
     },
 
     /**
      * Marks the given participant as no longer part of a conversation
      */
     outOfConversation: function(participant) {
-      $('#' + this.safeId(participant)).removeClass('hanging');
+      var $participant = $('#' + this.safeId(participant));
+      $participant.removeClass('hanging');
+      $participant.find('.action-start').text('Start Conversation');
     },
 
     /**
@@ -817,19 +924,82 @@ var app = {
   // Represents settings for the extension
   settings: {
     init: function() {
-      var autoload = gapi.hangout.willAutoLoad();
+      // Set defaults
+      if (!this.get('muteSounds')) {
+        this.set('muteSounds', 'true');
+      }
 
       $('#settings .setting-autostart input')
-        .prop('checked', autoload)
+        .prop('checked', gapi.hangout.willAutoLoad())
         .click($.proxy(this.onChangeAutostart, this));
+
+      $('#settings .setting-sounds input')
+        .prop('checked', this.get('muteSounds') == 'true')
+        .click($.proxy(this.onChangeSounds, this));
+
+      $('#settings .setting-notifications input')
+        .prop('checked', this.get('useDesktopNotifications') == 'true')
+        .click($.proxy(this.onChangeNotifications, this));
     },
 
     /**
      * Callback when the user has changed the setting for autostarting the extension
      */
     onChangeAutostart: function(event) {
-      var $autostart = $(event.target);
-      gapi.hangout.setWillAutoLoad($autostart.is(':checked'));
+      var $setting = $(event.target);
+      gapi.hangout.setWillAutoLoad($setting.is(':checked'));
+    },
+
+    /**
+     * Callback when the user has changed the setting for playing sounds
+     */
+    onChangeSounds: function(event) {
+      var $setting = $(event.target);
+      this.set('muteSounds', $setting.is(':checked') + '');
+    },
+
+    /**
+     * Callback when the user has changed the setting for using desktop notifications
+     */
+    onChangeNotifications: function(event) {
+      var $setting = $(event.target);
+
+      if ($setting.is(':checked')) {
+        app.notification.requestPermission(
+          $.proxy(function() {
+            // Received permission
+            this.set('useDesktopNotifications', 'true');
+          }, this),
+          $.proxy(function() {
+            // Did not receive permission
+            $('#settings .setting-notifications input').prop('checked', false)
+            this.set('useDesktopNotifications', 'false');
+          }, this)
+        );
+      } else {
+        this.set('useDesktopNotifications', 'false');
+      }
+    },
+
+    /**
+     * Sets the given setting for the current user that will persist across sessions
+     */
+    set: function(key, value) {
+      app.data.set(this.idFor(key), value);
+    },
+
+    /**
+     * Gets the setting for the given key
+     */
+    get: function(key) {
+      return app.data.get(this.idFor(key));
+    },
+
+    /**
+     * Generates the setting id for the given key
+     */
+    idFor: function(key) {
+      return 'settings/' + app.participant.googleId + '/' + key;
     }
   }
 };
