@@ -609,7 +609,7 @@ var app = {
     updateAllAvatars: function() {
       var participants = gapi.hangout.getParticipants();
       for (var i = 0; i < participants.length; i++) {
-        var participant = participants[0];
+        var participant = participants[i];
         this.updateAvatar(participant);
       }
     },
