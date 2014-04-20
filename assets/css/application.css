@@ -178,6 +178,7 @@ body {
 }
 
 .hanging_with {
+  position: relative;
   display: none;
   width: 100%;
   height: 35px;
@@ -228,6 +229,17 @@ body {
   -moz-transition: none;
   -o-transition: none;
   transition: none;
+}
+
+.hanging_with .actions {
+  position: absolute;
+  top: 5px;
+  right: 10px;
+  font-size: 1.4em;
+}
+
+.hanging_with .actions li {
+  padding: 5px 15px;
 }
 
 .btn-leave {

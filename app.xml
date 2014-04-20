@@ -36,6 +36,11 @@
             <span class="title glyphicon glyphicon-facetime-video"></span>
             <ul class="participants-hanging list-group">
             </ul>
+            <div class="actions">
+              <a href="#" id="participants-more" class="dropdown-toggle" data-toggle="dropdown"><span class="expand glyphicon glyphicon-list"></span></a>
+              <ul class="dropdown-menu dropdown-menu-right" role="menu" aria-labelledby="participants-more">
+              </ul>
+            </div>
           </div>
           <div class="alert alert-info participants-empty">
             <span class="glyphicon glyphicon-user"></span>

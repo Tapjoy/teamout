@@ -230,6 +230,91 @@ var app = {
       });
 
       return names;
+    },
+
+    /**
+     * Adds the given participant to the UI displaying the participants the user
+     * is currently hanging with
+     */
+    addHangingWith: function(participant) {
+      // Make sure the list is visible
+      var $hangingWith = $('.hanging_with');
+      if (!$hangingWith.is(':visible')) {
+        $('.hanging_with').clearQueue().slideDown(250);
+      }
+
+      var $participants = $hangingWith.find('.participants-hanging .list-group-item');
+      var iconId = app.participants.safeId(participant) + '-hanging-icon';
+      if ($participants.length < 7 && !$('#' + iconId).length) {
+        // Add the participant to the short list
+        $('<li />')
+          .data({id: participant.id})
+          .attr({id: iconId})
+          .addClass('list-group-item')
+          .append(
+            $('<div />')
+              .addClass('thumbnail')
+              .attr({title: participant.person.displayName, href: '#'})
+              .append($('<img />').attr({src: app.participants.avatarUrl(participant)}).addClass('img-thumbnail'))
+          )
+          .appendTo($hangingWith.find('.participants-hanging'));
+      }
+
+      // Add the participant to the full list
+      var nameId = app.participants.safeId(participant) + '-hanging-name';
+      if (!$('#' + nameId).length) {
+        var $menu = $hangingWith.find('.dropdown-menu');
+        var $items = $menu.find('li');
+        var $item = $('<li />')
+          .data({id: participant.id})
+          .attr({id: nameId})
+          .text(participant.person.displayName);
+
+        var names = $hangingWith.find('.dropdown-menu li').map(function() { return $(this).text(); });
+        names.push(participant.person.displayName);
+        names.sort();
+
+        // Add in the right position
+        var position = $.inArray(participant.person.displayName, names);
+        if (position == 0) {
+          $item.prependTo($menu);
+        } else if (position == names.length - 1) {
+          $item.appendTo($menu);
+        } else {
+          $item.insertBefore($items.eq(position));
+        }
+      }
+    },
+
+    /**
+     * Removes the given participant from the list the user is currently hanging
+     * with
+     */
+    removeHangingWith: function(participant) {
+      var $icon = $('#' + app.participants.safeId(participant) + '-hanging-icon');
+      var $name = $('#' + app.participants.safeId(participant) + '-hanging-name');
+      $name.remove();
+
+      if ($icon.length) {
+        // Remove from short and long list
+        $icon.remove();
+
+        // Try adding other participants since there's now room
+        var hangingWith = app.participant.hangingWith();
+        for (var i = 0; i < hangingWith.length; i++) {
+          var participantId = hangingWith[i];
+          var participant = app.participants.fromId(participantId);
+          this.addHangingWith(participant);
+        }
+      }
+    },
+
+    /**
+     * Clears the UI displaying who the user is currently hanging with
+     */
+    clearHangingWith: function() {
+      $('.hanging_with').clearQueue().slideUp(250);
+      $('.hanging_with .participants-hanging').empty();
     }
   },
 
@@ -401,21 +486,7 @@ var app = {
         app.participants.removePhoto(participant);
 
         // Add the remote participant to the active list
-        var $hangingWith = $('.participants-hanging');
-        if (!$('#' + app.participants.safeId(participant) + '-hanging').length) {
-          $('<li />')
-            .data({id: participant.id})
-            .attr({id: app.participants.safeId(participant) + '-hanging'})
-            .addClass('list-group-item')
-            .append(
-              $('<a />')
-                .addClass('thumbnail')
-                .attr({title: participant.person.displayName, href: '#'})
-                .click(function(event) { event.preventDefault(); return false; })
-                .append($('<img />').attr({src: app.participants.avatarUrl(participant)}).addClass('img-thumbnail'))
-            )
-            .appendTo($('.participants-hanging'));
-        }
+        app.layout.addHangingWith(participant);
 
         // Add a escape hatch
         app.layout.showLeaveAction();
@@ -466,16 +537,13 @@ var app = {
         // Display a notice in the hangout
         app.notification.show('A new conversation has started with ' + participant.person.displayName);
       }
-
-      $('.hanging_with').clearQueue().slideDown(250);
     },
 
     /**
      * Leaves the current live feed in the hangout
      */
     leave: function() {
-      $('.hanging_with').clearQueue().slideUp(250);
-      $('.hanging_with .participants-hanging').empty();
+      app.layout.clearHangingWith();
 
       // Clear the current user's list of participants
       this.updateHangingWith([]);
@@ -813,7 +881,9 @@ var app = {
 
       // Add the remote participant back to the pool
       this.updatePhoto(participant);
-      $('#' + app.participants.safeId(participant) + '-hanging').remove();
+
+      // Remove them from the hangout list
+      app.layout.removeHangingWith(participant);
 
       if (!app.participant.isHanging()) {
         app.participant.leave();
