@@ -105,7 +105,7 @@ var app = {
     sync: function(addedKeys, removedKeys) {
       for (var i = 0; i < addedKeys.length; i++) {
         var key = addedKeys[i];
-        if (key.key.indexOf(app.participant.id) == -1) {
+        if (key.key.indexOf(app.participant.id) != 0) {
           this.state[key.key] = key.value;
           this.onKeyAdded(key.key, key.value);
         }
@@ -113,7 +113,7 @@ var app = {
 
       for (var i = 0; i < removedKeys.length; i++) {
         var key = removedKeys[i];
-        if (key.indexOf(app.participant.id) == -1) {
+        if (key.indexOf(app.participant.id) != 0) {
           delete this.state[key];
           this.onKeyRemoved(key);
         }
@@ -136,16 +136,14 @@ var app = {
       if (key.match(/\/photo/)) {
         // Photo updated
         app.participants.updatePhoto(participant);
-      } else if (key.match(/\/hanging_with/)) {
-        if (app.participant.isHangingWith(participant, true)) {
-          if (!app.participant.isHangingWith(participant)) {
-            // Participant joined in hangout with this user
-            app.participant.hangWith(participant, false);
-          }
-        } else {
-          // Participant joined in hangout with another user
-          app.participants.inConversation(participant);
+      } else if (key.match(/\/requests/)) {
+        if (key.indexOf(app.participant.id) > 0) {
+          // Participant joined in hangout with this user
+          app.participant.hangWith(participant, false);
         }
+      } else if (key.match(/\/hanging_with/)) {
+        // Participant joined in hangout with another user
+        app.participants.inConversation(participant);
       }
     },
 
@@ -443,11 +441,12 @@ var app = {
      * Determines whether the given participant is joined into a conversation
      * with the current user
      */
-    isHangingWith: function(participant, reverse) {
-      return !reverse && $.inArray(participant.id, this.hangingWith()) >= 0 || reverse && $.inArray(this.id, app.participants.hangingWith(participant)) >= 0;
+    isHangingWith: function(participant) {
+      return $.inArray(participant.id, this.hangingWith()) >= 0
+      ;
     },
 
-    /**3
+    /**
      * Gets the list of participants this user is currently hanging with
      */
     hangingWith: function() {
@@ -458,6 +457,11 @@ var app = {
      * Adds the given participant to the conversation
      */
     hangWith: function(participant, initiatedLocally) {
+      // Clear the request to hang
+      if (!initiatedLocally) {
+        app.data.clear(participant.id + '/requests/' + app.participant.id);
+      }
+
       var participantIds = this.hangingWith();
       var newConversation = participantIds.length == 0;
 
@@ -480,16 +484,6 @@ var app = {
 
       if (newConversation) {
         this.onNewConversation(participant, initiatedLocally);
-      }
-
-      // Hang with all of the new ids (in case we're joining a group already in session)
-      var newParticipantIds = $.grep(app.participants.hangingWith(participant), function(id) {
-        return id != app.participant.id && $.inArray(id, participantIds) == -1;
-      });
-      for (var i = 0; i < newParticipantIds.length; i++) {
-        var participantId = newParticipantIds[i];
-        var newParticipant = app.participants.fromId(participantId);
-        this.hangWith(newParticipant, initiatedLocally);
       }
     },
 
@@ -815,7 +809,33 @@ var app = {
       var $participant = $(event.currentTarget).parent('.list-group-item');
       var participantId = $participant.data('id');
       var participant = gapi.hangout.getParticipantById(participantId);
-      app.participant.hangWith(participant, true);
+ 
+      var fromParticipantIds = app.participant.hangingWith();
+      fromParticipantIds.push(app.participant.id);
+
+      var toParticipantIds = app.participants.hangingWith(participant);
+      toParticipantIds.push(participant.id);
+
+      for (var i = 0; i < toParticipantIds.length; i++) {
+        var toParticipantId = toParticipantIds[i];
+        var toParticipant = app.participants.fromId(toParticipantId);
+
+        // Hang out with the participant
+        app.participant.hangWith(toParticipant, true);
+
+        // Create join requests for others
+        for (var j = 0; j < fromParticipantIds.length; j++) {
+          var fromParticipantId = fromParticipantIds[j];
+
+          if (fromParticipantId != toParticipantId) {
+            app.data.set(fromParticipantId + '/requests/' + toParticipantId, '1');
+
+            if (fromParticipantId != app.participant.id) {
+              app.data.set(toParticipantId + '/requests/' + fromParticipantId, '1');
+            }
+          }
+        }
+      }
     },
 
     /**
