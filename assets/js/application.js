@@ -406,9 +406,10 @@ var app = {
           .attr({id: app.participants.safeId(participant) + '-hanging'})
           .addClass('list-group-item')
           .append(
-            $('<div />')
-              .attr({href: '#'})
+            $('<a />')
               .addClass('thumbnail')
+              .attr({title: participant.person.displayName, href: '#'})
+              .click(function(event) { event.preventDefault(); return false; })
               .append($('<img />').attr({src: app.participants.avatarUrl(participant)}).addClass('img-thumbnail'))
           )
           .appendTo($('.participants-hanging'));
