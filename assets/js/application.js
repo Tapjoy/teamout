@@ -257,7 +257,7 @@ var app = {
     hasDesktopPermission: function() {
       var hasPermission = false;
       if (window.webkitNotifications) {
-        hasPermission = webkitNotifications.checkPermission();
+        hasPermission = webkitNotifications.checkPermission() == 0;
       } else if (window.Notification) {
         hasPermission = Notification.permission == 'granted'
       }
