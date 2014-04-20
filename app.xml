@@ -32,6 +32,10 @@
     <div class="tab-content">
       <div class="tab-pane active nano" id="participants">
         <div class="nano-content">
+          <div class="alert alert-info participants-empty">
+            <span class="glyphicon glyphicon-user"></span>
+            <span class="caption">There are no other participants in the hangout.</span>
+          </div>
           <ul class="participants list-group">
           </ul>
         </div>

@@ -71,6 +71,20 @@ body {
 .nano .nano-pane   { background: #888; }
 .nano .nano-slider { background: #111; }
 
+.participants-empty {
+  display: none;
+  width: 90%;
+  margin: 15px auto 0;
+  text-align: center;
+  font-size: 1.2em;
+}
+
+.participants-empty .glyphicon {
+  display: block;
+  margin-bottom: 10px;
+  font-size: 2em;
+}
+
 .participants.list-group {
   background: none;
   box-shadow: none;

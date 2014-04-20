@@ -186,6 +186,10 @@ var app = {
 
       // Hangout actions
       $('.btn-leave').click($.proxy(app.participant.leave, app.participant));
+
+      if (gapi.hangout.getParticipants().length == 1) {
+        $('.participants-empty').show();
+      }
     },
 
     /**
@@ -684,6 +688,8 @@ var app = {
       names.push(participant.person.displayName);
       names.sort();
 
+      $('.participants-empty').hide();
+
       // Add in the right position
       var position = $.inArray(participant.person.displayName, names);
       if (position == 0) {
@@ -700,6 +706,10 @@ var app = {
      */
     removeAvatar: function(participant) {
       $('#' + this.safeId(participant)).remove();
+
+      if (!$('.participants > li').length) {
+        $('.participants-empty').show();
+      }
     },
 
     /**
