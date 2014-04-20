@@ -382,7 +382,7 @@ var app = {
       var newConversation = participantIds.length == 0;
 
       // Update the current participant's list of joined participants
-      var newParticipantIds = app.participants.hangingWith(participant.id);
+      var newParticipantIds = app.participants.hangingWith(participant);
       newParticipantIds.push(participant.id);
       newParticipantIds = $.grep(newParticipantIds, function(id) {
         return id != app.participant.id && $.inArray(id, participantIds) == -1;
@@ -405,9 +405,11 @@ var app = {
 
       // Hang with all of the new ids (in case we're joining a group already in session)
       for (var i = 0; i < newParticipantIds.length; i++) {
-        var participantId = newParticipantIds[i];
-        if (participantId != participant.id) {
-          this.hangWth(participant, initiatedLocally);
+        var newParticipantId = newParticipantIds[i];
+        var newParticipant = app.participants.fromId(newParticipantId);
+
+        if (newParticipant.id != participant.id) {
+          this.hangWith(newParticipant, initiatedLocally);
         }
       }
     },
