@@ -260,7 +260,6 @@ body {
 }
 
 .btn-leave {
-  display: none;
   position: absolute;
   top: 7px;
   right: 7px;

@@ -198,14 +198,14 @@ var app = {
      * Shows an action on the screen for leaving the hangout
      */
     showLeaveAction: function() {
-      $('.btn-leave').show();
+      $('.btn-leave').addClass('btn-danger').removeClass('disabled');
     },
 
     /**
      * Hides the action for leaving the hangout
      */
     hideLeaveAction: function() {
-      $('.btn-leave').hide();
+      $('.btn-leave').removeClass('btn-danger').addClass('disabled');
     },
 
     /**
