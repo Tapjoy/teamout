@@ -271,7 +271,15 @@ body {
   padding: 20px;
 }
 
+#settings form label {
+  font-weight: normal;
+}
+
 #settings .setting-autostart,
 #settings .setting-autostart input {
   cursor: pointer;
+}
+
+#settings .setting-photos_interval select {
+  width: 70px;
 }

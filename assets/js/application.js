@@ -133,7 +133,7 @@ var app = {
     onKeyAdded: function(key, value) {
       var participant = app.participants.fromKey(key);
 
-      if (key.match(/\/photo/)) {
+      if (key.match(/\/photo$/) || key.match(/\/photos\//)) {
         // Photo updated
         app.participants.updatePhoto(participant);
       } else if (key.match(/\/requests/)) {
@@ -965,7 +965,18 @@ var app = {
      */
     autorefresh: function() {
       this.refresh();
-      setInterval($.proxy(this.refresh, this), 60 * 1000);
+      this.updateAutorefresh(parseInt(app.settings.get('photosInterval')));
+    },
+
+    /**
+     * Updates the autorefresh script to do so every interval minutes
+     */
+    updateAutorefresh: function(interval) {
+      if (this.refresher) {
+        clearInterval(this.refresher);
+      }
+
+      this.refresher = setInterval($.proxy(this.refresh, this), interval * 60 * 1000);
     },
 
     /**
@@ -973,11 +984,13 @@ var app = {
      */
     refresh: function() {
       if (this.canRefresh()) {
-        navigator.getMedia(
-          {video: true},
-          $.proxy(this.refreshWithStream, this),
-          $.proxy(this.onError, this, null)
-        );
+        if (app.settings.get('photosEnabled') == 'true') {
+          navigator.getMedia(
+            {video: true},
+            $.proxy(this.refreshWithStream, this),
+            $.proxy(this.onError, this, null)
+          );
+        }
       }
     },
 
@@ -1131,8 +1144,14 @@ var app = {
   settings: {
     init: function() {
       // Set defaults
-      if (!this.get('muteSounds')) {
+      if (this.get('muteSounds') == undefined) {
         this.set('muteSounds', 'true');
+      }
+      if (this.get('photosEnabled') == undefined) {
+        this.set('photosEnabled', 'true');
+      }
+      if (this.get('photosInterval') == undefined) {
+        this.set('photosInterval', '1');
       }
 
       $('#settings .setting-autostart input')
@@ -1146,6 +1165,16 @@ var app = {
       $('#settings .setting-notifications input')
         .prop('checked', this.get('useDesktopNotifications') == 'true')
         .click($.proxy(this.onChangeNotifications, this));
+
+      $('#settings .setting-photos_enabled input')
+        .prop('checked', this.get('photosEnabled') == 'true')
+        .click($.proxy(this.onChangePhotosEnabled, this));
+
+      $('#settings .setting-photos_interval select')
+        .change($.proxy(this.onChangePhotosInterval, this));
+
+      var interval = this.get('photosInterval');
+      $('#settings .setting-photos_interval select option[value="' + interval + '"]').attr({selected: true});
     },
 
     /**
@@ -1185,6 +1214,25 @@ var app = {
       } else {
         this.set('useDesktopNotifications', 'false');
       }
+    },
+
+    /**
+     * Callback when the user has changed the setting for taking presence photos
+     */
+    onChangePhotosEnabled: function(event) {
+      var $setting = $(event.target);
+      this.set('photosEnabled', $setting.is(':checked') + '');
+    },
+
+    /**
+     * Callback when the user has changed the setting for presence photo intervals
+     */
+    onChangePhotosInterval: function(event) {
+      var $setting = $(event.target);
+      var interval = $setting.val();
+      this.set('photosInterval', interval);
+
+      app.photo.updateAutorefresh(parseInt(interval));
     },
 
     /**
