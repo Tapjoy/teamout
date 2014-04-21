@@ -944,7 +944,27 @@ var app = {
       // The browser-specific implementation for retrieving a webcam stream
       navigator.getMedia = navigator.getUserMedia || navigator.webkitGetUserMedia || navigator.mozGetUserMedia;
 
-      setTimeout($.proxy(this.refresh, this), 1 * 1000);
+      this.waitUntilCanRefresh($.proxy(this.autorefresh, this));
+    },
+
+    /**
+     * Waits until the photo is able to be refresh -- at which point the
+     * given callback is called.
+     */
+    waitUntilCanRefresh: function(callback) {
+      var runner = setInterval($.proxy(function() {
+        if (this.canRefresh()) {
+          clearInterval(runner);
+          callback();
+        }
+      }, this), 250);
+    },
+
+    /**
+     * Starts a timer for automatically refreshing the photo
+     */
+    autorefresh: function() {
+      this.refresh();
       setInterval($.proxy(this.refresh, this), 60 * 1000);
     },
 
