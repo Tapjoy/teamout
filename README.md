@@ -1,18 +1,22 @@
-Notes:
+= Hangjoy
 
-TODO:
-* Fix SSL issue
-* Invite organization
+Push to video-talk for Google Hangouts
+
+== Things to do
+
+Once featured complete:
 * Prepare demo / presentation
-* Add listeners to prevent users from changing mute when not in a conversation
+* Update README
+* Invite organization
 
-var stream = null;
-navigator.mozGetUserMedia({ "video": true }, function(s) {stream = s}, function() {alert(2)});
-
-stream.stop()
-
-navigator.mozGetUserMedia
+Future:
+* Look into making it an application
+* Integrate Flowdock
 
 == Deployment
 
+Steps to deploy
+
+```
 scripts/deploy
+```

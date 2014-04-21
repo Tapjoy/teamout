@@ -7,7 +7,7 @@ var app = {
   },
 
   // The host for the app
-  host: 'hangjoy-799317505.us-west-2.elb.amazonaws.com',
+  host: 'hangjoy.herokuapp.com',
 
   /**
    * Returns the current timestamp
