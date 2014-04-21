@@ -14,10 +14,19 @@ In order to access this Google Hangout extension, you must be invited to be a co
 
 Once invited, you should be able to access it from any hangout.
 
+To invite:
+
+* Add member to https://console.developers.google.com/project/apps~hopeful-theorem-553/permissions
+* Member needs to accept *both* permission
+
 == Things to do
 
-* Prepare demo / presentation
+Today:
 * Settings: Select media devices
+* Not everyone's hanging_with gets updated
+* Refactor: Clean up application.js and element names / css
+
+Future:
 * Integrate Flowdock
 * Convert into a full application
 

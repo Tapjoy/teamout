@@ -537,6 +537,9 @@ var app = {
 
       // Reset the video feed
       gapi.hangout.layout.getVideoCanvas().getVideoFeed().clearDisplayedParticipant();
+
+      // Update this user's photo
+      app.photo.waitUntilCanRefresh($.proxy(app.photo.refresh, app.photo));
     }
   },
 
@@ -983,14 +986,17 @@ var app = {
      * Refreshes the image representing the local participant
      */
     refresh: function() {
-      if (this.canRefresh()) {
-        if (app.settings.get('photosEnabled') == 'true') {
-          navigator.getMedia(
-            {video: true},
-            $.proxy(this.refreshWithStream, this),
-            $.proxy(this.onError, this, null)
-          );
-        }
+      var enabled = app.settings.get('photosEnabled') == 'true';
+      var photoRecentlyTaken = this.lastPhotoAttempted && (app.now() - this.lastPhotoAttempted < 60 * 1000);
+
+      if (enabled && this.canRefresh() && !photoRecentlyTaken) {
+        this.lastPhotoAttempted = app.now();
+
+        navigator.getMedia(
+          {video: true},
+          $.proxy(this.refreshWithStream, this),
+          $.proxy(this.onError, this, null)
+        );
       }
     },
 
@@ -1024,6 +1030,7 @@ var app = {
         }
       }
 
+      gapi.hangout.layout.displayNotice('Unable to take a picture. Please check your webcam settings.');
       console.log('Error updating photo: ', error);
     },
 
