@@ -885,7 +885,7 @@ var app = {
       $hangingWith.empty();
 
       // Update the list of people in conversations
-      var hangingWith = this.hangingWith(participant);
+      var hangingWith = this.hangingWith(participant).slice(0, 7);
       for (var i = 0; i < hangingWith.length; i++) {
         var otherParticipant = this.fromId(hangingWith[i]);
 
