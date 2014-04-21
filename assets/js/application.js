@@ -212,7 +212,7 @@ var app = {
      * Gets the list of display names currently shown in the UI
      */
     displayedParticipantNames: function() {
-      var $items = $('.participants .list-group-item');
+      var $items = $('.participants > .list-group-item');
       var names = $items.map(function() {
         var participantId = $(this).data('id');
         var participant = gapi.hangout.getParticipantById(participantId);
@@ -233,7 +233,7 @@ var app = {
         $('.hanging_with').clearQueue().slideDown(250);
       }
 
-      var $participants = $hangingWith.find('.participants-hanging .list-group-item');
+      var $participants = $hangingWith.find('.participants-hanging > .list-group-item');
       var iconId = app.participants.safeId(participant) + '-hanging-icon';
       if ($participants.length < 7 && !$('#' + iconId).length) {
         // Add the participant to the short list
@@ -244,7 +244,7 @@ var app = {
           .append(
             $('<div />')
               .addClass('thumbnail')
-              .attr({title: participant.person.displayName, href: '#'})
+              .attr({title: participant.person.displayName})
               .append($('<img />').attr({src: app.participants.avatarUrl(participant)}).addClass('img-thumbnail'))
           )
           .appendTo($hangingWith.find('.participants-hanging'));
@@ -747,6 +747,7 @@ var app = {
         .append(
           $('<img />').attr({src: url}).addClass('img-thumbnail'),
           $('<div />').addClass('action').append(
+            $('<ul />').addClass('hanging_with list-group'),
             $('<span />').addClass('glyphicon glyphicon-facetime-video'),
             $('<span />').addClass('action-start').text('Start Conversation')
           ),
@@ -761,13 +762,8 @@ var app = {
         .addClass('list-group-item')
         .append($link);
 
-      // Mark as already in a conversation if this is the case
-      if (this.isHanging(participant)) {
-        $item.addClass('hanging');
-      }
-
       // Sort the new list of names
-      var $items = $('.participants .list-group-item');
+      var $items = $('.participants > .list-group-item');
       var names = app.layout.displayedParticipantNames();
       names.push(participant.person.displayName);
       names.sort();
@@ -782,6 +778,11 @@ var app = {
         $item.appendTo($participants);
       } else {
         $item.insertBefore($items.eq(position));
+      }
+
+      // Mark as already in a conversation if this is the case
+      if (this.isHanging(participant)) {
+        this.inConversation(participant);
       }
 
       // Refresh scroll position
@@ -860,6 +861,8 @@ var app = {
       var $participant = $('#' + this.safeId(participant));
       $participant.addClass('hanging');
       $participant.find('.action-start').text('Join Conversation');
+
+      this.updateConversation(participant);
     },
 
     /**
@@ -869,6 +872,33 @@ var app = {
       var $participant = $('#' + this.safeId(participant));
       $participant.removeClass('hanging');
       $participant.find('.action-start').text('Start Conversation');
+
+      this.updateConversation(participant);
+    },
+
+    /**
+     * Updates the list of participants in a conversation
+     */
+    updateConversation: function(participant) {
+      var $participant = $('#' + this.safeId(participant));
+      var $hangingWith = $participant.find('.hanging_with');
+      $hangingWith.empty();
+
+      // Update the list of people in conversations
+      var hangingWith = this.hangingWith(participant);
+      for (var i = 0; i < hangingWith.length; i++) {
+        var otherParticipant = this.fromId(hangingWith[i]);
+
+        $('<li />')
+          .addClass('list-group-item')
+          .append(
+            $('<div />')
+              .addClass('thumbnail')
+              .attr({title: otherParticipant.person.displayName})
+              .append($('<img />').attr({src: this.avatarUrl(otherParticipant)}).addClass('img-thumbnail'))
+          )
+          .appendTo($hangingWith);
+      }
     },
 
     /**

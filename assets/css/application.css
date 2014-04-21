@@ -172,6 +172,23 @@ body {
   margin: 55px 0 10px;
 }
 
+.participants .action .hanging_with {
+  position: absolute;
+  display: block;
+  top: 4px;
+  left: 4px;
+  right: 0;
+  background: none;
+  border-bottom: none;
+  box-shadow: none;
+  text-align: left;
+}
+
+.participants .action .hanging_with .thumbnail {
+  width: 30px;
+  height: 30px;
+}
+
 .participants .thumbnail:hover .action,
 .participants .thumbnail:hover .action * {
   display: block;
