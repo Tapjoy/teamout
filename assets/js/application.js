@@ -980,10 +980,12 @@ var app = {
     /**
      * Starts the autorefresh script to do so every interval minutes
      */
-    autorefresh: function() {
-      this.stopAutorefresh();
-      this.refresh();
-      this.refresher = setInterval($.proxy(this.refresh, this), this.refreshInterval());
+    autorefresh: function(forceRestart) {
+      if (!this.refresher || forceRestart) {
+        this.stopAutorefresh();
+        this.refresh();
+        this.refresher = setInterval($.proxy(this.refresh, this), this.refreshInterval());
+      }
     },
 
     /**
@@ -1297,7 +1299,7 @@ var app = {
       var interval = $setting.val();
       this.set('photosInterval', interval);
 
-      app.photo.autorefresh();
+      app.photo.autorefresh(true);
     },
 
     /**
