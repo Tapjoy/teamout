@@ -33,10 +33,9 @@ var app = {
 
       // Participant data
       this.participant.init();
-      this.photo.init();
       this.participants.init();
-
       this.settings.init();
+      this.photo.init();
     }
   },
 
@@ -599,6 +598,9 @@ var app = {
     add: function(participant) {
       this.mute(participant);
       this.updatePhoto(participant);
+
+      // Make sure we're autorefreshing
+      app.photo.autorefresh();
     },
 
     /**
@@ -626,9 +628,14 @@ var app = {
 
       this.removePhoto(participant);
 
-      // Remove them from the conversation
       if (app.participant.isHangingWith(participant)) {
+        // Remove them from the conversation
         app.participants.leave(participant);
+      }
+
+      if (!gapi.hangout.getParticipants().length) {
+        // No one in the hangout: stop refreshing photos
+        app.photo.stopAutorefresh();
       }
     },
 
@@ -964,22 +971,28 @@ var app = {
     },
 
     /**
-     * Starts a timer for automatically refreshing the photo
+     * Gets the interval, in ms, to refresh photos
      */
-    autorefresh: function() {
-      this.refresh();
-      this.updateAutorefresh(parseInt(app.settings.get('photosInterval')));
+    refreshInterval: function() {
+      return parseInt(app.settings.get('photosInterval')) * 60 * 1000;
     },
 
     /**
-     * Updates the autorefresh script to do so every interval minutes
+     * Starts the autorefresh script to do so every interval minutes
      */
-    updateAutorefresh: function(interval) {
+    autorefresh: function() {
+      this.stopAutorefresh();
+      this.refresh();
+      this.refresher = setInterval($.proxy(this.refresh, this), this.refreshInterval());
+    },
+
+    /**
+     * Stops automatically refreshing photos
+     */
+    stopAutorefresh: function() {
       if (this.refresher) {
         clearInterval(this.refresher);
       }
-
-      this.refresher = setInterval($.proxy(this.refresh, this), interval * 60 * 1000);
     },
 
     /**
@@ -987,7 +1000,7 @@ var app = {
      */
     refresh: function() {
       var enabled = app.settings.get('photosEnabled') == 'true';
-      var photoRecentlyTaken = this.lastPhotoAttempted && (app.now() - this.lastPhotoAttempted < 60 * 1000);
+      var photoRecentlyTaken = this.lastPhotoAttempted && (app.now() - this.lastPhotoAttempted <= this.refreshInterval());
 
       if (enabled && this.canRefresh() && !photoRecentlyTaken) {
         this.lastPhotoAttempted = app.now();
@@ -1168,18 +1181,20 @@ var app = {
 
   // Represents settings for the extension
   settings: {
-    init: function() {
-      // Set defaults
-      if (this.get('muteSounds') == undefined) {
-        this.set('muteSounds', 'true');
-      }
-      if (this.get('photosEnabled') == undefined) {
-        this.set('photosEnabled', 'true');
-      }
-      if (this.get('photosInterval') == undefined) {
-        this.set('photosInterval', '1');
-      }
+    // Represents the local version of the settings
+    state: {
+      muteSounds: 'false',
+      useDesktopNotifications: 'false',
+      photosEnabled: 'true',
+      photosInterval: '1',
+      videoSource: ''
+    },
 
+    init: function(callback) {
+      var storedState = JSON.parse(localStorage[app.participant.googleId] || '{}');
+      $.extend(this.state, storedState);
+
+      // Load the current settings
       $('#settings .setting-autostart input')
         .prop('checked', gapi.hangout.willAutoLoad())
         .click($.proxy(this.onChangeAutostart, this));
@@ -1282,7 +1297,7 @@ var app = {
       var interval = $setting.val();
       this.set('photosInterval', interval);
 
-      app.photo.updateAutorefresh(parseInt(interval));
+      app.photo.autorefresh();
     },
 
     /**
@@ -1299,21 +1314,15 @@ var app = {
      * Sets the given setting for the current user that will persist across sessions
      */
     set: function(key, value) {
-      app.data.set(this.idFor(key), value);
+      this.state[key] = value;
+      localStorage.setItem(app.participant.googleId, JSON.stringify(this.state));
     },
 
     /**
      * Gets the setting for the given key
      */
     get: function(key) {
-      return app.data.get(this.idFor(key));
-    },
-
-    /**
-     * Generates the setting id for the given key
-     */
-    idFor: function(key) {
-      return 'settings/' + app.participant.googleId + '/' + key;
+      return this.state[key];
     }
   }
 };

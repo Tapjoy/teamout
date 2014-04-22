@@ -12,6 +12,7 @@
     <link href="//netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap.min.css" rel="stylesheet">
     <link href="//netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap-theme.min.css" rel="stylesheet">
     <link href="//jamesflorentino.github.io/nanoScrollerJS/css/nanoscroller.css" rel="stylesheet">
+    <link href="//raw.githubusercontent.com/usablica/intro.js/v0.8.0/minified/introjs.min.css" rel="stylesheet">
     <link href="//hangjoy.herokuapp.com/assets/css/application.css?1" rel="stylesheet">
   </head>
   <body style="height: 100%">
@@ -102,7 +103,8 @@
     <script type="text/javascript" src="//ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
     <script type="text/javascript" src="//netdna.bootstrapcdn.com/bootstrap/3.1.1/js/bootstrap.min.js"></script>
     <script type="text/javascript" src="//jamesflorentino.github.io/nanoScrollerJS/javascripts/jquery.nanoscroller.js"></script>
-    <script type="text/javascript" src="//hangjoy.herokuapp.com/assets/js/application.js?1"></script>
+    <script type="text/javascript" src="//raw.githubusercontent.com/usablica/intro.js/v0.8.0/minified/intro.min.js"></script>
+    <script type="text/javascript" src="//hangjoy.herokuapp.com/assets/js/application.js?2"></script>
   </body>
 ]]>
 </Content>
