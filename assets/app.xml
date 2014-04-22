@@ -75,17 +75,22 @@
             </div>
             <div class="form-group setting-photos_enabled checkbox">
               <label>
-                <input type="checkbox"> Periodically take a photo to show presence
+                <input type="checkbox"> Periodically take photos
               </label>
             </div>
             <div class="form-group setting-photos_interval">
-              <label>Photo interval (minutes)</label>
+              <label>Photo interval (minutes):</label>
               <select class="form-control">
                 <option value="1">1m</option>
                 <option value="2">2m</option>
                 <option value="3">3m</option>
                 <option value="4">4m</option>
                 <option value="5">5m</option>
+              </select>
+            </div>
+            <div class="form-group setting-video">
+              <label>Video Source:</label>
+              <select class="form-control">
               </select>
             </div>
           </form>

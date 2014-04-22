@@ -993,7 +993,7 @@ var app = {
         this.lastPhotoAttempted = app.now();
 
         navigator.getMedia(
-          {video: true},
+          {video: {optional: [{sourceId: app.settings.get('videoSource')}]}},
           $.proxy(this.refreshWithStream, this),
           $.proxy(this.onError, this, null)
         );
@@ -1004,7 +1004,7 @@ var app = {
      * Determines whether the photo is capable of being refrehs
      */
     canRefresh: function() {
-      return gapi.hangout.av.getCameraMute() == true && gapi.hangout.av.getMicrophoneMute() == true;
+      return gapi.hangout.av.getCameraMute() == true && gapi.hangout.av.getMicrophoneMute() == true && app.settings.get('videoSource');
     },
 
     /**
@@ -1032,6 +1032,25 @@ var app = {
 
       gapi.hangout.layout.displayNotice('Unable to take a picture. Please check your webcam settings.');
       console.log('Error updating photo: ', error);
+    },
+
+    /**
+     * Gets the available video sources and invokes the callback with those that
+     * are found.
+     */
+    videoSources: function(callback) {
+      MediaStreamTrack.getSources(function(sources) {
+        var videoSources = [];
+        for (var i = 0; i < sources.length; i++) {
+          var source = sources[i];
+
+          if (source.kind == 'video') {
+            videoSources.push(source);
+          }
+        }
+
+        callback(videoSources);
+      });
     },
 
     /**
@@ -1182,6 +1201,30 @@ var app = {
 
       var interval = this.get('photosInterval');
       $('#settings .setting-photos_interval select option[value="' + interval + '"]').attr({selected: true});
+
+      // Init video sources
+      app.photo.videoSources($.proxy(function(sources) {
+        var $setting = $('#settings .setting-video select');
+        $setting.change($.proxy(this.onChangeVideoSource, this));
+
+        // Add known sources
+        var currentSource = this.get('videoSource');
+        for (var i = 0; i < sources.length; i++) {
+          var source = sources[i];
+          $('<option>')
+            .attr({value: source.id, selected: currentSource == source.id})
+            .text(source.label || 'Default')
+            .appendTo($setting);
+        }
+
+        // Set the default if there isn't already one
+        var $option = $setting.find('option:selected');
+        if ($option.length) {
+          this.set('videoSource', $option.val());
+        } else {
+          this.set('videoSource', '');
+        }
+      }, this));
     },
 
     /**
@@ -1240,6 +1283,16 @@ var app = {
       this.set('photosInterval', interval);
 
       app.photo.updateAutorefresh(parseInt(interval));
+    },
+
+    /**
+     * Callback when the user has changed the setting for the video source to
+     * use for photos
+     */
+    onChangeVideoSource: function(event) {
+      var $setting = $(event.target);
+      var sourceId = $setting.val();
+      this.set('videoSource', sourceId);
     },
 
     /**
