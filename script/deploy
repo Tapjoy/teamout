@@ -1,1 +1,1 @@
-scp -r * apfeifer@54.184.241.79:/usr/share/nginx/html/
+aws s3 sync assets s3://hangjoy/assets --acl public-read
