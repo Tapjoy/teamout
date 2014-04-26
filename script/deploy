@@ -1,1 +1,1 @@
-aws s3 sync assets s3://hangjoy/assets --acl public-read
+aws s3 sync assets s3://hangjoy/assets
