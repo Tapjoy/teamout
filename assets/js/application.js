@@ -1034,6 +1034,13 @@ var app = {
     },
 
     /**
+     * Whether photos are supported in this browser
+     */
+    isSupported: function() {
+      return navigator.getMedia != undefined;
+    },
+
+    /**
      * Waits until the photo is able to be refresh -- at which point the
      * given callback is called.
      */
@@ -1365,6 +1372,13 @@ var app = {
       });
 
       // Setting: photos
+      if (!app.photo.isSupported()) {
+        this.set('photoEnabled', 'false');
+        $('.menubar .btn-photo').addClass('disabled');
+        $('.menubar .btn-photo-dropdown').addClass('disabled');
+
+        gapi.hangout.layout.displayNotice('Photos are not supported in your browser. Please consider upgrading to a newer version.');
+      }
       if (this.get('photoEnabled') == 'false') {
         $('.menubar .btn-photo').button('toggle');
       }
