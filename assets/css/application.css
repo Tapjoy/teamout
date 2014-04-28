@@ -7,67 +7,6 @@ body {
   background: #f7f7f7;
 }
 
-.menubar.nav-tabs {
-  background: #1a1c20;
-}
-
-.menubar.nav-tabs > li {
-  margin-bottom: 0;
-}
-
-.menubar.nav-tabs > li > a {
-  color: #888888;
-  font-size: 1.2em;
-}
-
-.menubar.nav-tabs > li > a:hover,
-.menubar.nav-tabs > li > a:focus {
-  background: #292c34;
-  color: #ffffff;
-}
-
-.menubar.nav-tabs > li > a,
-.menubar.nav-tabs > li > a:hover,
-.menubar.nav-tabs > li > a:focus {
-  border: none;
-}
-
-.menubar.nav-tabs > li.active > a,
-.menubar.nav-tabs > li.active > a:hover,
-.menubar.nav-tabs > li.active > a:focus {
-  color: #ffffff;
-  background: #292c34;
-  border: none;
-}
-
-.menubar.nav-tabs .open > a,
-.menubar.nav-tabs .open > a:hover,
-.menubar.nav-tabs .open > a:focus {
-  background: #292c34;
-  color: #ffffff;
-}
-
-.menubar.nav-tabs .dropdown-menu {
-  background: #292c34;
-}
-
-.menubar.nav-tabs .dropdown-menu > li > a {
-  color: #ffffff;
-}
-
-.menubar.nav-tabs .dropdown-menu > li > a:hover,
-.menubar.nav-tabs .dropdown-menu > li > a:focus {
-  background: #2a9fd6
-}
-
-.tab-content {
-  position: absolute;
-  top: 45px;
-  right: 0;
-  bottom: 1px;
-  left: 0;
-}
-
 .nano .nano-pane {
   background: #888;
 }
@@ -81,137 +20,110 @@ body {
   outline: 0;
 }
 
-.participants-empty {
-  display: none;
-  width: 90%;
-  margin: 15px auto 0;
-  text-align: center;
-  font-size: 1.2em;
+.tooltip.bottom .tooltip-arrow {
+  border-bottom-color: rgba(0, 0, 0, 0.8);
 }
 
-.participants-empty .glyphicon {
-  display: block;
-  margin-bottom: 10px;
-  font-size: 2em;
+.tooltip-inner {
+  padding: 4px 10px;
+  border-radius: 11px;
+  font-size: 13px;
+  background-color: rgba(0, 0, 0, 0.8);
 }
 
-.participants.list-group {
+.menubar {
+  width: 100%;
+}
+
+.menubar.btn-group .btn + .btn,
+.menubar.btn-group .btn + .btn-group,
+.menubar.btn-group .btn-group + .btn,
+.menubar.btn-group .btn-group + .btn-group {
+  margin-left: 0;
+}
+
+.menubar > .btn {
+  width: 14%;
+  height: 41px;
+}
+
+.menubar > .btn,
+.menubar > .btn-dropdown-container,
+.menubar > .btn-dropdown-container .btn-dropdown {
+  padding: 9px 0;
+  background: #000000;
   box-shadow: none;
-}
-
-.participants .list-group-item {
-  padding: 10px 20px;
+  outline: none;
   border: none;
-  background: none;
+  border-radius: 0;
 }
 
-.participants .thumbnail {
-  position: relative;
-  width: 256px;
-  height: 193px;
-  padding: 0;
-  margin: 0 auto;
-}
-
-.participants .thumbnail img {
-  position: absolute;
-  top: 0;
-  right: 0;
-  bottom: 0;
-  left: 0;
-  height: 191px;
-  max-width: 254px;
-  padding: 0;
-  z-index: 1;
-}
-
-.participants .thumbnail,
-.participants .thumbnail img {
-  -webkit-transition: none;
-  -moz-transition: none;
-  -o-transition: none;
-  transition: none;
-}
-
-.participants .caption {
-  position: absolute;
-  right: 0;
-  bottom: 0;
-  left: 0;
-  padding: 5px 9px;
+.menubar > .btn span,
+.menubar > .btn-dropdown-container .btn-dropdown {
   color: #ffffff;
-  background: rgba(42, 159, 214, 0.4);
-  z-index: 2;
 }
 
-.participants .action {
-  position: absolute;
-  display: none;
-  top: 0;
-  right: 0;
-  bottom: 0;
-  left: 0;
-  text-align: center;
-  color: #ffffff;
-  font-size: 1.2em;
-  background: rgba(42, 159, 214, 0.3);
-  z-index: 2;
+.menubar > .btn.active {
+  background-color: #db4437;
 }
 
-.participants .hanging.list-group-item .action {
-  display: block;
+.menubar > .btn:hover,
+.menubar > .btn:active {
+  background: #262626;
 }
 
-.participants .hanging.list-group-item .action * {
-  display: none;
+.menubar > .btn.active:hover,
+.menubar > .btn.active:active {
+  background: #b0372d;
 }
 
-.participants .action .glyphicon {
-  display: block;
-  font-size: 2.5em;
-  margin: 55px 0 10px;
+.menubar > .btn > .glyphicon {
+  font-size: 1.3em;
 }
 
-.participants .action .hanging_with {
-  position: absolute;
-  display: block;
-  top: 4px;
-  left: 4px;
-  right: 0;
-  background: none;
-  border-bottom: none;
-  box-shadow: none;
+.menubar > .btn-dropdown-container {
+  width: 9%;
+}
+
+.menubar > .btn-dropdown-container .btn-dropdown {
+  width: 100%;
+  padding: 0;
+  background: transparent;
+}
+
+.menubar > .btn-dropdown-container .dropdown-menu {
+  padding: 10px 15px 2px;
   text-align: left;
 }
 
-.participants .action .hanging_with .thumbnail {
-  width: 30px;
-  height: 30px;
+.menubar > .btn-photo-dropdown .setting-photo_source select {
+  width: 160px;
 }
 
-.participants .thumbnail:hover .action,
-.participants .thumbnail:hover .action * {
-  display: block;
+.menubar > .btn-leave {
+  width: 21%;
+  padding: 10px 0 11px;
+  margin-left: 0;
+}
+
+.menubar > .btn-leave.active {
+  background: #000000;
+}
+
+.menubar > .btn-leave.btn-danger.active {
+  background-color: #d9534f;
+  border-color: #d43f3a;
+}
+
+#content {
+  position: absolute;
+  top: 41px;
+  right: 0;
+  bottom: 1px;
+  left: 0;
 }
 
 .hanging_with {
-  position: relative;
-  display: none;
-  width: 100%;
-  height: 35px;
-  padding: 2px;
-  border-bottom: 1px solid #d6e9c6;
-  background: #dff0d8;
-}
-
-.hanging_with .title {
-  display: block;
-  float: left;
-  padding: 3px 11px 0 7px;
-  font-size: 1.6em;
-}
-
-.hanging_with .list_group {
   margin: 0;
   box-shadow: none;
 }
@@ -248,37 +160,143 @@ body {
   transition: none;
 }
 
-.hanging_with .actions {
+.conversation {
+  position: relative;
+  display: none;
+  width: 100%;
+  height: 35px;
+  padding: 2px;
+  border-bottom: 1px solid #d6e9c6;
+  background: #dff0d8;
+}
+
+.conversation .title {
+  display: block;
+  float: left;
+  padding: 3px 11px 0 7px;
+  font-size: 1.6em;
+}
+
+.conversation .actions {
   position: absolute;
   top: 5px;
   right: 10px;
   font-size: 1.4em;
 }
 
-.hanging_with .actions li {
+.conversation .actions li {
   padding: 5px 15px;
 }
 
-.btn-leave {
+.participants-empty {
+  display: none;
+  width: 90%;
+  margin: 15px auto 0;
+  text-align: center;
+  font-size: 1.2em;
+}
+
+.participants-empty .glyphicon {
+  display: block;
+  margin-bottom: 10px;
+  font-size: 2em;
+}
+
+.participants.list-group {
+  box-shadow: none;
+}
+
+.participants > .list-group-item {
+  padding: 10px 20px;
+  border: none;
+  background: none;
+}
+
+.participants > .list-group-item > .thumbnail {
+  position: relative;
+  width: 256px;
+  height: 193px;
+  padding: 0;
+  margin: 0 auto;
+}
+
+.participants > .list-group-item > .thumbnail > img {
   position: absolute;
-  top: 7px;
-  right: 7px;
-  padding: 3px 6px;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  height: 191px;
+  max-width: 254px;
+  padding: 0;
+  z-index: 1;
 }
 
-#settings form {
-  padding: 20px;
+.participants > .list-group-item > .thumbnail,
+.participants > .list-group-item > .thumbnail > img {
+  -webkit-transition: none;
+  -moz-transition: none;
+  -o-transition: none;
+  transition: none;
 }
 
-#settings form label {
-  font-weight: normal;
+.participants .caption {
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  padding: 5px 9px;
+  color: #ffffff;
+  background: rgba(42, 159, 214, 0.4);
+  z-index: 1;
 }
 
-#settings .setting-autostart,
-#settings .setting-autostart input {
-  cursor: pointer;
+.participants .action {
+  position: absolute;
+  display: none;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  text-align: center;
+  color: #ffffff;
+  font-size: 1.2em;
+  background: rgba(42, 159, 214, 0.3);
+  z-index: 2;
 }
 
-#settings .setting-photos_interval select {
-  width: 70px;
+.participants > .list-group-item.hanging .action {
+  display: block;
+}
+
+.participants > .list-group-item.hanging .action * {
+  display: none;
+}
+
+.participants .action .glyphicon {
+  display: block;
+  font-size: 2.5em;
+  margin: 55px 0 10px;
+}
+
+.participants .action .hanging_with {
+  position: absolute;
+  display: block;
+  top: 4px;
+  left: 4px;
+  right: 0;
+  background: none;
+  border-bottom: none;
+  box-shadow: none;
+  text-align: left;
+}
+
+.participants .action .hanging_with .thumbnail {
+  width: 30px;
+  height: 30px;
+}
+
+.participants > .list-group-item > .thumbnail:hover .action,
+.participants > .list-group-item > .thumbnail:hover .action * {
+  display: block;
 }

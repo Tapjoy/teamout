@@ -9,102 +9,97 @@
 <!DOCTYPE html>
 <html style="height: 100%" lang="en">
   <head>
-    <link href="//netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap.min.css" rel="stylesheet">
-    <link href="//netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap-theme.min.css" rel="stylesheet">
-    <link href="//jamesflorentino.github.io/nanoScrollerJS/css/nanoscroller.css" rel="stylesheet">
-    <link href="//raw.githubusercontent.com/usablica/intro.js/v0.8.0/minified/introjs.min.css" rel="stylesheet">
-    <link href="//hangjoy.herokuapp.com/assets/css/application.css?1" rel="stylesheet">
+    <link href="//s3.amazonaws.com/hangjoy/assets/css/bootstrap.css" rel="stylesheet">
+    <link href="//s3.amazonaws.com/hangjoy/assets/css/bootstrap-theme.css" rel="stylesheet">
+    <link href="//s3.amazonaws.com/hangjoy/assets/css/nanoscroller.css" rel="stylesheet">
+    <link href="//s3.amazonaws.com/hangjoy/assets/css/introjs.css" rel="stylesheet">
+    <link href="//s3.amazonaws.com/hangjoy/assets/css/application.css" rel="stylesheet">
   </head>
   <body style="height: 100%">
-    <ul class="nav nav-tabs menubar">
-      <li class="active"><a href="#participants" data-toggle="tab"><span class="glyphicon glyphicon-user"></span></a></li>
-      <!-- <li><a href="#chat" data-toggle="tab"><span class="glyphicon glyphicon-list"></span></a></li> -->
-      <li><a href="#settings" data-toggle="tab"><span class="glyphicon glyphicon-cog"></span></a></li>
-<!--       <li class="dropdown">
-        <a href="#" id="rooms" class="dropdown-toggle" data-toggle="dropdown"><span class="glyphicon glyphicon-th"></span></a>
-        <ul class="dropdown-menu" role="menu" aria-labelledby="rooms">
-          <li><a href="#room-architecture" tabindex="-1" data-toggle="tab">@architecture</a></li>
-          <li><a href="#room-operations" tabindex="-1" data-toggle="tab">@operations</a></li>
-        </ul>
-      </li> -->
-    </ul>
-    <button type="button" class="btn btn-leave disabled">Leave Chat</button>
+    <div class="menubar btn-group" data-toggle="buttons">
+      <label class="btn btn-photo" data-toggle="tooltip" data-title-off="Turn snapshots off" data-title-on="Turn snapshots on">
+        <input type="checkbox">
+        <span class="glyphicon glyphicon-camera"></span>
+      </label>
+      <div class="btn btn-dropdown-container btn-photo-dropdown">
+        <button type="button" class="btn btn-dropdown dropdown-toggle">
+          <span class="glyphicon glyphicon-chevron-down"></span>
+        </button>
+        <div class="dropdown-menu">
+          <div class="form-group setting-photo_privacy">
+            <label>Photo privacy:</label>
+            <select class="form-control">
+              <option value="none">None</option>
+              <option value="blur">Blur</option>
+              <option value="pixelate">Pixelate</option>
+            </select>
+          </div>
+          <div class="form-group setting-photo_interval">
+            <label>Photo interval:</label>
+            <select class="form-control">
+              <option value="0.5">30 seconds</option>
+              <option value="1">1 minute</option>
+              <option value="2">2 minutes</option>
+              <option value="3">3 minutes</option>
+              <option value="4">4 minutes</option>
+              <option value="5">5 minutes</option>
+            </select>
+          </div>
+          <div class="form-group setting-photo_source">
+            <label>Photo Source:</label>
+            <select class="form-control">
+            </select>
+          </div>
+        </div>
+      </div>
+      <label class="btn btn-available" data-toggle="tooltip" data-title-off="Show as busy" data-title-on="Show as available">
+        <input type="checkbox">
+        <span class="glyphicon glyphicon-exclamation-sign"></span>
+      </label>
+      <label class="btn btn-sounds" data-toggle="tooltip" data-title-off="Mute sounds" data-title-on="Unmute sounds">
+        <input type="checkbox">
+        <span class="glyphicon glyphicon-volume-off"></span>
+      </label>
+      <label class="btn btn-notifications" data-toggle="tooltip" data-title-off="Turn notifications off" data-title-on="Turn notifications on">
+        <input type="checkbox">
+        <span class="glyphicon glyphicon-bullhorn"></span>
+      </label>
+      <label class="btn btn-autostart" data-toggle="tooltip" data-title-off="Do not autostart Hangjoy" data-title-on="Autostart Hangjoy">
+        <input type="checkbox">
+        <span class="glyphicon glyphicon-off"></span>
+      </label>
+      <button type="button" class="btn btn-leave disabled" data-toggle="tooltip" title="Leave conversation">Leave</button>
+    </div>
 
-    <div class="tab-content">
-      <div class="tab-pane active nano" id="participants">
-        <div class="nano-content">
-          <div class="hanging_with">
-            <span class="title glyphicon glyphicon-facetime-video"></span>
-            <ul class="participants-hanging list-group">
-            </ul>
-            <div class="actions">
-              <a href="#" id="participants-more" class="dropdown-toggle" data-toggle="dropdown"><span class="expand glyphicon glyphicon-list"></span></a>
-              <ul class="dropdown-menu dropdown-menu-right" role="menu" aria-labelledby="participants-more">
-              </ul>
-            </div>
-          </div>
-          <div class="alert alert-info participants-empty">
-            <span class="glyphicon glyphicon-user"></span>
-            <span class="caption">There are no other participants in the hangout.</span>
-          </div>
-          <ul class="participants list-group">
+    <div id="content" class="nano">
+      <div class="nano-content">
+        <div class="conversation">
+          <span class="title glyphicon glyphicon-facetime-video"></span>
+          <ul class="hanging_with list-group">
           </ul>
+          <div class="actions">
+            <a href="#" id="conversation-more" class="dropdown-toggle" data-toggle="dropdown"><span class="expand glyphicon glyphicon-list"></span></a>
+            <ul class="conversation-names dropdown-menu dropdown-menu-right" role="menu" aria-labelledby="conversation-more">
+            </ul>
+          </div>
         </div>
-      </div>
-      <div class="tab-pane nano" id="chat">
-        <div class="nano-content">
-          Integrate Flowdock here.
+
+        <div class="alert alert-info participants-empty">
+          <span class="glyphicon glyphicon-user"></span>
+          <span class="caption">There are no other participants in the hangout.</span>
         </div>
-      </div>
-      <div class="tab-pane" id="settings">
-        <div class="nano-content">
-          <form role="form">
-            <div class="form-group setting-autostart checkbox">
-              <label>
-                <input type="checkbox"> Auto-start when hangout begins
-              </label>
-            </div>
-            <div class="form-group setting-sounds checkbox">
-              <label>
-                <input type="checkbox"> Mute sounds
-              </label>
-            </div>
-            <div class="form-group setting-notifications checkbox">
-              <label>
-                <input type="checkbox"> Use desktop notifications
-              </label>
-            </div>
-            <div class="form-group setting-photos_enabled checkbox">
-              <label>
-                <input type="checkbox"> Periodically take photos
-              </label>
-            </div>
-            <div class="form-group setting-photos_interval">
-              <label>Photo interval (minutes):</label>
-              <select class="form-control">
-                <option value="1">1m</option>
-                <option value="2">2m</option>
-                <option value="3">3m</option>
-                <option value="4">4m</option>
-                <option value="5">5m</option>
-              </select>
-            </div>
-            <div class="form-group setting-video">
-              <label>Video Source:</label>
-              <select class="form-control">
-              </select>
-            </div>
-          </form>
-        </div>
+
+        <ul class="participants list-group">
+        </ul>
       </div>
     </div>
 
     <script type="text/javascript" src="//plus.google.com/hangouts/_/api/v1/hangout.js"></script>
-    <script type="text/javascript" src="//ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
-    <script type="text/javascript" src="//netdna.bootstrapcdn.com/bootstrap/3.1.1/js/bootstrap.min.js"></script>
-    <script type="text/javascript" src="//jamesflorentino.github.io/nanoScrollerJS/javascripts/jquery.nanoscroller.js"></script>
-    <script type="text/javascript" src="//raw.githubusercontent.com/usablica/intro.js/v0.8.0/minified/intro.min.js"></script>
-    <script type="text/javascript" src="//hangjoy.herokuapp.com/assets/js/application.js?2"></script>
+    <script type="text/javascript" src="//s3.amazonaws.com/hangjoy/assets/js/jquery.js"></script>
+    <script type="text/javascript" src="//s3.amazonaws.com/hangjoy/assets/js/bootstrap.js"></script>
+    <script type="text/javascript" src="//s3.amazonaws.com/hangjoy/assets/js/jquery.nanoscroller.js"></script>
+    <script type="text/javascript" src="//s3.amazonaws.com/hangjoy/assets/js/StackBlur.js"></script>
+    <script type="text/javascript" src="//s3.amazonaws.com/hangjoy/assets/js/application.js"></script>
   </body>
 ]]>
 </Content>

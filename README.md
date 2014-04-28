@@ -21,20 +21,19 @@ To invite:
 
 == Things to do
 
-Today:
-* Settings: Select media devices
-* Not everyone's hanging_with gets updated
-* Refactor: Clean up application.js and element names / css
-
-Future:
-* Integrate Flowdock
-* Convert into a full application
+* Automatically try to enable autostart / camera / desktop notifications for first-time users
+* Improve messaging to show when the user needs to take action at the top of the browser
+* Add a "I'm busy" mode (where starting a conversation just pings them)
+* Add package builder (with css / js)
+* Break out application.js to individual components
+* Update README
+* Look into use of https://github.com/jaysalvat/jquery.facedetection for presence detecton
 
 == Deployment
 
 To deploy the application, simply:
 
 ```
-git remote add git@heroku.com:hangjoy.git
-git push heroku master
+script/deploy
+
 ```
