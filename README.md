@@ -27,7 +27,6 @@ To invite:
 * Add package builder (with css / js)
 * Break out application.js to individual components
 * Update README
-* Look into use of https://github.com/jaysalvat/jquery.facedetection for presence detecton
 
 == Deployment
 

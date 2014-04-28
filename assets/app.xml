@@ -32,6 +32,7 @@
               <option value="none">None</option>
               <option value="blur">Blur</option>
               <option value="pixelate">Pixelate</option>
+              <option value="silhouette">Presence Only</option>
             </select>
           </div>
           <div class="form-group setting-photo_interval">
@@ -99,6 +100,8 @@
     <script type="text/javascript" src="//s3.amazonaws.com/hangjoy/assets/js/bootstrap.js"></script>
     <script type="text/javascript" src="//s3.amazonaws.com/hangjoy/assets/js/jquery.nanoscroller.js"></script>
     <script type="text/javascript" src="//s3.amazonaws.com/hangjoy/assets/js/StackBlur.js"></script>
+    <script type="text/javascript" src="//s3.amazonaws.com/hangjoy/assets/js/ccv.js"></script>
+    <script type="text/javascript" src="//s3.amazonaws.com/hangjoy/assets/js/face.js"></script>
     <script type="text/javascript" src="//s3.amazonaws.com/hangjoy/assets/js/application.js"></script>
   </body>
 ]]>

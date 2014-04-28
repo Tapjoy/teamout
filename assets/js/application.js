@@ -21,6 +21,7 @@ var app = {
    */
   onReady: function(event) {
     if (event.isApiReady) {
+      this.support.init();
       this.data.init();
       this.layout.init();
 
@@ -30,6 +31,12 @@ var app = {
       this.settings.init();
       this.photo.init();
       this.conversation.init();
+    }
+  },
+
+  support: {
+    init: function() {
+      navigator.getMedia = navigator.getUserMedia || navigator.webkitGetUserMedia || navigator.mozGetUserMedia;
     }
   },
 
@@ -1013,8 +1020,7 @@ var app = {
     buildURL: window.webkitURL || window.URL,
 
     init: function() {
-      // The browser-specific implementation for retrieving a webcam stream
-      navigator.getMedia = navigator.getUserMedia || navigator.webkitGetUserMedia || navigator.mozGetUserMedia;
+      // Kick off the initial refresh
       this.refresh();
     },
 
@@ -1211,6 +1217,9 @@ var app = {
         case 'pixelate':
           this.filters.pixelate(canvas, 6);
           break;
+        case 'silhouette':
+          this.filters.silhouette(canvas);
+          break;
       }
     },
 
@@ -1294,6 +1303,23 @@ var app = {
             }
           }
         }
+      },
+
+      /**
+       * Detects the presence of faces in the photo and draws a silhouette
+       */
+      silhouette: function(canvas) {
+        var faces = ccv.detect_objects({canvas: ccv.pre(canvas), cascade: cascade, interval: 5, min_neighbors: 1});
+
+        var context = canvas.getContext('2d');
+        context.rect(0, 0, canvas.width, canvas.height);
+        context.fillStyle = '#cccccc';
+        context.fill();
+
+        context.font = '200px Glyphicons Halflings';
+        context.textBaseline = 'bottom';
+        context.fillStyle = faces.length ? '#53a93f' : '#000000';
+        context.fillText("\uE008", 49, 275);
       }
     },
 
