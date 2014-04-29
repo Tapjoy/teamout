@@ -77,7 +77,9 @@ app.conversation = {
     app.participant.updateHangingWith($.unique(participantIds));
 
     // Unmute local and remote participant
-    app.participant.mute({audio: false, video: app.settings.get('unmuteVideo') != 'true'});
+    var busy = app.settings.get('available') == 'false';
+    var muteVideo = app.settings.get('unmuteVideo') == 'false';
+    app.participant.mute({audio: busy, video: busy || muteVideo});
     app.participants.mute(participant, false);
 
     // Remove the remote participant from the list

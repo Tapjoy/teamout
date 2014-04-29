@@ -300,6 +300,8 @@ app.participants = {
       this.addConversation(participant);
     }
 
+    this.updateAvailability(participant);
+
     // Refresh scroll position
     app.layout.updateScrollbar();
   },
@@ -388,6 +390,22 @@ app.participants = {
             .append($('<img />').attr({src: this.avatarUrl(otherParticipant)}).addClass('img-thumbnail'))
         )
         .appendTo($hangingWith);
+    }
+  },
+
+  /**
+   * Updates the availability indicator of a participant
+   */
+  updateAvailability: function(participant) {
+    var available = app.data.get(participant.id + '/available') != 'false';
+
+    var $participant = $('#' + this.safeId(participant));
+    if (available) {
+      $participant.find('.glyphicon').addClass('glyphicon-facetime-video').removeClass('glyphicon-exclamation-sign');
+      $participant.addClass('available').removeClass('busy');
+    } else {
+      $participant.find('.glyphicon').removeClass('glyphicon-facetime-video').addClass('glyphicon-exclamation-sign');
+      $participant.removeClass('available').addClass('busy');
     }
   }
 };

@@ -89,7 +89,8 @@ app.settings = {
     if (this.get('available') == 'false') {
       $('.menubar .btn-available').button('toggle');
     }
-    $('.menubar .btn-available input').change($.proxy(this.onChangeBusy, this));
+    $('.menubar .btn-available input').change($.proxy(this.onChangeAvailable, this));
+    app.data.set(app.participant.id + '/available', this.get('available') + '')
 
     // Setting: sound
     if (this.get('playSounds') == 'false') {
@@ -133,9 +134,9 @@ app.settings = {
   },
 
   /**
-   * Callback when the user has changed the setting for "busy" mode
+   * Callback when the user has changed the setting for availability
    */
-  onChangeBusy: function(event) {
+  onChangeAvailable: function(event) {
     var $setting = $(event.target);
     var enabled = !$setting.is(':checked');
     this.set('available', enabled + '');

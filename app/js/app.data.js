@@ -108,6 +108,8 @@ app.data = {
     } else if (resource == 'hanging_with') {
       // Participant joined in hangout with another user
       app.participants.addConversation(participant);
+    } else if (resource == 'available') {
+      app.participants.updateAvailability(participant);
     }
   },
 
