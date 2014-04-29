@@ -34,10 +34,15 @@ app.participant = {
    * Mutes the local participant
    */
   mute: function(muted) {
-    if (muted === undefined) { muted = true; }
+    if (muted === undefined) {
+      muted = true;
+    }
+    if ($.type(muted) == 'boolean') {
+      muted = {audio: muted, video: muted};
+    }
 
-    gapi.hangout.av.setCameraMute(muted);
-    gapi.hangout.av.setMicrophoneMute(muted);
+    gapi.hangout.av.setCameraMute(muted.video);
+    gapi.hangout.av.setMicrophoneMute(muted.audio);
   },
 
   /**
@@ -70,8 +75,7 @@ app.participant = {
    * with the current user
    */
   isHangingWith: function(participant) {
-    return $.inArray(participant.id, this.hangingWith()) >= 0
-    ;
+    return $.inArray(participant.id, this.hangingWith()) >= 0;
   },
 
   /**
