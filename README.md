@@ -21,10 +21,7 @@ To invite:
 
 == Things to do
 
-* Improve messaging to show when the user needs to take action at the top of the browser
-* Break out application.js to individual components
 * Add a "I'm busy" mode (where audio / video doesn't start, user is marked as busy)
-* Automatically try to enable autostart / camera / desktop notifications for first-time users
 
 * Add package builder (with css / js)
 * Update README

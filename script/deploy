@@ -1,1 +1,2 @@
-aws s3 sync assets s3://hangjoy/assets
+aws s3 sync app s3://hangjoy/assets
+aws s3 sync vendor s3://hangjoy/assets

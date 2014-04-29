@@ -13,7 +13,7 @@
     <link href="//s3.amazonaws.com/hangjoy/assets/css/bootstrap-theme.css" rel="stylesheet">
     <link href="//s3.amazonaws.com/hangjoy/assets/css/nanoscroller.css" rel="stylesheet">
     <link href="//s3.amazonaws.com/hangjoy/assets/css/introjs.css" rel="stylesheet">
-    <link href="//s3.amazonaws.com/hangjoy/assets/css/application.css" rel="stylesheet">
+    <link href="//s3.amazonaws.com/hangjoy/assets/css/app.css" rel="stylesheet">
   </head>
   <body style="height: 100%">
     <div class="menubar btn-group" data-toggle="buttons">
@@ -107,7 +107,17 @@
     <script type="text/javascript" src="//s3.amazonaws.com/hangjoy/assets/js/StackBlur.js"></script>
     <script type="text/javascript" src="//s3.amazonaws.com/hangjoy/assets/js/ccv.js"></script>
     <script type="text/javascript" src="//s3.amazonaws.com/hangjoy/assets/js/face.js"></script>
-    <script type="text/javascript" src="//s3.amazonaws.com/hangjoy/assets/js/application.js"></script>
+    <script type="text/javascript" src="//s3.amazonaws.com/hangjoy/assets/js/app.core.js"></script>
+    <script type="text/javascript" src="//s3.amazonaws.com/hangjoy/assets/js/app.support.js"></script>
+    <script type="text/javascript" src="//s3.amazonaws.com/hangjoy/assets/js/app.data.js"></script>
+    <script type="text/javascript" src="//s3.amazonaws.com/hangjoy/assets/js/app.layout.js"></script>
+    <script type="text/javascript" src="//s3.amazonaws.com/hangjoy/assets/js/app.notification.js"></script>
+    <script type="text/javascript" src="//s3.amazonaws.com/hangjoy/assets/js/app.participant.js"></script>
+    <script type="text/javascript" src="//s3.amazonaws.com/hangjoy/assets/js/app.participants.js"></script>
+    <script type="text/javascript" src="//s3.amazonaws.com/hangjoy/assets/js/app.conversation.js"></script>
+    <script type="text/javascript" src="//s3.amazonaws.com/hangjoy/assets/js/app.photo.js"></script>
+    <script type="text/javascript" src="//s3.amazonaws.com/hangjoy/assets/js/app.settings.js"></script>
+    <script type="text/javascript" src="//s3.amazonaws.com/hangjoy/assets/js/app.outro.js"></script>
   </body>
 ]]>
 </Content>
