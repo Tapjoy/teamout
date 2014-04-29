@@ -199,22 +199,23 @@ var app = {
      * Requests permission to show desktop notifications
      */
     requestPermission: function(onSuccess, onError) {
-      if (window.webkitNotifications) {
-        webkitNotifications.requestPermission(function() {
-          if (webkitNotifications.checkPermission() == 0) {
+      if (!this.hasDesktopPermission()) {
+        var callback = $.proxy(function() {
+          if (this.hasDesktopPermission()) {
             onSuccess();
           } else {
             onError();
           }
-        });
-      } else if (window.Notification) {
-        Notification.requestPermission(function(permission){
-          if (permission == 'granted') {
-            onSuccess();
-          } else {
-            onError();
-          }
-        });
+        }, this);
+
+        if (window.webkitNotifications) {
+          webkitNotifications.requestPermission(callback);
+        } else if (window.Notification) {
+          Notification.requestPermission(callback);
+        }
+
+        // Make sure the user notices the authorization
+        app.notification.show("Please select Allow above to start using desktop notifications");
       }
     },
 
@@ -1093,6 +1094,13 @@ var app = {
               constraints = true;
             }
 
+            // Show a notification to the user to make sure they see to authorize
+            // access to media
+            if (app.settings.get('initialPhoto') == 'true') {
+              app.settings.set('initialPhoto', 'false');
+              app.notification.show("Please select Allow above to enable presence detection");
+            }
+
             navigator.getMedia(
               {video: constraints},
               $.proxy(this.refreshWithStream, this),
@@ -1380,7 +1388,8 @@ var app = {
       photoInterval: '1',
       photoPrivacy: 'none',
       photoSource: '',
-      unmuteVideo: 'true'
+      unmuteVideo: 'true',
+      initialPhoto: 'true'
     },
 
     init: function(callback) {
