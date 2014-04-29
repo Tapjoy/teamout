@@ -94,14 +94,16 @@ body {
 .menubar > .btn-dropdown-container .dropdown-menu {
   padding: 10px 15px 2px;
   text-align: left;
+  cursor: default;
 }
 
-.menubar > .btn-photo-dropdown .setting-photo_privacy select {
-  width: 150px;
-}
-
-.menubar > .btn-photo-dropdown .setting-photo_source select {
+.menubar > .btn-photo-dropdown select {
   width: 160px;
+}
+
+.menubar > .btn-photo-dropdown .setting-unmute_video,
+.menubar > .btn-photo-dropdown .setting-unmute_video input {
+  cursor: pointer;
 }
 
 .menubar > .btn-leave {

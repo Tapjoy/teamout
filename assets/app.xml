@@ -26,6 +26,11 @@
           <span class="glyphicon glyphicon-chevron-down"></span>
         </button>
         <div class="dropdown-menu">
+          <div class="form-group setting-unmute_video checkbox">
+            <label>
+              <input type="checkbox"> Auto-unmute video
+            </label>
+          </div>
           <div class="form-group setting-photo_privacy">
             <label>Photo privacy:</label>
             <select class="form-control">

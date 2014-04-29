@@ -243,8 +243,10 @@ var app = {
     /**
      * Shows a notification with the given message
      */
-    show: function(message) {
-      if (this.useDesktopNotifications()) {
+    show: function(message, options) {
+      if (!options) { options = {desktop: false}; }
+
+      if (options.desktop && this.useDesktopNotifications()) {
         var title = 'Google Hangouts';
         var icon = 'http://' + app.host + '/assets/images/google-hangouts-icon.png';
         var notification;
@@ -778,7 +780,7 @@ var app = {
         }
 
         // Display a notice in the hangout
-        app.notification.show('A new conversation has started with ' + participant.person.displayName);
+        app.notification.show('A new conversation has started with ' + participant.person.displayName, {desktop: true});
       }
     },
 
@@ -831,7 +833,9 @@ var app = {
       app.participant.updateHangingWith($.unique(participantIds));
 
       // Unmute local and remote participant
-      app.participant.mute(false);
+      if (app.settings.get('unmuteVideo') == 'true') {
+        app.participant.mute(false);
+      }
       app.participants.mute(participant, false);
 
       // Remove the remote participant from the list
@@ -1138,7 +1142,7 @@ var app = {
         }
       }
 
-      gapi.hangout.layout.displayNotice('Unable to take a picture. Please check your webcam settings.');
+      app.notification.show('Unable to take a picture. Please check your webcam settings.');
       console.log('Error updating photo: ', error);
     },
 
@@ -1376,6 +1380,7 @@ var app = {
       photoInterval: '1',
       photoPrivacy: 'none',
       photoSource: '',
+      unmuteVideo: 'true'
     },
 
     init: function(callback) {
@@ -1403,12 +1408,17 @@ var app = {
         $('.menubar .btn-photo').addClass('disabled');
         $('.menubar .btn-photo-dropdown').addClass('disabled');
 
-        gapi.hangout.layout.displayNotice('Photos are not supported in your browser. Please consider upgrading to a newer version.');
+        app.notification.show('Photos are not supported in your browser. Please consider upgrading to a newer version.');
       }
       if (this.get('photoEnabled') == 'false') {
         $('.menubar .btn-photo').button('toggle');
       }
       $('.menubar .btn-photo input').change($.proxy(this.onChangePhotoEnabled, this));
+
+      // Setting: unmute video
+      $('.menubar .setting-unmute_video input')
+        .prop('checked', this.get('unmuteVideo') == 'true')
+        .click($.proxy(this.onChangeUnmuteVideo, this));
 
       // Setting: photo privacy
       $('.menubar .setting-photo_privacy select').change($.proxy(this.onChangePhotoPrivacy, this));
@@ -1583,6 +1593,16 @@ var app = {
       var $setting = $(event.target);
       var sourceId = $setting.val();
       this.set('photoSource', sourceId);
+    },
+
+    /**
+     * Callback when the user has changed whether to unmute video when a new
+     * conversation has started
+     */
+    onChangeUnmuteVideo: function(event) {
+      var $setting = $(event.target);
+      var enabled = $setting.val();
+      this.set('unmuteVideo', enabled);
     },
 
     /**
