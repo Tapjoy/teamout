@@ -10,7 +10,6 @@ Features:
 * Firefox requires the following setting: media.navigator.permission.disabled (to be fixed in next version)
 * Make busy more obvious (persistent)
 * Change Leave button to be on the same row as the conversation
-* Don't unmute audio when marked as busy
 * Change avatar on the bottom to represent the user's snapshot instead of their google+ avatar
 * It's not always clear when you're in a video chat
 
