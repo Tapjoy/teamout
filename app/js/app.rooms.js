@@ -167,6 +167,9 @@ app.rooms = {
   add: function(roomId) {
     var name = '@' + roomId;
 
+    // Hide the "no rooms" notice
+    $('#rooms .rooms-other .rooms-none').hide();
+
     var $nav = $('#rooms .rooms-other .nav');
     var $rooms = $nav.find('li');
     var $room = $('<li />')
@@ -210,6 +213,11 @@ app.rooms = {
 
     // Remove from UI
     $('#room-' + this.safeId(roomId)).remove();
+
+    if (!roomIds.length) {
+      // Show the "no rooms" notice
+      $('#rooms .rooms-other .rooms-none').show();
+    }
   },
 
   /**

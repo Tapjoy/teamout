@@ -343,6 +343,10 @@ body {
   padding: 6px 8px;
 }
 
+#rooms .modal-body .rooms-other .rooms-none {
+  display: block;
+}
+
 #rooms .modal-body .rooms-other .nav > li {
   position: relative;
 }
