@@ -10,7 +10,7 @@ var app = {
   host: 's3.amazonaws.com/hangjoy',
 
   // The Google application id for the app
-  id: '822370659793',
+  id: '438026805755',
 
   /**
    * Callback when the gadget is ready
