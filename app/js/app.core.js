@@ -9,6 +9,9 @@ var app = {
   // The host for the app
   host: 's3.amazonaws.com/hangjoy',
 
+  // The Google application id for the app
+  id: '822370659793',
+
   /**
    * Callback when the gadget is ready
    */
@@ -31,6 +34,7 @@ var app = {
       this.settings.init();
       this.photo.init();
       this.conversation.init();
+      this.rooms.init();
     }
   }
 };

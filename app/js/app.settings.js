@@ -19,11 +19,16 @@ app.settings = {
 
     // Control dropdowns
     $('.menubar .btn-dropdown-container').click(function(event) {
-      $(this).toggleClass('open');
+      // Toggle other dropdowns
+      var $dropdown = $(this);
+      $('.menubar .btn-dropdown-container').not($dropdown).removeClass('open');
+
+      $dropdown.toggleClass('open');
+
       event.preventDefault();
       event.stopPropagation();
     })
-    $('.menubar .dropdown-menu').click(function(event) {
+    $('.menubar .dropdown-menu').on('click mouseenter focusin', function(event) {
       event.stopPropagation();
     });
     $(document).click(function() {
@@ -109,6 +114,12 @@ app.settings = {
       $('.menubar .btn-autostart').button('toggle');
     }
     $('.menubar .btn-autostart input').change($.proxy(this.onChangeAutostart, this));
+
+    // Setting: rooms
+    $('.btn-rooms').click($.proxy(this.onClickRooms, this));
+
+    // Setting: conversation
+    $('.btn-leave').click($.proxy(this.onClickLeave, this));
 
     // Tooltips
     $('.menubar > .btn')
@@ -234,6 +245,24 @@ app.settings = {
     var $setting = $(event.target);
     var enabled = $setting.val();
     this.set('unmuteVideo', enabled);
+  },
+
+  /**
+   * Callback when the user has clicked on the rooms action
+   */
+  onClickRooms: function(event) {
+    event.stopPropagation();
+    $('.menubar .btn-dropdown-container').removeClass('open');
+    app.rooms.show();
+  },
+
+  /**
+   * Callback when the user has clicked on the leave action
+   */
+  onClickLeave: function(event) {
+    event.stopPropagation();
+    $('.menubar .btn-dropdown-container').removeClass('open');
+    app.conversation.leave();
   },
 
   /**

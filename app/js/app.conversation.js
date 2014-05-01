@@ -1,6 +1,6 @@
 app.conversation = {
   init: function() {
-    $('.btn-leave').click($.proxy(this.onClickLeave, this));
+    // no-op
   },
 
   /**
@@ -135,14 +135,6 @@ app.conversation = {
    */
   hideLeaveAction: function() {
     $('.btn-leave').removeClass('btn-danger active').addClass('disabled');
-  },
-
-  /**
-   * Callback when the user has clicked on the leave action
-   */
-  onClickLeave: function(event) {
-    event.stopPropagation();
-    this.leave();
   },
 
   /**

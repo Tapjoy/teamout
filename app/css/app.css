@@ -58,7 +58,7 @@ body {
   border-radius: 0;
 }
 
-.menubar > .btn span,
+.menubar > .btn > span,
 .menubar > .btn-dropdown-container .btn-dropdown {
   color: #ffffff;
 }
@@ -92,13 +92,20 @@ body {
 }
 
 .menubar > .btn-dropdown-container .dropdown-menu {
-  padding: 10px 15px 2px;
   text-align: left;
   cursor: default;
 }
 
+.menubar > .btn-photo-dropdown .dropdown-menu {
+  padding: 10px 15px 2px;
+}
+
 .menubar > .btn-photo-dropdown select {
   width: 160px;
+}
+
+.menubar > .btn-photo-dropdown .setting-unmute_video {
+  margin-top: 0;
 }
 
 .menubar > .btn-photo-dropdown .setting-unmute_video,
@@ -309,4 +316,52 @@ body {
 .participants > .list-group-item > .thumbnail:hover .action,
 .participants > .list-group-item > .thumbnail:hover .action * {
   display: block;
+}
+
+#rooms .modal-dialog {
+  padding-top: 40px;
+}
+
+#rooms .modal-header {
+  padding: 8px 12px 5px;
+}
+
+#rooms .modal-header h4 {
+  font-size: 15px;
+}
+
+#rooms .modal-body {
+  padding: 10px 15px 0;
+}
+
+#rooms .modal-body .form-group label {
+  font-size: 13px;
+}
+
+#rooms .modal-body .form-control {
+  height: 28px;
+  padding: 6px 8px;
+}
+
+#rooms .modal-body .rooms-other .nav > li {
+  position: relative;
+}
+
+#rooms .modal-body .rooms-other .nav > li a {
+  padding: 6px 12px;
+}
+
+#rooms .modal-body .rooms-other .nav > li .glyphicon {
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  padding: 8px 8px 0 0;
+  cursor: pointer;
+}
+
+#rooms .modal-body .rooms-create input {
+  display: inline-block;
+  width: 150px;
+  margin-right: 8px;
 }

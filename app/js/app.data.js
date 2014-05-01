@@ -19,7 +19,7 @@ app.data = {
       var key = keys[i];
       var participantId = app.participants.idFromKey(key);
 
-      if ($.inArray(participantId, participantIds) == -1) {
+      if (participantId != 'room' && $.inArray(participantId, participantIds) == -1) {
         this.clear(key);
       }
     }
@@ -66,7 +66,7 @@ app.data = {
       var key = addedKeys[i];
       var participantId = app.participants.idFromKey(key.key);
 
-      if (participantId != app.participant.id) {
+      if (participantId != 'room' && participantId != app.participant.id) {
         this.state[key.key] = key.value;
         this.onKeyAdded(key.key, key.value);
       }
@@ -110,6 +110,10 @@ app.data = {
       app.participants.addConversation(participant);
     } else if (resource == 'available') {
       app.participants.updateAvailability(participant);
+    } else if (resource == 'data') {
+      app.rooms.setIdFromData(value);
+    } else if (resource == 'room_ids') {
+      app.rooms.update();
     }
   },
 
