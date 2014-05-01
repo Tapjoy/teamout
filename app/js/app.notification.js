@@ -9,7 +9,9 @@ app.notification = {
    * Requests permission to show desktop notifications
    */
   requestPermission: function(onSuccess, onError) {
-    if (!this.hasDesktopPermission()) {
+    if (this.hasDesktopPermission()) {
+      onSuccess();
+    } else {
       var callback = $.proxy(function() {
         if (this.hasDesktopPermission()) {
           onSuccess();
