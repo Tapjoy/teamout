@@ -1,6 +1,6 @@
 app.conversation = {
   init: function() {
-    // no-op
+    this.chime = new Audio('//' + app.host + '/assets/audio/chime.ogg');
   },
 
   /**
@@ -19,8 +19,7 @@ app.conversation = {
     } else {
       if (app.settings.get('playSounds') == 'true') {
         // Play a sound to let the user know they're in a new conversation
-        var chime = new Audio('//' + app.host + '/assets/audio/chime.ogg');
-        chime.play();
+        this.chime.play();
       }
 
       // Display a notice in the hangout
