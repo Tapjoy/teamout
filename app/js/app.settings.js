@@ -43,7 +43,7 @@ app.settings = {
       $('.menubar .btn-photo').addClass('disabled');
       $('.menubar .btn-photo-dropdown').addClass('disabled');
 
-      app.notification.show('Photos are not supported in your browser. Hangjoy currently only works on Google Chrome, Firefox, and Opera.');
+      app.notification.show('Photos are not supported in your browser. Photos only work on Google Chrome, Firefox, and Opera.');
     }
     if (this.get('photoEnabled') == 'false') {
       $('.menubar .btn-photo').button('toggle');
