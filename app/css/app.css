@@ -319,7 +319,7 @@ body {
 }
 
 #rooms .modal-dialog {
-  padding-top: 40px;
+  top: 40px;
 }
 
 #rooms .modal-header {
