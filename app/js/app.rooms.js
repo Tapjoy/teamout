@@ -55,8 +55,7 @@ app.rooms = {
    */
   urlFor: function(roomId) {
     var hangoutId = this.groupId + ',' + roomId;
-    var sha = new jsSHA(roomId, 'TEXT');
-    var hangoutHash = sha.getHash('SHA-1', 'HEX');
+    var hangoutHash = (new jsSHA(hangoutId, 'TEXT')).getHash('SHA-1', 'HEX');
 
     return 'https://talkgadget.google.com/hangouts/_/widget/' + hangoutHash + '?gid=' + app.id + '&gd=' + hangoutId;
   },
@@ -143,7 +142,7 @@ app.rooms = {
    */
   update: function() {
     var currentIds = this.ids();
-    var listedIds = $('#rooms .rooms-other .nav li').map(function() { return $(this).text().substr(1); });
+    var listedIds = $('#rooms .rooms-other .nav li').map(function() { return $(this).data('roomId'); });
 
     // Add new rooms
     for (var i = 0; i < currentIds.length; i++) {
@@ -207,10 +206,10 @@ app.rooms = {
     if (index >= 0) {
       roomIds.splice(index, 1);
       app.data.set('room/room_ids', JSON.stringify(roomIds));
-
-      // Remove from UI
-      $('#room-' + this.safeId(roomId)).remove();
     }
+
+    // Remove from UI
+    $('#room-' + this.safeId(roomId)).remove();
   },
 
   /**

@@ -66,7 +66,7 @@ app.data = {
       var key = addedKeys[i];
       var participantId = app.participants.idFromKey(key.key);
 
-      if (participantId != 'room' && participantId != app.participant.id) {
+      if (participantId != app.participant.id) {
         this.state[key.key] = key.value;
         this.onKeyAdded(key.key, key.value);
       }
