@@ -343,7 +343,8 @@ app.photo = {
    */
   update: function(url, squareUrl) {
     var id = $.now();
-    gapi.hangout.av.setAvatar(app.participant.id, squareUrl);
+    this.squareUrl = squareUrl;
+    this.showAsAvatar();
 
     // Clean up old, outdated photos
     this.cleanup();
@@ -360,5 +361,21 @@ app.photo = {
     // Update the reference for the photo
     var partsCount = Math.ceil(url.length / this.partSize);
     app.data.set(app.participant.id + '/photo', id + ',' + partsCount);
+  },
+
+  /**
+   * Shows the latest photo as the user's current avatar
+   */
+  showAsAvatar: function() {
+    if (this.squareUrl) {
+      gapi.hangout.av.setAvatar(app.participant.id, this.squareUrl);
+    }
+  },
+
+  /**
+   * Removes the latest photo as the user's current avatar
+   */
+  clearAvatar: function() {
+    gapi.hangout.av.clearAvatar(app.participant.id);
   }
 };

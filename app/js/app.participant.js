@@ -52,6 +52,12 @@ app.participant = {
     if (!this.isHanging() && !event.isCameraMute) {
       this.mute();
     }
+
+    if (event.isCameraMute) {
+      app.photo.showAsAvatar();
+    } else {
+      app.photo.clearAvatar();
+    }
   },
 
   /**
