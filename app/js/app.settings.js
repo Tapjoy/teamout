@@ -243,8 +243,8 @@ app.settings = {
    */
   onChangeUnmuteVideo: function(event) {
     var $setting = $(event.target);
-    var enabled = $setting.val();
-    this.set('unmuteVideo', enabled);
+    var enabled = $setting.is(':checked');
+    this.set('unmuteVideo', enabled + '');
   },
 
   /**
