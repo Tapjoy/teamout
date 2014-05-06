@@ -264,6 +264,14 @@ body {
   z-index: 1;
 }
 
+.participants .caption-name {
+  float: left;
+}
+
+.participants .caption-timestamp {
+  float: right;
+}
+
 .participants .action {
   position: absolute;
   display: none;

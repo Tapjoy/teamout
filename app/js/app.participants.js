@@ -301,6 +301,10 @@ app.participants = {
   addPhoto: function(participant, url) {
     var $participants = $('.participants');
     var url = this.photoUrl(participant);
+    var timestamp = (app.data.get(participant.id + '/photo') || '').split(',')[0];
+    if (timestamp) {
+      timestamp = new Date(parseInt(timestamp));
+    }
 
     // Add a new photo to the list
     var $link = $('<a />')
@@ -313,7 +317,10 @@ app.participants = {
           $('<span />').addClass('glyphicon glyphicon-facetime-video'),
           $('<span />').addClass('action-start').text('Start Conversation')
         ),
-        $('<span />').addClass('caption').text(participant.person.displayName)
+        $('<div />').addClass('caption').append(
+          $('<span />').addClass('caption-name').text(participant.person.displayName),
+          $('<span />').addClass('caption-timestamp').text(timestamp ? strftime('%l:%M %p', timestamp).trim() : '')
+        )
       )
       .click($.proxy(this.onClick, this));
 
