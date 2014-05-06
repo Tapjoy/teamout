@@ -283,7 +283,7 @@ body {
   color: #ffffff;
   font-size: 1.2em;
   background: rgba(42, 159, 214, 0.3);
-  z-index: 2;
+  z-index: 1;
 }
 
 .participants > .list-group-item.hanging .action {
