@@ -76,26 +76,28 @@
       <button type="button" class="btn btn-leave disabled" data-toggle="tooltip" title="Leave conversation">Leave</button>
     </div>
 
-    <div id="content" class="nano">
-      <div class="nano-content">
-        <div class="conversation">
-          <span class="title glyphicon glyphicon-facetime-video"></span>
-          <ul class="hanging_with list-group">
-          </ul>
-          <div class="actions">
-            <a href="#" id="conversation-more" class="dropdown-toggle" data-toggle="dropdown"><span class="expand glyphicon glyphicon-list"></span></a>
-            <ul class="conversation-names dropdown-menu dropdown-menu-right" role="menu" aria-labelledby="conversation-more">
+    <div id="content">
+      <div class="nano">
+        <div class="nano-content">
+          <div class="conversation">
+            <span class="title glyphicon glyphicon-facetime-video"></span>
+            <ul class="hanging_with list-group">
             </ul>
+            <div class="actions">
+              <a href="#" id="conversation-more" class="dropdown-toggle" data-toggle="dropdown"><span class="expand glyphicon glyphicon-list"></span></a>
+              <ul class="conversation-names dropdown-menu dropdown-menu-right" role="menu" aria-labelledby="conversation-more">
+              </ul>
+            </div>
           </div>
-        </div>
 
-        <div class="alert alert-info participants-empty">
-          <span class="glyphicon glyphicon-user"></span>
-          <span class="caption">There are no other participants in the hangout.</span>
-        </div>
+          <div class="alert alert-info participants-empty">
+            <span class="glyphicon glyphicon-user"></span>
+            <span class="caption">There are no other participants in the hangout.</span>
+          </div>
 
-        <ul class="participants list-group">
-        </ul>
+          <ul class="participants list-group">
+          </ul>
+        </div>
       </div>
     </div>
 
