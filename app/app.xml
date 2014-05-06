@@ -144,6 +144,7 @@
     <script type="text/javascript" src="//s3.amazonaws.com/hangjoy/assets/js/app.participants.js"></script>
     <script type="text/javascript" src="//s3.amazonaws.com/hangjoy/assets/js/app.conversation.js"></script>
     <script type="text/javascript" src="//s3.amazonaws.com/hangjoy/assets/js/app.photo.js"></script>
+    <script type="text/javascript" src="//s3.amazonaws.com/hangjoy/assets/js/app.avatar.js"></script>
     <script type="text/javascript" src="//s3.amazonaws.com/hangjoy/assets/js/app.rooms.js"></script>
     <script type="text/javascript" src="//s3.amazonaws.com/hangjoy/assets/js/app.settings.js"></script>
     <script type="text/javascript" src="//s3.amazonaws.com/hangjoy/assets/js/app.outro.js"></script>

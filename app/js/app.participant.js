@@ -54,9 +54,9 @@ app.participant = {
     }
 
     if (event.isCameraMute) {
-      app.photo.showAsAvatar();
+      app.avatar.show();
     } else {
-      app.photo.clearAvatar();
+      app.avatar.clear();
     }
   },
 

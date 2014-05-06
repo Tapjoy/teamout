@@ -14,7 +14,7 @@ app.conversation = {
     if (initiatedLocally) {
       if (app.participant.hangingWith().length == 1) {
         // Set the video to the selected participant since they're the only one
-        gapi.hangout.layout.getVideoCanvas().getVideoFeed().setDisplayedParticipant(participant.id);
+        gapi.hangout.layout.getDefaultVideoFeed().setDisplayedParticipant(participant.id);
       }
     } else {
       if (app.settings.get('playSounds') == 'true') {
@@ -82,6 +82,7 @@ app.conversation = {
     app.participants.mute(participant, false);
 
     // Remove the remote participant from the list
+    app.participants.removeAvatar(participant);
     app.participants.removePhoto(participant);
 
     // Add the remote participant to the active list
@@ -111,6 +112,7 @@ app.conversation = {
       app.participants.mute(participant, true);
 
       // Add the participant back to the available list
+      app.participants.updateAvatar(participant);
       app.participants.updatePhoto(participant);
     }
 
@@ -149,10 +151,11 @@ app.conversation = {
     // Mute everyone / reset participant list
     app.participant.mute();
     app.participants.muteAll();
+    app.participants.updateAllAvatars();
     app.participants.updateAllPhotos();
 
     // Reset the video feed
-    gapi.hangout.layout.getVideoCanvas().getVideoFeed().clearDisplayedParticipant();
+    gapi.hangout.layout.getDefaultVideoFeed().setDisplayedParticipant(app.participant.id);
 
     // Update this user's photo
     app.photo.refresh();

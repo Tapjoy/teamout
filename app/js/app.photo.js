@@ -31,6 +31,16 @@ app.photo = {
   },
 
   /**
+   * The default photo url to use
+   */
+  defaultUrl: function() {
+    var canvas = $('<canvas />').attr({width: this.width, height: this.height})[0];
+    var context = canvas.getContext('2d');
+    this.filters.silhouette(canvas);
+    return canvas.toDataURL('image/jpeg', this.quality);
+  },
+
+  /**
    * Whether photos are supported in this browser
    */
   isSupported: function() {
@@ -186,13 +196,12 @@ app.photo = {
       // Save the image
       this.filter(canvas);
       var url = canvas.toDataURL('image/jpeg', this.quality);
-      var squareUrl = this.squareImageUrl(canvas);
 
       // Stop the stream
       video.pause();
       stream.stop();
 
-      success(url, squareUrl);
+      success(url);
     } catch(e) {
       if (e.name == 'NS_ERROR_NOT_AVAILABLE') {
         setTimeout($.proxy(this.captureImage, this, video, stream, success, error), 1000);
@@ -322,29 +331,10 @@ app.photo = {
   },
 
   /**
-   * Resizes the given canvas to a square image and generates a url for that
-   * image
-   */
-  squareImageUrl: function(sourceCanvas) {
-    var size = Math.min(sourceCanvas.width, sourceCanvas.height);
-    var canvas = $('<canvas />').attr({width: size, height: size})[0];
-    var context = canvas.getContext('2d');
-    var x = parseInt((sourceCanvas.width - size) / 2);
-    var y = parseInt((sourceCanvas.height - size) / 2);
-    context.drawImage(sourceCanvas, x, y, size, size, 0, 0, size, size);
-
-    var url = canvas.toDataURL('image/jpeg', this.quality);
-
-    return url;
-  },
-
-  /**
    * Updates the current participant's photo with the given url
    */
-  update: function(url, squareUrl) {
+  update: function(url) {
     var id = $.now();
-    this.squareUrl = squareUrl;
-    this.showAsAvatar();
 
     // Clean up old, outdated photos
     this.cleanup();
@@ -361,21 +351,5 @@ app.photo = {
     // Update the reference for the photo
     var partsCount = Math.ceil(url.length / this.partSize);
     app.data.set(app.participant.id + '/photo', id + ',' + partsCount);
-  },
-
-  /**
-   * Shows the latest photo as the user's current avatar
-   */
-  showAsAvatar: function() {
-    if (this.squareUrl) {
-      gapi.hangout.av.setAvatar(app.participant.id, this.squareUrl);
-    }
-  },
-
-  /**
-   * Removes the latest photo as the user's current avatar
-   */
-  clearAvatar: function() {
-    gapi.hangout.av.clearAvatar(app.participant.id);
   }
 };

@@ -33,6 +33,7 @@ var app = {
       this.participants.init();
       this.settings.init();
       this.photo.init();
+      this.avatar.init();
       this.conversation.init();
       this.rooms.init();
     }

@@ -2,6 +2,7 @@
 app.participants = {
   init: function() {
     this.muteAll();
+    this.updateAllAvatars();
     this.updateAllPhotos();
 
     gapi.hangout.onParticipantsAdded.add($.proxy(this.onAdded, this));
@@ -100,6 +101,7 @@ app.participants = {
    */
   add: function(participant) {
     this.mute(participant);
+    this.updateAvatar(participant);
     this.updatePhoto(participant);
 
     // Make sure we're autorefreshing
@@ -169,16 +171,57 @@ app.participants = {
    * Gets the Google avatar url for the given user
    */
   avatarUrl: function(participant) {
-    return participant.person.image.url;
+    var firstName = participant.person.displayName.split(' ')[0];
+
+    var canvas = $('<canvas />').attr({width: app.avatar.size, height: app.avatar.size})[0];
+    var context = canvas.getContext('2d');
+
+    context.fillStyle = '#000000';
+    context.fillRect(0, 0, canvas.width, canvas.height);
+
+    context.font = '48px Arial';
+    context.textAlign = 'center';
+    context.textBaseline = 'middle';
+    context.fillStyle = '#ffffff';
+    context.fillText(firstName, canvas.width / 2, canvas.height / 2);
+
+    return canvas.toDataURL();
+  },
+
+  /**
+   * Refreshes avatars for the current participants
+   */
+  updateAllAvatars: function() {
+    var participants = this.all();
+    for (var i = 0; i < participants.length; i++) {
+      var participant = participants[i];
+      this.updateAvatar(participant);
+    }
+  },
+
+  /**
+   * Updates the avatar for the given participant
+   */
+  updateAvatar: function(participant) {
+    if (this.isPresent(participant)) {
+      gapi.hangout.av.setAvatar(participant.id, this.avatarUrl(participant));
+    }
+  },
+
+  /**
+   * Removes the custom avatar for the given participant
+   */
+  removeAvatar: function(participant) {
+    gapi.hangout.av.clearAvatar(participant.id);
   },
 
   /**
    * Gets the url for the photo representing the given user
    */
   photoUrl: function(participant) {
-    var url = this.avatarUrl(participant);
-
+    var url;
     var data = app.data.get(participant.id + '/photo');
+
     if (data) {
       // Build the image data url
       var photoId = data.split(',')[0];
@@ -197,6 +240,10 @@ app.participants = {
       if (dataUrl) {
         url = dataUrl;
       }
+    }
+
+    if (!url) {
+      url = app.photo.defaultUrl();
     }
 
     return url;
