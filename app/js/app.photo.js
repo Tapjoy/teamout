@@ -188,10 +188,23 @@ app.photo = {
    */
   captureImage: function(video, stream, success, error) {
     try {
+      // Calculate width / height of image based on video aspect ratio
+      var videoRatio = video.videoWidth / video.videoHeight;
+      var photoRatio = this.width / this.height;
+      var width = this.width;
+      var height = this.height;
+      if (photoRatio < videoRatio) {
+        height = parseInt(width / videoRatio);
+      } else if (photoRatio > videoRatio) {
+        width = parseInt(height * videoRatio);
+      }
+
       // Draw the video onto our canvas
       var canvas = $('<canvas />').attr({width: this.width, height: this.height})[0];
       var context = canvas.getContext('2d');
-      context.drawImage(video, 0, 0, this.width, this.height);
+      context.fillStyle = '#000000';
+      context.fillRect(0, 0, canvas.width, canvas.height);
+      context.drawImage(video, (canvas.width - width) / 2, (canvas.height - height) / 2, width, height);
 
       // Save the image
       this.filter(canvas);
