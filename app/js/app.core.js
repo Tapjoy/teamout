@@ -16,14 +16,22 @@ var app = {
    * Callback when the gadget is ready
    */
   onLoad: function() {
-    gapi.hangout.onApiReady.add($.proxy(this.onReady, this));
+    gapi.hangout.onApiReady.add($.proxy(this.loadFonts, this, $.proxy(this.onReady, this)));
+  },
+
+  /**
+   * Loads fonts required for this application and invokes the callback when
+   * complete
+   */
+  loadFonts: function(callback) {
+    $.get('//' + this.host + '/assets/fonts/glyphicons-halflings-regular.woff', callback);
   },
 
   /**
    * Callback when the Hangouts API is fully ready
    */
   onReady: function(event) {
-    if (event.isApiReady) {
+    if (gapi.hangout.isApiReady()) {
       this.support.init();
       this.data.init();
       this.layout.init();
