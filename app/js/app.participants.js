@@ -292,6 +292,8 @@ app.participants = {
         .addClass('img-thumbnail')
         .prependTo($participant.find('a'))
         .animate({opacity: 1.0}, {duration: 500, complete: $.proxy($previousPhoto.remove, $previousPhoto)});
+
+      this.updateTimestamp(participant);
     }
   },
 
@@ -301,10 +303,6 @@ app.participants = {
   addPhoto: function(participant, url) {
     var $participants = $('.participants');
     var url = this.photoUrl(participant);
-    var timestamp = (app.data.get(participant.id + '/photo') || '').split(',')[0];
-    if (timestamp) {
-      timestamp = new Date(parseInt(timestamp));
-    }
 
     // Add a new photo to the list
     var $link = $('<a />')
@@ -319,7 +317,7 @@ app.participants = {
         ),
         $('<div />').addClass('caption').append(
           $('<span />').addClass('caption-name').text(participant.person.displayName),
-          $('<span />').addClass('caption-timestamp').text(timestamp ? strftime('%l:%M %p', timestamp).trim() : '')
+          $('<span />').addClass('caption-timestamp')
         )
       )
       .click($.proxy(this.onClick, this));
@@ -355,6 +353,7 @@ app.participants = {
     }
 
     this.updateAvailability(participant);
+    this.updateTimestamp(participant);
 
     // Refresh scroll position
     app.layout.updateScrollbar();
@@ -460,6 +459,23 @@ app.participants = {
     } else {
       $participant.find('.glyphicon').removeClass('glyphicon-facetime-video').addClass('glyphicon-exclamation-sign');
       $participant.removeClass('available').addClass('busy');
+    }
+  },
+
+  /**
+   * Updates the indicator for the timestamp when the participant's photo was
+   * last updated
+   */
+  updateTimestamp: function(participant) {
+    var $participant = $('#' + this.safeId(participant));
+    var $timestamp = $participant.find('.caption-timestamp');
+
+    var timestamp = (app.data.get(participant.id + '/photo') || '').split(',')[0];
+    if (timestamp) {
+      timestamp = new Date(parseInt(timestamp));
+      $timestamp.text(strftime('%l:%M %p', timestamp).trim())
+    } else {
+      $timestamp.text('');
     }
   }
 };
