@@ -138,6 +138,7 @@
     <script type="text/javascript" src="//s3.amazonaws.com/hangjoy/assets/js/face.js"></script>
     <script type="text/javascript" src="//s3.amazonaws.com/hangjoy/assets/js/sha1.js"></script>
     <script type="text/javascript" src="//s3.amazonaws.com/hangjoy/assets/js/strftime.js"></script>
+    <script type="text/javascript" src="//s3.amazonaws.com/hangjoy/assets/js/webfont.js"></script>
     <script type="text/javascript" src="//s3.amazonaws.com/hangjoy/assets/js/app.core.js"></script>
     <script type="text/javascript" src="//s3.amazonaws.com/hangjoy/assets/js/app.support.js"></script>
     <script type="text/javascript" src="//s3.amazonaws.com/hangjoy/assets/js/app.data.js"></script>

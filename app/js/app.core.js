@@ -24,7 +24,13 @@ var app = {
    * complete
    */
   loadFonts: function(callback) {
-    $.get('//' + this.host + '/assets/fonts/glyphicons-halflings-regular.woff', callback);
+    WebFont.load({
+      custom: {
+        families: ['Glyphicons Halflings'],
+        testStrings: {'Glyphicons Halflings': "\uE008\uE039\uE073\uE111\uE125\uE162\uE171"}
+      },
+      active: callback
+    })
   },
 
   /**
