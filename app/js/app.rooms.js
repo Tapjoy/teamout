@@ -6,10 +6,13 @@ app.rooms = {
   groupId: 'default',
 
   init: function() {
-    var startData = gapi.hangout.getStartData() || app.data.get('startData');
+    var startData = gapi.hangout.getStartData() || app.data.get('room/data');
     if (startData) {
       this.setIdFromData(startData);
     }
+
+    // Merge the room's ids + this user's stored ids
+    this.set('room_ids', this.ids().concat(this.storedIds()), true);
 
     this.updateShareUrl();
     this.update();
@@ -54,10 +57,10 @@ app.rooms = {
    * across multiple calls.
    */
   urlFor: function(roomId) {
-    var hangoutId = this.groupId + ',' + roomId;
-    var hangoutHash = (new jsSHA(hangoutId, 'TEXT')).getHash('SHA-1', 'HEX');
+    var startData = this.groupId + ',' + roomId;
+    var hangoutId = (new jsSHA(startData, 'TEXT')).getHash('SHA-1', 'HEX');
 
-    return 'https://talkgadget.google.com/hangouts/_/widget/' + hangoutHash + '?gid=' + app.id + '&gd=' + hangoutId;
+    return 'https://talkgadget.google.com/hangouts/_/widget/' + hangoutId + '?gid=' + app.id + '&gd=' + startData;
   },
 
   /**
@@ -68,10 +71,52 @@ app.rooms = {
   },
 
   /**
-   * Gets the current list of room ids saved for the user
+   * Gets the list of room ids known within the hangout
    */
   ids: function() {
     return JSON.parse(app.data.get('room/room_ids') || '[]');
+  },
+
+  /**
+   * Gets the list of room ids known by the user
+   */
+  storedIds: function() {
+    return JSON.parse(app.settings.get(this.groupId + '/room_ids') || '[]');
+  },
+
+  /**
+   * Gets the list of room ids the user has requested to not display in the UI
+   */
+  blacklistedIds: function() {
+    return JSON.parse(app.settings.get(this.groupId + '/blacklisted_room_ids') || '[]');
+  },
+
+  /**
+   * Determines whether the given room is blacklisted by the user
+   */
+  isBlacklisted: function(roomId) {
+    return $.inArray(roomId, this.blacklistedIds()) >= 0;
+  },
+
+  /**
+   * Determines whether the given room is whitelisted by the user
+   */
+  isWhitelisted: function(roomId) {
+    return !this.isBlacklisted(roomId);
+  },
+
+  /**
+   * Gets the list of room ids to display in the UI
+   */
+  visibleIds: function() {
+    return $.grep(this.ids(), $.proxy(this.isWhitelisted, this));
+  },
+
+  /**
+   * Determines whether there are any rooms to display
+   */
+  isEmpty: function() {
+    return this.visibleIds().length == 0;
   },
 
   /**
@@ -126,13 +171,15 @@ app.rooms = {
    */
   create: function(roomId) {
     if (roomId) {
-      var roomIds = this.ids();
-      roomIds.push(roomId);
-      roomIds.sort();
-      roomIds = $.unique(roomIds);
-      app.data.set('room/room_ids', JSON.stringify(roomIds));
+      // Determine the new list of ids
+      this.set('room_ids', this.ids().concat([roomId]), true);
 
-      this.add(roomId);
+      // Remove it from the list of blacklisted ids
+      var blacklistedIds = $.grep(this.blacklistedIds(), function(id) { return id != roomId; });
+      this.set('blacklisted_room_ids', blacklistedIds);
+
+      // Update the UI
+      this.update();
       $('#rooms .rooms-create input').val('');
     }
   },
@@ -141,7 +188,7 @@ app.rooms = {
    * Update UI to reflect the current list of room ids
    */
   update: function() {
-    var currentIds = this.ids();
+    var currentIds = this.visibleIds();
     var listedIds = $('#rooms .rooms-other .nav li').map(function() { return $(this).data('roomId'); });
 
     // Add new rooms
@@ -204,19 +251,31 @@ app.rooms = {
    * Removes the given room id from the user's current list
    */
   remove: function(roomId) {
-    var roomIds = this.ids();
-    var index = $.inArray(roomId, roomIds);
-    if (index >= 0) {
-      roomIds.splice(index, 1);
-      app.data.set('room/room_ids', JSON.stringify(roomIds));
-    }
+    // Blacklist the id
+    this.set('blacklisted_room_ids', this.blacklistedIds().concat([roomId]));
 
     // Remove from UI
     $('#room-' + this.safeId(roomId)).remove();
 
-    if (!roomIds.length) {
+    if (this.isEmpty()) {
       // Show the "no rooms" notice
       $('#rooms .rooms-other .rooms-none').show();
+    }
+  },
+
+  /**
+   * Persists the given list of roomIds.  If remote is set, then the data will
+   * also be share with other users in the hangout.
+   */
+  set: function(listName, ids, remote) {
+    ids = $.unique(ids);
+    ids.sort();
+    var data = JSON.stringify(ids);
+
+    app.settings.set(this.groupId + '/' + listName, data);
+
+    if (remote) {
+      app.data.set('room/' + listName, data);
     }
   },
 
