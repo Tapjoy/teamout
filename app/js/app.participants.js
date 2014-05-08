@@ -330,6 +330,8 @@ app.participants = {
           $('<span />').addClass('action-start').text('Start Conversation')
         ),
         $('<div />').addClass('caption').append(
+          $('<span />').addClass('glyphicon glyphicon-certificate'),
+          $('<span />').addClass('glyphicon glyphicon-ok-sign'),
           $('<span />').addClass('caption-name').text(participant.person.displayName),
           $('<span />').addClass('caption-timestamp')
         )
@@ -367,6 +369,7 @@ app.participants = {
     }
 
     this.updateAvailability(participant);
+    this.updatePresence(participant);
     this.updateTimestamp(participant);
 
     // Refresh scroll position
@@ -468,11 +471,27 @@ app.participants = {
 
     var $participant = $('#' + this.safeId(participant));
     if (available) {
-      $participant.find('.glyphicon').addClass('glyphicon-facetime-video').removeClass('glyphicon-exclamation-sign');
+      $participant.find('.action .glyphicon-exclamation-sign').addClass('glyphicon-facetime-video').removeClass('glyphicon-exclamation-sign');
+      $participant.find('.caption .glyphicon-exclamation-sign').addClass('glyphicon-ok-sign').removeClass('glyphicon-exclamation-sign');
       $participant.addClass('available').removeClass('busy');
     } else {
-      $participant.find('.glyphicon').removeClass('glyphicon-facetime-video').addClass('glyphicon-exclamation-sign');
+      $participant.find('.action .glyphicon-facetime-video').removeClass('glyphicon-facetime-video').addClass('glyphicon-exclamation-sign');
+      $participant.find('.caption .glyphicon-ok-sign').removeClass('glyphicon-ok-sign').addClass('glyphicon-exclamation-sign');
       $participant.removeClass('available').addClass('busy');
+    }
+  },
+
+  /**
+   * Updates the presence indicator of a participant
+   */
+  updatePresence: function(participant) {
+    var present = app.data.get(participant.id + '/present') != 'false';
+
+    var $participant = $('#' + this.safeId(participant));
+    if (present) {
+      $participant.addClass('present').removeClass('missing');
+    } else {
+      $participant.removeClass('present').addClass('missing');
     }
   },
 

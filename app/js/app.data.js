@@ -110,6 +110,8 @@ app.data = {
       app.participants.addConversation(participant);
     } else if (resource == 'available') {
       app.participants.updateAvailability(participant);
+    } else if (resource == 'present') {
+      app.participants.updatePresence(participant);
     } else if (resource == 'data') {
       app.rooms.setIdFromData(value);
     } else if (resource == 'room_ids') {

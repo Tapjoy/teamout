@@ -264,8 +264,33 @@ body {
   z-index: 1;
 }
 
+.participants .caption .glyphicon {
+  position: absolute;
+  left: 6px;
+  top: 3px;
+  font-size: 1.6em;
+}
+
+.participants .caption .glyphicon-certificate {
+  top: 4px;
+  font-size: 1.5em;
+}
+
+.participants .caption .glyphicon-ok-sign {
+  color: #53a93f;
+}
+
+.participants > .list-group-item.missing .caption .glyphicon-ok-sign {
+  color: #ead100;
+}
+
+.participants .caption .glyphicon-exclamation-sign {
+  color: #db4437;
+}
+
 .participants .caption-name {
   float: left;
+  padding-left: 24px;
 }
 
 .participants .caption-timestamp {

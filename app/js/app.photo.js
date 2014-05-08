@@ -31,13 +31,25 @@ app.photo = {
   },
 
   /**
-   * The default photo url to use
+   * The default photo url when an actual photo is not available
    */
   defaultUrl: function() {
-    var canvas = $('<canvas />').attr({width: this.width, height: this.height})[0];
-    var context = canvas.getContext('2d');
-    this.filters.silhouette(canvas);
-    return canvas.toDataURL('image/jpeg', this.quality);
+    if (!this._defaultUrl) {
+      var canvas = $('<canvas />').attr({width: this.width, height: this.height})[0];
+      var context = canvas.getContext('2d');
+      context.rect(0, 0, canvas.width, canvas.height);
+      context.fillStyle = '#cccccc';
+      context.fill();
+
+      context.font = '200px Glyphicons Halflings';
+      context.textBaseline = 'bottom';
+      context.fillStyle = '#000000';
+      context.fillText("\uE008", 49, 275);
+
+      this._defaultUrl = canvas.toDataURL('image/jpeg', this.quality);
+    }
+
+    return this._defaultUrl;
   },
 
   /**
@@ -206,15 +218,22 @@ app.photo = {
       context.fillRect(0, 0, canvas.width, canvas.height);
       context.drawImage(video, (canvas.width - width) / 2, (canvas.height - height) / 2, width, height);
 
-      // Save the image
-      this.filter(canvas);
-      var url = canvas.toDataURL('image/jpeg', this.quality);
+      var isPresent = this.isPresent(canvas);
+
+      // Generate url to the image
+      var url;
+      if (app.settings.get('photoPrivacy') == 'silhouette') {
+        url = this.defaultUrl();
+      } else {
+        this.filter(canvas);
+        url = canvas.toDataURL('image/jpeg', this.quality);
+      }
 
       // Stop the stream
       video.pause();
       stream.stop();
 
-      success(url);
+      success(url, isPresent);
     } catch(e) {
       if (e.name == 'NS_ERROR_NOT_AVAILABLE') {
         setTimeout($.proxy(this.captureImage, this, video, stream, success, error), 1000);
@@ -236,9 +255,6 @@ app.photo = {
         break;
       case 'pixelate':
         this.filters.pixelate(canvas, 6);
-        break;
-      case 'silhouette':
-        this.filters.silhouette(canvas);
         break;
     }
   },
@@ -323,30 +339,27 @@ app.photo = {
           }
         }
       }
-    },
-
-    /**
-     * Detects the presence of faces in the photo and draws a silhouette
-     */
-    silhouette: function(canvas) {
-      var faces = ccv.detect_objects({canvas: ccv.pre(canvas), cascade: cascade, interval: 5, min_neighbors: 1});
-
-      var context = canvas.getContext('2d');
-      context.rect(0, 0, canvas.width, canvas.height);
-      context.fillStyle = '#cccccc';
-      context.fill();
-
-      context.font = '200px Glyphicons Halflings';
-      context.textBaseline = 'bottom';
-      context.fillStyle = faces.length ? '#53a93f' : '#000000';
-      context.fillText("\uE008", 49, 275);
     }
+  },
+
+  /**
+   * Determines whether a user is present in the given photo
+   */
+  isPresent: function(canvas) {
+    var faces = ccv.detect_objects({
+      canvas: ccv.pre(canvas),
+      cascade: cascade,
+      interval: 5,
+      min_neighbors: 1
+    });
+
+    return faces.length > 0;
   },
 
   /**
    * Updates the current participant's photo with the given url
    */
-  update: function(url) {
+  update: function(url, isPresent) {
     var id = $.now();
 
     // Clean up old, outdated photos
@@ -364,5 +377,8 @@ app.photo = {
     // Update the reference for the photo
     var partsCount = Math.ceil(url.length / this.partSize);
     app.data.set(app.participant.id + '/photo', id + ',' + partsCount);
+
+    // Update presence
+    app.data.set(app.participant.id + '/present', isPresent + '');
   }
 };
