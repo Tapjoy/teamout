@@ -324,16 +324,16 @@ app.participants = {
       .addClass('thumbnail')
       .append(
         $('<img />').attr({src: url}).addClass('img-thumbnail'),
-        $('<div />').addClass('action').append(
-          $('<ul />').addClass('hanging_with list-group'),
-          $('<span />').addClass('glyphicon glyphicon-facetime-video'),
-          $('<span />').addClass('action-start').text('Start Conversation')
-        ),
         $('<div />').addClass('caption').append(
           $('<span />').addClass('glyphicon glyphicon-certificate'),
           $('<span />').addClass('glyphicon glyphicon-ok-sign'),
           $('<span />').addClass('caption-name').text(participant.person.displayName),
           $('<span />').addClass('caption-timestamp')
+        ),
+        $('<div />').addClass('action').append(
+          $('<ul />').addClass('hanging_with list-group'),
+          $('<span />').addClass('glyphicon glyphicon-facetime-video'),
+          $('<span />').addClass('action-start').text('Start Conversation')
         )
       )
       .click($.proxy(this.onClick, this));
