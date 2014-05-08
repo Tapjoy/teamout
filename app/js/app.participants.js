@@ -53,7 +53,21 @@ app.participants = {
    * Gets a list of all participants in the hangout (excluding the current user)
    */
   all: function() {
-    return $.grep(gapi.hangout.getParticipants(), function(participant) { return participant.id != app.participant.id; });
+    var googleIds = {};
+    var all = [];
+
+    var participants = gapi.hangout.getParticipants();
+    for (var i = 0; i < participants.length; i++) {
+      var participant = participants[i];
+      var googleId = participant.person.id;
+
+      if (googleId != app.participant.googleId && !googleIds[googleId]) {
+        googleIds[googleId] = true;
+        all.push(participant);
+      }
+    }
+
+    return all;
   },
 
   /**
