@@ -379,6 +379,6 @@ app.photo = {
     app.data.set(app.participant.id + '/photo', id + ',' + partsCount);
 
     // Update presence
-    app.data.set(app.participant.id + '/present', isPresent + '');
+    app.data.set(app.participant.id + '/present', id + ',' + isPresent);
   }
 };

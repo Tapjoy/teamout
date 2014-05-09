@@ -80,10 +80,19 @@ app.participants = {
   },
 
   /**
-   * Determines whether the given participant is present in the hangout
+   * Determines whether the given participant is valid in the hangout
+   */
+  isValid: function(participant) {
+    return $.inArray(participant.id, this.ids()) != -1;
+  },
+
+  /**
+   * Determines whether the given participant is present
    */
   isPresent: function(participant) {
-    return $.inArray(participant.id, this.ids()) != -1;
+    var data = app.data.get(participant.id + '/present') || '';
+    var isPresent = data.split(',')[1];
+    return isPresent != 'false';
   },
 
   /**
@@ -217,7 +226,7 @@ app.participants = {
    * Updates the avatar for the given participant
    */
   updateAvatar: function(participant) {
-    if (this.isPresent(participant)) {
+    if (this.isValid(participant)) {
       gapi.hangout.av.setAvatar(participant.id, this.avatarUrl(participant));
     }
   },
@@ -278,7 +287,7 @@ app.participants = {
    * Updates the photo for the given participant
    */
   updatePhoto: function(participant) {
-    if (this.isPresent(participant)) {
+    if (this.isValid(participant)) {
       var $participant = $('#' + this.safeId(participant));
 
       if ($participant.length) {
@@ -485,10 +494,8 @@ app.participants = {
    * Updates the presence indicator of a participant
    */
   updatePresence: function(participant) {
-    var present = app.data.get(participant.id + '/present') != 'false';
-
     var $participant = $('#' + this.safeId(participant));
-    if (present) {
+    if (this.isPresent(participant)) {
       $participant.addClass('present').removeClass('missing');
     } else {
       $participant.removeClass('present').addClass('missing');
@@ -503,9 +510,12 @@ app.participants = {
     var $participant = $('#' + this.safeId(participant));
     var $timestamp = $participant.find('.caption-timestamp');
 
-    var timestamp = (app.data.get(participant.id + '/photo') || '').split(',')[0];
+    var photoTime = parseInt((app.data.get(participant.id + '/photo') || '').split(',')[0]);
+    var presenceTime = parseInt((app.data.get(participant.id + '/present') || '').split(',')[0]);
+    var timestamp = photoTime && presenceTime ? Math.max(photoTime, presenceTime) : photoTime || presenceTime;
+
     if (timestamp) {
-      timestamp = new Date(parseInt(timestamp));
+      timestamp = new Date(timestamp);
       $timestamp.text(strftime('%l:%M %p', timestamp).trim())
     } else {
       $timestamp.text('');
