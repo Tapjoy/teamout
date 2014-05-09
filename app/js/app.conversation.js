@@ -107,7 +107,7 @@ app.conversation = {
       app.participant.updateHangingWith(participantIds);
     }
 
-    if (app.participants.isPresent(participant)) {
+    if (app.participants.isValid(participant)) {
       // Mute the participant
       app.participants.mute(participant, true);
 
