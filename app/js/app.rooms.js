@@ -11,8 +11,12 @@ app.rooms = {
       this.setIdFromData(startData);
     }
 
-    // Merge the room's ids + this user's stored ids
-    this.set('room_ids', this.ids().concat(this.storedIds()), true);
+    // Merge the room's ids + this user's stored ids + this room's id
+    var ids = this.ids().concat(this.storedIds());
+    if (this.id != 'default') {
+      ids.push(this.id);
+    }
+    this.set('room_ids', ids, true);
 
     this.updateShareUrl();
     this.update();
@@ -109,7 +113,9 @@ app.rooms = {
    * Gets the list of room ids to display in the UI
    */
   visibleIds: function() {
-    return $.grep(this.ids(), $.proxy(this.isWhitelisted, this));
+    return $.grep(this.ids(), $.proxy(function(id) {
+      return id != this.id && this.isWhitelisted(id);
+    }, this));
   },
 
   /**
