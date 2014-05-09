@@ -72,6 +72,7 @@ app.rooms = {
    */
   updateShareUrl: function() {
     $('#rooms .rooms-share input').val(this.url());
+    $('#rooms .rooms-share .rooms-share-name').text('@' + this.id);
   },
 
   /**

@@ -110,7 +110,7 @@
           </div>
           <div class="modal-body">
             <div class="form-group rooms-share">
-              <label for="room-share">Link to share</label>
+              <label for="room-share">Link to share (<span class="rooms-share-name">@default</span>)</label>
               <input type="email" class="form-control" id="room-share" readonly="readonly">
             </div>
             <div class="form-group rooms-other">
