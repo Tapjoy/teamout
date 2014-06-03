@@ -7,18 +7,27 @@ Google Hangouts for Teams
 Changes:
  * Change Leave button to be on the same row as the conversation
  * Add help menu
- * Fix timing issue of video light
- * Use submitDelta instead of setValue
 
 Cleanup tasks:
- * Add package builder (with css / js)
- * Switch to a layout engine
  * Update README
+
+## Setup
+
+```
+sudo apt-get install rpm
+npm install
+```
 
 ## Deployment
 
-To deploy the application, simply:
+To deploy the application for development:
 
 ```
-script/deploy
+make all
+```
+
+To deploy the application in production:
+
+```
+TARGET=production make all deploy
 ```

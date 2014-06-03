@@ -1,0 +1,27 @@
+{{#user}}
+<a class="thumbnail" href="#" on-click="join:{{this}}">
+  {{#photos:index}}
+    <img class="img-thumbnail img-thubmnail-{{index}}" src="{{this}}" intro="fade:{duration:500}" />
+  {{/photos}}
+  <div class="caption">
+    <span class="glyphicon glyphicon-certificate"></span>
+    <span class="glyphicon {{#available}}glyphicon-ok-sign{{/available}} {{^available}}glyphicon-exclamation-sign{{/available}}"></span>
+    <span class="caption-name">{{name}}</span>
+    <span class="caption-timestamp">
+      {{#lastUpdatedAt}}
+        {{formatTimestamp(lastUpdatedAt, '%l:%M %p')}}
+      {{/lastUpdatedAt}}
+    </span>
+  </div>
+  <div class="action">
+    {{#conversation}}
+      <conversation user="{{this}}" />
+    {{/conversation}}
+    <span class="glyphicon {{#available}}glyphicon-facetime-video{{/available}} {{^available}}glyphicon-exclamation-sign{{/available}}"></span>
+    <span class="action-start">
+      {{#conversation}}Join Conversation{{/conversation}}
+      {{^conversation}}Start Conversation{{/conversation}}
+    </span>
+  </div>
+</a>
+{{/user}}

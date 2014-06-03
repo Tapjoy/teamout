@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<Module>
+  <ModulePrefs title="Hangjoy">
+    <Require feature="rpc" />
+    <Require feature="views" />
+    <Require feature="locked-domain" />
+  </ModulePrefs>
+  <Content type="html"><![CDATA[
+<!DOCTYPE html>
+<html style="height: 100%" lang="en">
+  <head>
+    <link href="//$ENV(host)/assets/css/main.css" rel="stylesheet">
+  </head>
+  <body style="height: 100%">
+    <div id="container">
+    </div>
+    <script type="text/javascript" src="//plus.google.com/hangouts/_/api/v1/hangout.js"></script>
+    <script type="text/javascript" src="//$ENV(host)/assets/js/main.js"></script>
+  </body>
+]]>
+</Content>
+</Module>

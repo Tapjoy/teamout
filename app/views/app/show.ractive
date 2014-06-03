@@ -1,0 +1,10 @@
+<settings user="{{app.user}}" />
+
+<div class="app-content">
+  <div class="nano">
+    <div class="nano-content">
+      <conversation user="{{app.user}}" />
+      <users users="{{app.room.users}}">
+    </div>
+  </div>
+</div>

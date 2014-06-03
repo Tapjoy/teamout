@@ -1,0 +1,4 @@
+<label class="btn btn-notifications {{#useAppNotifications}}active{{/useAppNotifications}}" data-toggle="tooltip" data-title-off="Turn notifications off" data-title-on="Turn notifications on">
+  <input type="checkbox" checked="{{useAppNotifications}}">
+  <span class="glyphicon glyphicon-bullhorn"></span>
+</label>

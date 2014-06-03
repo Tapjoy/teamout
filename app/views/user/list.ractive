@@ -1,0 +1,23 @@
+{{^isEmpty}}
+<ul class="users list-group">
+  {{#users}}
+    {{^authorized}}{{#isJoinable(this)}}
+      <li class="
+        list-group-item
+        {{^present}}missing{{/present}}
+        {{#available}}available{{/available}}
+        {{^available}}busy{{/available}}
+        {{#conversation}}conversing{{/conversation}}">
+        <user user="{{this}}" />
+      </li>
+    {{/isJoinable}}{{/authorized}}
+  {{/users}}
+</ul>
+{{/isEmpty}}
+
+{{#isEmpty}}
+<div class="alert alert-info users-empty">
+  <span class="glyphicon glyphicon-user"></span>
+  <span class="caption">There are no other users in the room.</span>
+</div>
+{{/isEmpty}}

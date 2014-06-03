@@ -1,0 +1,14 @@
+{{#user.conversation}}
+<div class="conversation">
+  <span class="title glyphicon glyphicon-facetime-video"></span>
+  <ul class="avatars list-group">
+    {{#users}}
+      <li class="list-group-item">
+        <div class="thumbnail" title="{{name}}">
+          <img class="img-thumbnail" src="{{avatar.imageUrl}}" />
+        </div>
+      </li>
+    {{/users}}
+  </ul>
+</div>
+{{/user.conversation}}

@@ -1,0 +1,4 @@
+<label class="btn btn-sounds {{#muteSounds}}active{{/muteSounds}}" data-toggle="tooltip" data-title-off="Mute sounds" data-title-on="Unmute sounds">
+  <input type="checkbox" checked="{{muteSounds}}">
+  <span class="glyphicon glyphicon-volume-off"></span>
+</label>

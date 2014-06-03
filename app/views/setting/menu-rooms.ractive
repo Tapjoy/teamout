@@ -1,0 +1,3 @@
+<button type="button" on-click="showRoomDirectory" class="btn btn-rooms" data-toggle="tooltip modal" title="List rooms">
+  <span class="glyphicon glyphicon-list"></span>
+</button>

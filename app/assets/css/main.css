@@ -1,0 +1,409 @@
+html, body {
+  width: 100%;
+  height: 100%;
+}
+
+body {
+  background: #f7f7f7;
+}
+
+#container {
+  width: 100%;
+  height: 100%;
+}
+
+.nano .nano-pane {
+  background: #888;
+}
+
+.nano .nano-slider {
+  background: #111;
+}
+
+.nano > .nano-content,
+.nano > .nano-content:focus {
+  outline: 0;
+}
+
+.modal-dialog {
+  top: 40px;
+}
+
+.modal-header {
+  padding: 8px 12px 5px;
+}
+
+.modal-header h4 {
+  font-size: 15px;
+}
+
+.modal-body {
+  padding: 10px 15px;
+}
+
+.tooltip.bottom .tooltip-arrow {
+  border-bottom-color: rgba(0, 0, 0, 0.8);
+}
+
+.tooltip-inner {
+  padding: 4px 10px;
+  border-radius: 11px;
+  font-size: 13px;
+  background-color: rgba(0, 0, 0, 0.8);
+}
+
+.menubar {
+  width: 100%;
+}
+
+.menubar.btn-group .btn + .btn,
+.menubar.btn-group .btn + .btn-group,
+.menubar.btn-group .btn-group + .btn,
+.menubar.btn-group .btn-group + .btn-group {
+  margin-left: 0;
+}
+
+.menubar > .btn {
+  width: 14%;
+  height: 41px;
+}
+
+.menubar > .btn,
+.menubar > .btn-dropdown,
+.menubar > .btn-dropdown .dropdown-toggle {
+  padding: 9px 0;
+  background: #000000;
+  box-shadow: none;
+  outline: none;
+  border: none;
+  border-radius: 0;
+}
+
+.menubar > .btn > span,
+.menubar > .btn-dropdown .dropdown-toggle {
+  color: #ffffff;
+}
+
+.menubar > .btn.active {
+  background-color: #db4437;
+}
+
+.menubar > .btn:hover,
+.menubar > .btn:active {
+  background: #262626;
+}
+
+.menubar > .btn.active:hover,
+.menubar > .btn.active:active {
+  background: #b0372d;
+}
+
+.menubar > .btn > .glyphicon {
+  font-size: 1.3em;
+}
+
+.menubar > .btn > input {
+  display: none;
+}
+
+.menubar > .btn-dropdown {
+  width: 9%;
+}
+
+.menubar > .btn-dropdown .dropdown-toggle {
+  width: 100%;
+  padding: 0;
+  background: transparent;
+}
+
+.menubar > .btn-dropdown .dropdown-menu {
+  text-align: left;
+  cursor: default;
+}
+
+.menubar > .btn-photo-dropdown .dropdown-menu {
+  padding: 10px 15px 2px;
+}
+
+.menubar > .btn-photo-dropdown select {
+  width: 160px;
+}
+
+.menubar > .btn-photo-dropdown .setting-unmute_video {
+  margin-top: 0;
+}
+
+.menubar > .btn-photo-dropdown .setting-unmute_video,
+.menubar > .btn-photo-dropdown .setting-unmute_video input {
+  cursor: pointer;
+}
+
+.menubar > .btn-leave {
+  width: 21%;
+  padding: 10px 0 11px;
+  margin-left: 0;
+}
+
+.menubar > .btn-leave.active {
+  background: #000000;
+}
+
+.menubar > .btn-leave.btn-danger.active {
+  background-color: #d9534f;
+  border-color: #d43f3a;
+}
+
+.app-content {
+  position: absolute;
+  top: 41px;
+  right: 0;
+  bottom: 1px;
+  left: 0;
+}
+
+.conversation {
+  position: relative;
+  width: 100%;
+  height: 35px;
+  padding: 2px;
+  border-bottom: 1px solid #d6e9c6;
+  background: #dff0d8;
+}
+
+.conversation .title {
+  display: block;
+  float: left;
+  padding: 3px 11px 0 7px;
+  font-size: 1.6em;
+}
+
+.conversation .avatars {
+  margin: 0;
+  box-shadow: none;
+  overflow: hidden;
+  height: 30px;
+}
+
+.conversation .avatars .list-group-item {
+  float: left;
+  padding: 0 4px 0 0;
+  border: none;
+  background: none;
+}
+
+.conversation .avatars .thumbnail {
+  width: 30px;
+  height: 30px;
+  margin: 0;
+  padding: 0;
+  border: none;
+  box-shadow: none;
+  background: none;
+  cursor: default;
+}
+
+.conversation .avatars .thumbnail img {
+  width: 30px;
+  height: 30px;
+  padding: 0;
+  border: none;
+  box-shadow: none;
+}
+
+.conversation .avatars .thumbnail,
+.conversation .avatars .thumbnail img {
+  -webkit-transition: none;
+  -moz-transition: none;
+  -o-transition: none;
+  transition: none;
+}
+
+.users-empty {
+  width: 90%;
+  margin: 15px auto 0;
+  text-align: center;
+  font-size: 1.2em;
+}
+
+.users-empty .glyphicon {
+  display: block;
+  margin-bottom: 10px;
+  font-size: 2em;
+}
+
+.users.list-group {
+  box-shadow: none;
+}
+
+.users > .list-group-item {
+  padding: 10px 20px;
+  border: none;
+  background: none;
+}
+
+.users > .list-group-item > .thumbnail {
+  position: relative;
+  width: 256px;
+  height: 193px;
+  padding: 0;
+  margin: 0 auto;
+  text-decoration: none;
+}
+
+.users > .list-group-item > .thumbnail > img {
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  height: 191px;
+  max-width: 254px;
+  padding: 0;
+  z-index: 1;
+  -webkit-backface-visibility: hidden;
+}
+
+.users > .list-group-item > .thumbnail,
+.users > .list-group-item > .thumbnail > img {
+  -webkit-transition: none;
+  -moz-transition: none;
+  -o-transition: none;
+  transition: none;
+}
+
+.users .caption {
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  padding: 5px 9px;
+  color: #ffffff;
+  background: rgba(42, 159, 214, 0.4);
+  z-index: 1;
+}
+
+.users .caption .glyphicon {
+  position: absolute;
+  left: 6px;
+  top: 3px;
+  font-size: 1.6em;
+}
+
+.users .caption .glyphicon-certificate {
+  top: 4px;
+  font-size: 1.5em;
+}
+
+.users .caption .glyphicon-ok-sign {
+  color: #53a93f;
+}
+
+.users > .list-group-item.missing .caption .glyphicon-ok-sign {
+  color: #ead100;
+}
+
+.users .caption .glyphicon-exclamation-sign {
+  color: #db4437;
+}
+
+.users .caption-name {
+  float: left;
+  padding-left: 24px;
+}
+
+.users .caption-timestamp {
+  float: right;
+}
+
+.users .action {
+  position: absolute;
+  display: none;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  text-align: center;
+  color: #ffffff;
+  font-size: 1.2em;
+  background: rgba(42, 159, 214, 0.3);
+  z-index: 1;
+}
+
+.users > .list-group-item.conversing .action {
+  display: block;
+}
+
+.users > .list-group-item.conversing .action > * {
+  display: none;
+}
+
+.users > .list-group-item.busy .action {
+  background: rgba(216, 74, 56, 0.3);
+}
+
+.users .action .glyphicon {
+  display: block;
+  font-size: 2.5em;
+  margin: 55px 0 10px;
+}
+
+.users .conversation {
+  position: absolute;
+  display: block;
+  top: 4px;
+  left: 4px;
+  right: 0;
+  background: none;
+  border-bottom: none;
+  box-shadow: none;
+  text-align: left;
+}
+
+.users .conversation .title {
+  display: none;
+}
+
+.users > .list-group-item > .thumbnail:hover .action,
+.users > .list-group-item > .thumbnail:hover .action > * {
+  display: block;
+}
+
+#rooms .modal-body {
+  padding-bottom: 0;
+}
+
+.rooms .form-group label {
+  font-size: 13px;
+}
+
+.rooms .form-control {
+  height: 28px;
+  padding: 6px 8px;
+}
+
+.rooms .rooms-other .rooms-none {
+  display: block;
+}
+
+.rooms .rooms-other .nav > li {
+  position: relative;
+}
+
+.rooms .rooms-other .nav > li a {
+  padding: 6px 12px;
+}
+
+.rooms .rooms-other .nav > li .glyphicon {
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  padding: 8px 8px 0 0;
+  cursor: pointer;
+}
+
+.rooms .rooms-create input {
+  display: inline-block;
+  width: 150px;
+  margin-right: 8px;
+}

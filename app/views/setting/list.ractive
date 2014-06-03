@@ -1,0 +1,10 @@
+<div class="menubar btn-group">
+  {{#user}}
+    {{>menuPhoto}}
+    {{>menuAvailable}}
+    {{>menuSounds}}
+    {{>menuNotifications}}
+    {{>menuRooms}}
+    {{>menuConversation}}
+  {{/user}}
+</div>

@@ -1,0 +1,45 @@
+<label class="btn btn-photo {{#photoDisabled}}active{{/photoDisabled}} {{^photoSupported}}disabled{{/photoSupported}}" data-toggle="tooltip" data-title-off="Turn snapshots off" data-title-on="Turn snapshots on">
+  <input type="checkbox" checked="{{photoDisabled}}">
+  <span class="glyphicon glyphicon-camera"></span>
+</label>
+<div class="btn btn-dropdown btn-photo-dropdown {{^photoSupported}}disabled{{/photoSupported}}">
+  <button type="button" class="btn dropdown-toggle">
+    <span class="glyphicon glyphicon-chevron-down"></span>
+  </button>
+  <div class="dropdown-menu">
+    <div class="form-group setting-unmute_video checkbox">
+      <label>
+        <input type="checkbox" checked="{{unmuteVideo}}"> Auto-unmute video
+      </label>
+    </div>
+    <div class="form-group setting-photo_privacy">
+      <label>Photo privacy:</label>
+      <select class="form-control" value="{{photoPrivacy}}">
+        {{#photoPrivacies}}
+          <option value="{{value}}">{{name}}</option>
+        {{/photoPrivacies}}
+      </select>
+    </div>
+    <div class="form-group setting-photo_interval">
+      <label>Photo interval:</label>
+      <select class="form-control" value="{{photoInterval}}">
+        {{#photoIntervals}}
+          <option value="{{value}}">{{name}}</option>
+        {{/photoIntervals}}
+      </select>
+    </div>
+    {{#photoSources.length}}
+    <div class="form-group setting-photo_source">
+      <label>Photo Source:</label>
+      <select class="form-control" value="{{photoSource}}">
+        {{#photoSources}}
+          <option value="{{id}}">
+            {{#label}}{{label}}{{/label}}
+            {{^label}}Default{{/label}}
+          </option>
+        {{/photoSources}}
+      </select>
+    </div>
+    {{/photoSources}}
+  </div>
+</div>

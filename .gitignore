@@ -1,0 +1,8 @@
+build/
+node_modules/
+public/
+vendor/*
+vendor/*/
+!vendor/ccv
+!vendor/ractive-adaptors-backbone
+*.log
