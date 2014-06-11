@@ -14,6 +14,13 @@ var Users = Collection.extend({
    */
   joinable: function() {
     return this.filter(function(user) { return user.isJoinable(); });
+  },
+
+  /**
+   * Mutes all users in the collection
+   */
+  mute: function(options) {
+    this.each(function(user) { user.mute(options); });
   }
 });
 

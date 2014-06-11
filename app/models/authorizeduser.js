@@ -236,6 +236,7 @@ var AuthorizedUser = User.extend({
       conversation.on({adduser: this._onJoinUser, removeuser: this._onLeaveUser}, this);
     } else {
       this.mute();
+      app.get('room').get('users').mute();
       this.get('camera').timeLapse();
     }
   },
