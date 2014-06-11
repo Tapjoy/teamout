@@ -1,5 +1,5 @@
 {
-  "nextFreeModuleId": 64,
+  "nextFreeModuleId": 65,
   "modules": {
     "byIdentifier": {
       "/home/aaron/Projects/hangjoy/app/main.js": 0,
@@ -65,13 +65,16 @@
       "/home/aaron/Projects/hangjoy/app/views/shared/dialog.js": 60,
       "/home/aaron/Projects/hangjoy/node_modules/ractive-loader/index.js!/home/aaron/Projects/hangjoy/app/views/shared/dialog.ractive": 61,
       "/home/aaron/Projects/hangjoy/vendor/ractive-adaptors-backbone/index.js": 62,
-      "/home/aaron/Projects/hangjoy/node_modules/exports-loader/index.js?stackBlurImage&stackBlurCanvasRGB&stackBlurCanvasRGBA!/home/aaron/Projects/hangjoy/vendor/StackBlur/index.js": 63
+      "/home/aaron/Projects/hangjoy/node_modules/exports-loader/index.js?stackBlurImage&stackBlurCanvasRGB&stackBlurCanvasRGBA!/home/aaron/Projects/hangjoy/vendor/StackBlur/index.js": 63,
+      "/home/aaron/Projects/hangjoy/test/app/hangout.js": 0,
+      "/home/aaron/Projects/hangjoy/node_modules/ractive-loader/index.js!/home/aaron/Projects/hangjoy/test/app/hangout.ractive": 64
     }
   },
-  "nextFreeChunkId": 1,
+  "nextFreeChunkId": 2,
   "chunks": {
     "byName": {
-      "main": 0
+      "main": 0,
+      "hangout": 1
     },
     "byBlocks": {}
   }

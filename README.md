@@ -81,9 +81,23 @@ Configuration:
 
 ## Setup
 
+Install:
+
 ```
 sudo apt-get install rpm
 npm install
+bower install
+```
+
+Run:
+
+```
+./bin/hangjoy
+```
+
+Load:
+```
+http://localhost:3000/
 ```
 
 ## Deployment
@@ -117,9 +131,9 @@ make all
 ```
 
 This will build the app at `public/development/` and expect the app to be loaded
-at `//localhost/hangjoy/public/development/`.  Simply upload `public/development/main.xml`
+at `//localhost:3000/development/`.  Simply upload `public/development/main.xml`
 to a publicly available location and configure the Google Gadget XML file as
-`http://my.location/hangjoy/development/main.xml`.
+`http://my.location/development/main.xml`.
 
 Note that Google Hangouts runs in `https` -- and therefore your local environment
 must also support that protocol.

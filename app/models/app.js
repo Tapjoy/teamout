@@ -20,10 +20,19 @@ var App = Model.extend({
       platform: false,
       fonts: false
     },
-    host: $('script').filter(function() {
-      var src = $(this).attr('src');
-      return src && src.indexOf('assets/js/main.js') >= 0;
-    }).attr('src').match(/\/\/(.*)\/assets\/js\/main\.js/)[1]
+    host: (function() {
+      var src = $('script').filter(function() {
+        var src = $(this).attr('src');
+        return src && src.indexOf('assets/js/main.js') >= 0;
+      }).attr('src');
+
+      var match = src && src.match(/\/\/(.*)\/assets\/js\/main\.js/);
+      if (match) {
+        return match[1];
+      } else {
+        return location.host;
+      }
+    })()
   },
 
   initialize: function() {

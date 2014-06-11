@@ -1,0 +1,19 @@
+{{#hangout}}
+<ul id="settings">
+  <li>Camera Muted: {{cameraMute}}</li>
+  <li>Microphone Muted: {{microphoneMute}}</li>
+  <li>API Ready: {{apiReady}}</li>
+  <li>Local Participant Video Mirrored: {{localParticipantVideoMirrored}}</li>
+  <li>Local Audio Notifications Muted: {{localAudioNotificationsMuted}}</li>
+  <li>Chat Pane Visible: {{chatPaneVisible}}</li>
+  <li>Displayed Participant: {{displayedParticipant}}</li>
+</ul>
+
+<ul id="participants">
+  {{#participants}}
+  <li>
+    <img src="{{avatar}}" /> {{name}} ({{googleId}}), Visible: {{visible}}, Audible: {{audible}}
+  </li>
+  {{/participants}}
+</ul>
+{{/hangout}}

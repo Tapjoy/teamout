@@ -22,7 +22,7 @@ HOST ?= s3.amazonaws.com\/$(S3_BUCKET)
 xml: clean
 release: min version
 else ifeq ($(TARGET), development)
-HOST ?= localhost\/hangjoy\/public
+HOST ?= localhost:3000
 endif
 
 all: xml js css media release

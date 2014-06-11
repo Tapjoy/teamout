@@ -4,7 +4,8 @@ var root = __dirname + "/..";
 module.exports = {
   context: root + "/app",
   entry: {
-    main: "./main.js"
+    main: "./main.js",
+    hangout: "../test/app/hangout.js"
   },
   output: {
     path: __dirname + "/../public/assets/js",

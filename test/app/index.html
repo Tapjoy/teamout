@@ -1,0 +1,30 @@
+<html lang="en">
+  <head>
+    <style>
+      #widget {
+        position: absolute;
+        top: 0;
+        right: 0;
+        height: 99%;
+        width: 300px;
+        border-left: 1px solid #000000;
+      }
+
+      #participants img {
+        width: 30px;
+        height: 30px;
+      }
+    </style>
+  </head>
+  <body>
+    <script>window.gapi = {};</script>
+
+    <div id="hangout"></div>
+    <iframe src="about:blank" id="widget"></iframe>
+
+    <script type="text/javascript" src="/development/assets/js/hangout.js"></script>
+    <script>
+      document.getElementById('widget').src = 'widget.html';
+    </script>
+  </body>
+</html>
