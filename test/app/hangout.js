@@ -52,19 +52,31 @@ var Hangout = Backbone.Model.extend({
       }
     }, this);
     this.on('change:cameraMute', function(self, value) {
-      this.trigger('cameramute', {isCameraMute: value});
+      setTimeout(_.bind(function() {
+        this.trigger('cameramute', {isCameraMute: value});
+      }, this), 0);
     }, this);
     this.on('change:microphoneMute', function(self, value) {
-      this.trigger('microphonemute', {isMicrophoneMute: value});
+      setTimeout(_.bind(function() {
+        this.trigger('microphonemute', {isMicrophoneMute: value});
+      }, this), 0);
     }, this);
     this.on('change:displayedParticipant', function(self, value) {
-      this.trigger('displayedparticipantchanged', {displayedParticipant: value});
+      if (value) {
+        setTimeout(_.bind(function() {
+          this.trigger('displayedparticipantchanged', {displayedParticipant: value});
+        }, this), 0);
+      }
     }, this);
     this.get('participants').on('add', function(participant) {
-      this.trigger('participantsadded', {addedParticipants: [participant.toJSON()]});
+      setTimeout(_.bind(function() {
+        this.trigger('participantsadded', {addedParticipants: [participant.toJSON()]});
+      }, this), 0);
     }, this);
     this.get('participants').on('remove', function(participant) {
-      this.trigger('participantsremoved', {removedParticipants: [participant.toJSON()]});
+      setTimeout(_.bind(function() {
+        this.trigger('participantsremoved', {removedParticipants: [participant.toJSON()]});
+      }, this), 0);
     }, this);
 
     // Bind functions to this object
