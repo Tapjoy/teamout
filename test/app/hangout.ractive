@@ -12,7 +12,7 @@
 <ul id="participants">
   {{#participants}}
   <li>
-    <img src="{{avatar}}" /> {{name}} ({{googleId}}), Visible: {{visible}}, Audible: {{audible}}
+    <img src="{{avatar}}" /> {{name}} ({{googleId}}){{^authorized}}, Visible: {{visible}}, Audible: {{audible}}{{/authorized}}
   </li>
   {{/participants}}
 </ul>

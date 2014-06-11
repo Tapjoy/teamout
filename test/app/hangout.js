@@ -10,7 +10,8 @@ var Participant = Backbone.Model.extend({
     name: null,
     avatar: null,
     visible: true,
-    audible: true
+    audible: true,
+    authorized: false
   },
 
   toJSON: function() {
@@ -42,7 +43,7 @@ var Hangout = Backbone.Model.extend({
 
   initialize: function() {
     // Add default participant
-    this.get('participants').add({id: 'session-default', googleId: 'default', name: 'Ben Zelano'});
+    this.get('participants').add({id: 'session-default', googleId: 'default', name: 'Ben Zelano', authorized: true});
 
     // Hook up events
     this.on('change:apiready', function(self, value) {
