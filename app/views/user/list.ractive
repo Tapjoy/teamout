@@ -17,7 +17,7 @@
 
 {{#isEmpty}}
 <div class="alert alert-info users-empty">
-  <span class="glyphicon glyphicon-user"></span>
+  <span class="glyphicon glyphicon-group"></span>
   <span class="caption">There are no other users in the room.</span>
 </div>
 {{/isEmpty}}

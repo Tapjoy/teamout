@@ -14,6 +14,7 @@ CSS = \
 	vendor/bootstrap/dist/css/bootstrap.css \
 	vendor/bootstrap/dist/css/bootstrap-theme.css \
 	vendor/nanoscroller/bin/css/nanoscroller.css \
+	app/assets/css/glyphicons.css \
 	app/assets/css/main.css
 VERSION = development
 

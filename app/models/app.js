@@ -47,8 +47,8 @@ var App = Model.extend({
     // Track when fonts are ready
     WebFont.load({
       custom: {
-        families: ['Glyphicons Halflings'],
-        testStrings: {'Glyphicons Halflings': "\uE008\uE039\uE073\uE111\uE125\uE162\uE171"}
+        families: ['Glyphicons Regular'],
+        testStrings: {'Glyphicons Regular': "\uE008\uE039\uE073\uE111\uE125\uE162\uE171"}
       },
       active: _.bind(this.ready, this, 'fonts')
     });

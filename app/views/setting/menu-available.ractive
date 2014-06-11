@@ -1,4 +1,4 @@
 <label class="btn btn-available {{#busy}}active{{/busy}}" data-toggle="tooltip" data-title-off="Show as busy" data-title-on="Show as available">
   <input type="checkbox" checked="{{busy}}">
-  <span class="glyphicon glyphicon-exclamation-sign"></span>
+  <span class="glyphicon glyphicon-circle_exclamation_mark"></span>
 </label>

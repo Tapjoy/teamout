@@ -154,7 +154,7 @@ var Photo = Model.extend({
       context.fillStyle = '#cccccc';
       context.fill();
 
-      context.font = '200px Glyphicons Halflings';
+      context.font = '200px Glyphicons Regular';
       context.textBaseline = 'bottom';
       context.fillStyle = '#000000';
       context.fillText("\uE008", 49, 275);

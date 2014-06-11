@@ -4,7 +4,7 @@
 </label>
 <div class="btn btn-dropdown btn-photo-dropdown {{^photoSupported}}disabled{{/photoSupported}}">
   <button type="button" class="btn dropdown-toggle">
-    <span class="glyphicon glyphicon-chevron-down"></span>
+    <span class="glyphicon glyphicon-chevron-right glyphicon-rotate-right"></span>
   </button>
   <div class="dropdown-menu">
     <div class="form-group setting-unmute_video checkbox">
