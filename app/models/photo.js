@@ -157,7 +157,7 @@ var Photo = Model.extend({
       context.font = '200px Glyphicons Regular';
       context.textBaseline = 'bottom';
       context.fillStyle = '#000000';
-      context.fillText("\uE008", 49, 275);
+      context.fillText("\uE004", 49, 275);
 
       this._defaultUrl = canvas.toDataURL('image/jpeg');
     }

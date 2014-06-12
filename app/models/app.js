@@ -48,7 +48,7 @@ var App = Model.extend({
     WebFont.load({
       custom: {
         families: ['Glyphicons Regular'],
-        testStrings: {'Glyphicons Regular': "\uE008\uE039\uE073\uE111\uE125\uE162\uE171"}
+        testStrings: {'Glyphicons Regular': "\uE004\uE039\uE073\uE111\uE125\uE162\uE171"}
       },
       active: _.bind(this.ready, this, 'fonts')
     });
