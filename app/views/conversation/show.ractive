@@ -1,6 +1,6 @@
 {{#user.conversation}}
 <div class="conversation">
-  <span class="title glyphicon glyphicon-facetime-video"></span>
+  <span class="title glyphicon glyphicon-facetime_video"></span>
   <ul class="avatars list-group">
     {{#users}}
       {{^authorized}}

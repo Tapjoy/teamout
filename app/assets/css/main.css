@@ -284,25 +284,29 @@ body {
 
 .users .caption .glyphicon {
   position: absolute;
-  left: 6px;
   top: 3px;
+  left: 6px;
   font-size: 1.6em;
 }
 
-.users .caption .glyphicon-certificate {
-  top: 4px;
-  font-size: 1.5em;
+.users .caption .glyphicon-circle_background {
+  width: 19px;
+  height: 19px;
+  top: 5px;
+  left: 7px;
+  background: #ffffff;
+  border-radius: 13px;
 }
 
-.users .caption .glyphicon-ok-sign {
+.users .caption .glyphicon-circle_ok {
   color: #53a93f;
 }
 
-.users > .list-group-item.missing .caption .glyphicon-ok-sign {
+.users > .list-group-item.missing .caption .glyphicon-circle_ok {
   color: #ead100;
 }
 
-.users .caption .glyphicon-exclamation-sign {
+.users .caption .glyphicon-circle_exclamation_mark {
   color: #db4437;
 }
 
