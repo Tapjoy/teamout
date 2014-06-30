@@ -26,12 +26,11 @@ var App = Model.extend({
         return src && src.indexOf('assets/js/main.js') >= 0;
       }).attr('src');
 
-      var match = src && src.match(/\/\/(.*)\/assets\/js\/main\.js/);
-      if (match) {
-        return match[1];
-      } else {
-        return location.host;
-      }
+      var match = src && src.match(/(\/\/([^\/]+))?(\/(.*))?\/assets\/js\/main\.js/);
+      var host = match[2] || location.host;
+      var path = match[3] || '';
+
+      return host + path;
     })()
   },
 
