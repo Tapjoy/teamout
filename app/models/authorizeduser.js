@@ -243,12 +243,15 @@ var AuthorizedUser = User.extend({
       // Display a notice in the hangout
       if (!this._joining) {
         this.notify('StartConversation', 'A new conversation has started');
+        this._joining = true;
       }
 
       // Join each user in the conversation
       conversation.get('users').each(function(user) {
         this._onJoinUser(user);
       }, this);
+
+      this._joining = false;
 
       // Track when users join / leave
       conversation.on({adduser: this._onJoinUser, removeuser: this._onLeaveUser}, this);
