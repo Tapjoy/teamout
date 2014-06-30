@@ -8,7 +8,7 @@ var ConversationView = View.extend({
       return user.getFirstName();
     },
     isLast: function(users, index) {
-      return index == users.length - 1;
+      return index == users.length - 1 || index == users.length - 2 && users.at(users.length - 1).get('authorized');
     }
   },
 
