@@ -74,11 +74,6 @@ Configuration:
 * `config/webpack.js` - Webpack configuration for building the app
 * `config/webpack-records.json` - A *generated* list of build files from Webpack
 
-## Todo
-
- * Change Leave button to be on the same row as the conversation
- * Add help menu
-
 ## Setup
 
 Install:
@@ -96,6 +91,7 @@ Run:
 ```
 
 Load:
+
 ```
 http://localhost:3000/
 ```
@@ -147,3 +143,48 @@ TARGET=production make all deploy
 ```
 
 This will build the application and upload it to S3.
+
+## Integration
+
+Once your app has been deployed, the next step is setting up a new Google Hangouts
+Widget.  To do so, walk through the following steps:
+
+1. **Go to the Google Developers Console**.  Visit https://console.developers.google.com.
+2. **Create a new project**.  Click "Create Project".  You should be automatically
+   taken to the project page.  If not, select it from the list in the Console.
+3. **Enable the Hangouts API**.  Expand the "APIs & Auth" menu on the left and click "APIs".
+   Scroll until you see "Google+ Hangouts API" and click the "OFF" button -- this will turn
+   it on.
+4. **Edit the Hangouts API settings**. Click the cog icon next to "Google+ Hangouts API".
+   Use the following settings:
+
+   Application URL: http://path/to/main.xml
+
+   Application Type: Extension
+
+   Additional OAuth Scopes: Unchecked
+
+   Locale: Default
+
+   Title: Team Hangouts
+
+   16x16 Icon: http://path/to/assets/images/logo-16.png
+
+   32x32 Icon: http://path/to/assets/images/logo-32.png
+
+   220x140 Icon: http://path/to/assets/images/logo-200.png
+
+   Terms of Service: http://yourcompany.com/tos
+
+   Privacy Policy: http://yourcompany.com/privacy
+
+   Support Contact Information: http://yourcompany.com/support
+
+   Make Public: Unchecked
+5. **Save setting**. Click "Save" at the bottom of the page.
+6. **Launch a Hangout**.  Click the "Enter a hangout" link below the "Save" button.
+
+## Contributing
+
+See the CONTRIBUTING.md documentation for more information on contributing to
+this project.
