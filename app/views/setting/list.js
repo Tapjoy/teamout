@@ -4,12 +4,13 @@ var _ = require('underscore');
 var View = require('../../lib/view.js');
 var Camera = require('../../models/camera.js');
 var DialogView = require('../shared/dialog.js');
+var HelpShowView = require('../help/show.js');
 var RoomDirectoryView = require('../room/directory.js');
 
 // Represents settings for the app
 var SettingListView = View.extend({
   template: require('./list.ractive'),
-  eventNames: ['showRoomDirectory', 'leave'],
+  eventNames: ['showRoomDirectory', 'showHelpGuide'],
   data: {
     photoIntervals: [
       {value: 0.5, name: '30 seconds'},
@@ -30,11 +31,10 @@ var SettingListView = View.extend({
   },
   partials: {
     menuAvailable: require('./menu-available.ractive'),
-    menuConversation: require('./menu-conversation.ractive'),
     menuNotifications: require('./menu-notifications.ractive'),
     menuPhoto: require('./menu-photo.ractive'),
     menuRooms: require('./menu-rooms.ractive'),
-    menuSounds: require('./menu-sounds.ractive')
+    menuHelp: require('./menu-help.ractive')
   },
   computed: {
     photoDisabled: {
@@ -49,9 +49,9 @@ var SettingListView = View.extend({
       get: function() { return !this.get('user.playSounds'); },
       set: function(value) { this.set('user.playSounds', !value); }
     },
-    useAppNotifications: {
-      get: function() { return !this.get('user.useDesktopNotifications'); },
-      set: function(value) { this.set('user.useDesktopNotifications', !value); }
+    notificationsDisabled: {
+      get: function() { return !this.get('user.notificationsEnabled'); },
+      set: function(value) { this.set('user.notificationsEnabled', !value); }
     }
   },
 
@@ -75,7 +75,7 @@ var SettingListView = View.extend({
 
     // Tooltips
     this.$('.menubar > .btn')
-      .tooltip({placement: 'bottom', animation: false, title: this._title})
+      .tooltip({placement: 'bottom', animation: false, html: true, title: this._title})
       .change(_.bind(this._onChangeButton, this));
   },
 
@@ -97,11 +97,19 @@ var SettingListView = View.extend({
   },
 
   /**
-   * Leave the current conversation
+   * Show the help guide UI
    */
-  leave: function(event) {
+  showHelpGuide: function(event) {
     event.original.stopPropagation();
-    this.get('user').leave();
+    this.$('.menubar .btn-dropdown').removeClass('open');
+
+    new DialogView({
+      components: {content: HelpShowView},
+      data: {
+        id: 'help',
+        title: 'Help Guide'
+      }
+    });
   },
 
   /**

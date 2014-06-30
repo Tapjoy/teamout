@@ -1,0 +1,3 @@
+<button type="button" on-click="showHelpGuide" class="btn btn-help" data-toggle="tooltip modal" title="Help">
+  <span class="glyphicon glyphicon-circle_question_mark"></span>
+</button>

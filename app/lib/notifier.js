@@ -73,22 +73,24 @@ var Notifier = {
   show: function(event, content, options) {
     options = _.extend({}, this.defaults, options);
 
-    if (options.desktop && this.hasDesktopPermission()) {
-      var title = options.title;
-      var icon = options.icon;
-      var timeout = options.timeout;
-      var notification;
+    if (options.display) {
+      if (options.desktop && this.hasDesktopPermission()) {
+        var title = options.title;
+        var icon = options.icon;
+        var timeout = options.timeout;
+        var notification;
 
-      if (window.webkitNotifications) {
-        notification = webkitNotifications.createNotification(icon, title, content);
-        notification.show();
-        setTimeout(_.bind(notification.cancel, notification), timeout);
+        if (window.webkitNotifications) {
+          notification = webkitNotifications.createNotification(icon, title, content);
+          notification.show();
+          setTimeout(_.bind(notification.cancel, notification), timeout);
+        } else {
+          notification = new Notification(title, {icon: icon, body: content});
+          setTimeout(_.bind(notification.close, notification), timeout);
+        }
       } else {
-        notification = new Notification(title, {icon: icon, body: content});
-        setTimeout(_.bind(notification.close, notification), timeout);
+        Platform.displayNotice(content);
       }
-    } else {
-      Platform.displayNotice(content);
     }
 
     if (options.sound) {

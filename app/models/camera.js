@@ -68,7 +68,7 @@ var Camera = Model.extend({
     }
 
     this.notifier = setTimeout(function() {
-      app.get('user').notify('camera', 'Please select Allow above to enable presence detection')
+      app.get('user').notify('AllowCamera', 'Please select Allow above to enable presence detection', {desktop: false})
     }, 3000);
 
     navigator.getMedia(
@@ -181,7 +181,7 @@ var Camera = Model.extend({
    * Callback when an error is encountered snapping a photo
    */
   _onError: function(error) {
-    app.get('user').notify('camera', 'Unable to take a picture. Please check your webcam settings.')
+    app.get('user').notify('InvalidCamera', 'Unable to take a picture. Please check your webcam settings.', {desktop: false})
     console.log('Error updating photo: ', error);
   }
 }, {

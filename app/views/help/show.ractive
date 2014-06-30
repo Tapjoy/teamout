@@ -1,0 +1,38 @@
+<ul class="help_guide media-list">
+  <li class="media">
+    <div class="pull-left" href="#">
+      <span class="media-object glyphicon glyphicon-camera"></span>
+    </div>
+    <div class="media-body">
+      <h5 class="media-heading">Presence Snapshots</h5>
+      <p>Control frequency / privacy of shared webcam updates.</p>
+    </div>
+  </li>
+  <li class="media">
+    <div class="pull-left" href="#">
+      <span class="media-object glyphicon glyphicon-bullhorn"></span>
+    </div>
+    <div class="media-body">
+      <h5 class="media-heading">Notifications</h5>
+      <p>Control when and how desktop / audio notifications get displayed.</p>
+    </div>
+  </li>
+  <li class="media">
+    <div class="pull-left" href="#">
+      <span class="media-object glyphicon glyphicon-circle_exclamation_mark"></span>
+    </div>
+    <div class="media-body">
+      <h5 class="media-heading">Busy Mode</h5>
+      <p>Tell the room you're busy. Users can still start conversations with you, but your video / audio will remain muted.</p>
+    </div>
+  </li>
+  <li class="media">
+    <div class="pull-left" href="#">
+      <span class="media-object glyphicon glyphicon-list"></span>
+    </div>
+    <div class="media-body">
+      <h5 class="media-heading">Room Directory</h5>
+      <p>View / add rooms for other teams in your company.</p>
+    </div>
+  </li>
+</ul>

@@ -14,13 +14,23 @@ var AuthorizedUser = User.extend({
   defaults: function() {
     return _.extend(_.result(User.prototype, 'defaults'), {
       authorized: true,
-      playSounds: true,
-      useDesktopNotifications: false,
       photoEnabled: true,
       photoInterval: 1,
       photoPrivacy: 'none',
       photoSource: null,
       unmuteVideo: true,
+      notificationsEnabled: true,
+      useDesktopNotifications: false,
+      soundOnEnterRoom: false,
+      notifyOnEnterRoom: true,
+      soundOnLeaveRoom: false,
+      notifyOnLeaveRoom: true,
+      soundOnStartConversation: true,
+      notifyOnStartConversation: true,
+      soundOnJoinConversation: true,
+      notifyOnJoinConversation: true,
+      soundOnLeaveConversation: false,
+      notifyOnLeaveConversation: true,
       roomIds: [],
       hiddenRoomIds: [],
       camera: new Camera(),
@@ -118,11 +128,16 @@ var AuthorizedUser = User.extend({
    * Generates a notification for the given event
    */
   notify: function(event, content, options) {
-    options = _.extend({sound: false}, options);
-    if (!this.get('playSounds')) { options.sound = false; }
-    if (!this.get('useDesktopNotifications')) { options.desktop = false; }
+    if (this.get('notificationsEnabled')) {
+      var soundSetting = 'soundOn' + event;
+      var displaySetting = 'notifyOn' + event;
 
-    Notifier.show(event, content, options);
+      Notifier.show(event, content, _.extend({
+        sound: this.has(soundSetting) && this.get(soundSetting),
+        display: !this.has(displaySetting) || this.get(displaySetting),
+        desktop: this.get('useDesktopNotifications')
+      }, options));
+    }
   },
 
   /**
@@ -224,7 +239,7 @@ var AuthorizedUser = User.extend({
 
       // Display a notice in the hangout
       if (!this._joining) {
-        this.notify('newconversation', 'A new conversation has started', {desktop: true, sound: true});
+        this.notify('StartConversation', 'A new conversation has started');
       }
 
       // Join each user in the conversation
@@ -247,6 +262,10 @@ var AuthorizedUser = User.extend({
   _onJoinUser: function(user) {
     if (user != this) {
       user.mute(false);
+
+      if (!this._joining) {
+        this.notify('JoinConversation', user.get('name') + ' has joined the conversation');
+      }
     }
   },
 
@@ -256,6 +275,7 @@ var AuthorizedUser = User.extend({
   _onLeaveUser: function(user) {
     if (user != this) {
       user.mute();
+      this.notify('LeaveConversation', user.get('name') + ' has left the conversation');
     }
   },
 

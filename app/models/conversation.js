@@ -10,6 +10,7 @@ var Conversation = Model.extend({
     return {
       startedAt: _.now(),
       userIds: [],
+      locked: false,
       users: new Users()
     };
   },

@@ -1,7 +1,7 @@
 {{#user}}
 <a class="thumbnail" href="#" on-click="join:{{this}}">
-  {{#photos:index}}
-    <img class="img-thumbnail img-thubmnail-{{index}}" src="{{this}}" intro="fade:{duration:500}" />
+  {{#photos}}
+    <img class="img-thumbnail" src="{{this}}" intro="fade:{duration:500}" />
   {{/photos}}
   <div class="caption">
     <span class="glyphicon glyphicon-circle_background"></span>

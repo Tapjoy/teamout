@@ -64,7 +64,7 @@ body {
 }
 
 .menubar > .btn {
-  width: 14%;
+  width: 39px;
   height: 41px;
 }
 
@@ -107,7 +107,7 @@ body {
 }
 
 .menubar > .btn-dropdown {
-  width: 9%;
+  width: 25px;
 }
 
 .menubar > .btn-dropdown .dropdown-toggle {
@@ -138,19 +138,63 @@ body {
   cursor: pointer;
 }
 
-.menubar > .btn-leave {
-  width: 21%;
-  padding: 10px 0 11px;
-  margin-left: 0;
+.menubar > .btn-thumbnail {
+  width: 55px;
+  padding: 0;
 }
 
-.menubar > .btn-leave.active {
-  background: #000000;
+.menubar > .btn-thumbnail .thumbnail {
+  width: 100%;
+  height: 100%;
 }
 
-.menubar > .btn-leave.btn-danger.active {
-  background-color: #d9534f;
-  border-color: #d43f3a;
+.menubar > .tooltip .thumbnail,
+.menubar > .btn-thumbnail .thumbnail {
+  margin: 0;
+  padding: 0;
+  border: none;
+  box-shadow: none;
+  background: none;
+  cursor: default;
+}
+
+.menubar > .btn-thumbnail .thumbnail img {
+  width: 100%;
+  height: 100%;
+}
+
+.menubar > .tooltip .thumbnail img,
+.menubar > .btn-thumbnail .thumbnail img {
+  padding: 0;
+  border: none;
+  border-radius: 0;
+  box-shadow: none;
+}
+
+.btn-notifications-dropdown .dropdown-menu {
+  left: -80px;
+  width: 266px;
+  padding: 10px 10px 5px;
+}
+
+.btn-notifications-dropdown .dropdown-menu .form-group {
+  margin-bottom: 7px;
+}
+
+.btn-notifications-dropdown .dropdown-menu .btn-group {
+  margin-right: 5px;
+}
+
+.btn-notifications-dropdown .dropdown-menu .glyphicon {
+  font-size: 16px;
+}
+
+.btn-notifications-dropdown .dropdown-menu label {
+  padding: 6px 9px;
+}
+
+.btn-notifications-dropdown .dropdown-menu .btn-desktop {
+  margin-bottom: 7px;
 }
 
 .app-content {
@@ -175,6 +219,42 @@ body {
   float: left;
   padding: 3px 11px 0 7px;
   font-size: 1.6em;
+}
+
+.conversation .settings {
+  float: left;
+  margin-left: 4px;
+  cursor: pointer;
+}
+
+.conversation .settings .glyphicon {
+  float: left;
+  line-height: 28px;
+}
+
+.conversation .settings .glyphicon-facetime_video {
+  font-size: 22px;
+}
+
+.conversation .settings .glyphicon-chevron-right {
+  margin-left: 4px;
+  font-size: 14px;
+}
+
+.conversation .names {
+  float: left;
+  width: 188px;
+  margin-left: 6px;
+  line-height: 30px;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  overflow: hidden;
+}
+
+.conversation .btn-leave {
+  float: right;
+  padding: 3px 6px;
+  margin-top: 1px;
 }
 
 .conversation .avatars {
@@ -410,4 +490,13 @@ body {
   display: inline-block;
   width: 150px;
   margin-right: 8px;
+}
+
+.help_guide .media-heading {
+  font-weight: bold;
+}
+
+.help_guide .media,
+.help_gudie .media .media {
+  margin-top: 3px;
 }

@@ -23,7 +23,7 @@ var AppView = View.extend({
     this.updateScrollbar();
 
     if (!Camera.supported) {
-      this.get('app').get('user').notify('camera', 'Photos are not supported in your browser. Photos only work on Google Chrome, Firefox, and Opera.');
+      this.get('app').get('user').notify('UnsupportedCamera', 'Photos are not supported in your browser. Photos only work on Google Chrome, Firefox, and Opera.', {desktop: false});
     }
 
     Platform.on('displayeduserchanged', this._onDisplayedUserChanged, this);

@@ -1,16 +1,31 @@
 {{#user.conversation}}
 <div class="conversation">
-  <span class="title glyphicon glyphicon-facetime_video"></span>
-  <ul class="avatars list-group">
-    {{#users}}
-      {{^authorized}}
-      <li class="list-group-item">
-        <div class="thumbnail" title="{{name}}">
-          <img class="img-thumbnail" src="{{avatar.imageUrl}}" />
-        </div>
-      </li>
-      {{/authorized}}
-    {{/users}}
-  </ul>
+  {{#user.authorized}}
+    <a class="settings" data-toggle="dropdown">
+      <span class="glyphicon glyphicon-facetime_video"></span>
+      <span class="glyphicon glyphicon-chevron-right glyphicon-rotate-right"></span>
+    </a>
+    <div class="dropdown-menu">
+      TODO
+    </div>
+    <span class="names" title="{{#users:index}}{{^authorized}}{{firstName(this)}}{{^isLast(users, index)}}, {{/isLast}}{{/authorized}}{{/users}}">
+      {{#users:index}}{{^authorized}}{{firstName(this)}}{{^isLast(users, index)}}, {{/isLast}}{{/authorized}}{{/users}}
+    </span>
+    <button type="button" on-click="leave" class="btn btn-leave btn-danger" data-toggle="tooltip" title="Leave conversation">Leave</button>
+  {{/user.authorized}}
+  {{^user.authorized}}
+    <span class="title glyphicon glyphicon-facetime_video"></span>
+    <ul class="avatars list-group">
+      {{#users}}
+        {{^authorized}}
+        <li class="list-group-item">
+          <div class="thumbnail" title="{{name}}">
+            <img class="img-thumbnail" src="{{avatar.imageUrl}}" />
+          </div>
+        </li>
+        {{/authorized}}
+      {{/users}}
+    </ul>
+  {{/user.authorized}}
 </div>
 {{/user.conversation}}

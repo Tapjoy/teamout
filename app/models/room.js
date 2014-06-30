@@ -78,19 +78,19 @@ var Room = Model.extend({
   },
 
   /**
-   * Registers the given user with the room
+   * Registers the given user(s) with the room
    */
   add: function(user) {
-    this.get('users').add(user);
+    return this.get('users').add(user);
   },
 
   /**
-   * Removes the given user from the room
+   * Removes the given user(s) from the room
    */
   remove: function(user) {
-    var users = this.all(user);
+    var users = this.all($.makeArray(user));
     _.each(users, function(user) { user.quit(); });
-    this.get('users').remove(users);
+    return this.get('users').remove(user);
   },
 
   /**
@@ -178,14 +178,16 @@ var Room = Model.extend({
    * Callback when a user is added (via an external source) to the room
    */
   _onUserAdded: function(event) {
-    this.add(event.user);
+    var user = this.add(event.user);
+    app.get('user').notify('EnterRoom', user.get('name') + ' has entered the room');
   },
 
   /**
    * Callback when a user is removed (via an external source) from the room
    */
   _onUserRemoved: function(event) {
-    this.remove(event.user);
+    var user = this.remove(event.user);
+    app.get('user').notify('LeaveRoom', user.get('name') + ' has left the room');
   }
 });
 

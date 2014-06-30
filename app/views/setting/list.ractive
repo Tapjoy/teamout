@@ -1,10 +1,14 @@
 <div class="menubar btn-group">
   {{#user}}
     {{>menuPhoto}}
-    {{>menuAvailable}}
-    {{>menuSounds}}
     {{>menuNotifications}}
+    {{>menuAvailable}}
     {{>menuRooms}}
-    {{>menuConversation}}
+    {{>menuHelp}}
+    <div class="btn btn-thumbnail" data-toggle="tooltip" title="<div class='thumbnail'><img class='img-thumbnail' src='{{user.photoUrl}}' /></div>">
+      <div class="thumbnail">
+        <img class="img-thumbnail" src="{{user.photoUrl}}" />
+      </div>
+    </div>
   {{/user}}
 </div>
