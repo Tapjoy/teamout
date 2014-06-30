@@ -6,7 +6,10 @@
       <span class="glyphicon glyphicon-chevron-right glyphicon-rotate-right"></span>
     </a>
     <div class="dropdown-menu">
-      TODO
+      <li><a href="#" on-click="toggleLock">
+        {{#locked}}<span class="glyphicon glyphicon-unlock"></span> Unlock conversation{{/locked}}
+        {{^locked}}<span class="glyphicon glyphicon-lock"></span> Lock conversation{{/locked}}
+      </a></li>
     </div>
     <span class="names" title="{{#users:index}}{{^authorized}}{{firstName(this)}}{{^isLast(users, index)}}, {{/isLast}}{{/authorized}}{{/users}}">
       {{#users:index}}{{^authorized}}{{firstName(this)}}{{^isLast(users, index)}}, {{/isLast}}{{/authorized}}{{/users}}

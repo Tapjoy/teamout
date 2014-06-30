@@ -15,12 +15,15 @@
   </div>
   <div class="action">
     {{#conversation}}
-      <conversation user="{{this}}" />
+      <conversation user="{{user}}" />
     {{/conversation}}
-    <span class="glyphicon {{#available}}glyphicon-facetime_video{{/available}} {{^available}}glyphicon-circle_exclamation_mark{{/available}}"></span>
+    <span class="glyphicon {{#available}}glyphicon-facetime_video{{/available}} {{^available}}glyphicon-circle_exclamation_mark{{/available}} {{#conversation.locked}}glyphicon-lock{{/conversation.locked}}"></span>
     <span class="action-start">
-      {{#conversation}}Join Conversation{{/conversation}}
-      {{^conversation}}Start Conversation{{/conversation}}
+      {{#conversation.locked}}Conversation Locked{{/conversation.locked}}
+      {{^conversation.locked}}
+        {{#conversation}}Join Conversation{{/conversation}}
+        {{^conversation}}Start Conversation{{/conversation}}
+      {{/conversation.locked}}
     </span>
   </div>
 </a>

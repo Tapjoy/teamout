@@ -40,6 +40,9 @@ var Conversation = Model.extend({
 
     // Sync up with the latest data for this conversation
     this._update(app.get('room').all(this.get('userIds')));
+
+    // Listen for changes to the lock status
+    this.on('change:locked', this._onChangeLocked, this);
   },
 
   /**
@@ -112,6 +115,20 @@ var Conversation = Model.extend({
       for (var i = 0; i < adds.length; i++) {
         var user = adds[i];
         user.set({conversation: this});
+      }
+    }
+  },
+
+  /**
+   * Callback when the lock status of the conversation has changed
+   */
+  _onChangeLocked: function() {
+    var user = app.get('user');
+    if (this.contains(user)) {
+      if (this.get('locked')) {
+        user.notify('ConversationLocked', 'Conversation has been locked');
+      } else {
+        user.notify('ConversationLocked', 'Conversation has been unlocked');
       }
     }
   }

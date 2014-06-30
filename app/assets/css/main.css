@@ -225,6 +225,7 @@ body {
   float: left;
   margin-left: 4px;
   cursor: pointer;
+  color: #2a6496;
 }
 
 .conversation .settings .glyphicon {

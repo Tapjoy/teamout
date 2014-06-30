@@ -95,23 +95,26 @@ var AuthorizedUser = User.extend({
    * both conversations will get merged.
    */
   join: function(user) {
-    this._joining = true;
+    // Only join the user if their conversation is unlocked
+    if (!user.has('conversation') || !user.get('conversation').get('locked')) {
+      this._joining = true;
 
-    if (this.has('conversation') && user.has('conversation')) {
-      this.get('conversation').merge(user.get('conversation'));
-    } else if (this.has('conversation')) {
-      this.get('conversation').add(user);
-    } else if (user.has('conversation')) {
-      user.get('conversation').add(this);
-    } else {
-      var conversation = app.get('room').get('conversations').add({
-        id: this.id + '-' + uuid.v4(),
-        userIds: [this.id, user.id]
-      });
-      conversation.save();
+      if (this.has('conversation') && user.has('conversation')) {
+        this.get('conversation').merge(user.get('conversation'));
+      } else if (this.has('conversation')) {
+        this.get('conversation').add(user);
+      } else if (user.has('conversation')) {
+        user.get('conversation').add(this);
+      } else {
+        var conversation = app.get('room').get('conversations').add({
+          id: this.id + '-' + uuid.v4(),
+          userIds: [this.id, user.id]
+        });
+        conversation.save();
+      }
+
+      this._joining = false;
     }
-
-    this._joining = false;
   },
 
   /**
