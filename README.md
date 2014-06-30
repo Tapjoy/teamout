@@ -1,4 +1,4 @@
-# Hangjoy
+# Teamout
 
 Google Hangouts for Teams: "always-on" video conferencing for remote teams
 
@@ -89,7 +89,7 @@ bower install
 Run:
 
 ```
-./bin/hangjoy
+./bin/teamout
 ```
 
 Load:
@@ -116,7 +116,7 @@ variables:
 * `JS_COMPRESSOR` - Path to the binary for JS compression (defaults: npm-installed uglifyjs)
 * `CSS_COMPRESSOR` - Path to the binary for CSS compression (default: npm-installed cleancss)
 * `WEBPACK` - Path to the binary for Webpack (default: npm-installed webpack)
-* `S3_BUCKET` - The name of the S3 bucket to upload the app to (default: `hangjoy`)
+* `S3_BUCKET` - The name of the S3 bucket to upload the app to (default: `teamout`)
 * `TARGET` - The environment which the build is for.  `production` environments will cause
   the js / css to be minified / versioned and cleans out the `DIST` directory.  (default: `development`)
 

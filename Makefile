@@ -3,7 +3,7 @@ JS_COMPRESSOR ?= ./node_modules/.bin/uglifyjs
 CSS_COMPRESSOR ?= ./node_modules/.bin/cleancss
 WEBPACK ?= ./node_modules/.bin/webpack
 TARGET ?= development
-S3_BUCKET ?= hangjoy
+S3_BUCKET ?= teamout
 
 # Asset files
 DIST = public
