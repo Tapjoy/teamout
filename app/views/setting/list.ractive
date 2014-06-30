@@ -5,7 +5,7 @@
     {{>menuAvailable}}
     {{>menuRooms}}
     {{>menuHelp}}
-    <div class="btn btn-thumbnail" data-toggle="tooltip" title="<div class='thumbnail'><img class='img-thumbnail' src='{{user.photoUrl}}' /></div>">
+    <div class="btn btn-thumbnail" data-toggle="tooltip" data-title-off="<div class='thumbnail'><img class='img-thumbnail' src='{{user.photoUrl}}' /></div>">
       <div class="thumbnail">
         <img class="img-thumbnail" src="{{user.photoUrl}}" />
       </div>

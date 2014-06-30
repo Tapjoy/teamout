@@ -25,6 +25,7 @@ body {
   outline: 0;
 }
 
+
 .modal-dialog {
   top: 40px;
 }
@@ -41,11 +42,17 @@ body {
   padding: 10px 15px;
 }
 
+.tooltip.in {
+  filter: alpha(opacity=100);
+  opacity: 1.0;
+}
+
 .tooltip.bottom .tooltip-arrow {
   border-bottom-color: rgba(0, 0, 0, 0.8);
 }
 
 .tooltip-inner {
+  max-width: 300px;
   padding: 4px 10px;
   border-radius: 11px;
   font-size: 13px;

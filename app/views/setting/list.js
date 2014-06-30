@@ -117,7 +117,7 @@ var SettingListView = View.extend({
    */
   _title: function() {
     var $btn = $(this);
-    var title = $btn.find('> input').prop('checked') ? $btn.data('title-on') : $btn.data('title-off');
+    var title = $btn.find('> input').prop('checked') ? $btn.attr('data-title-on') : $btn.attr('data-title-off');
     return title || $btn.attr('title');
   },
 
