@@ -2,6 +2,8 @@
 
 Google Hangouts for Teams: "always-on" video conferencing for remote teams
 
+![](app/assets/images/screenshot.png)
+
 ## Features
 
 ### Webcam snapshots
