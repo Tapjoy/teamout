@@ -52,7 +52,6 @@ body {
 }
 
 .tooltip-inner {
-  max-width: 300px;
   padding: 4px 10px;
   border-radius: 11px;
   font-size: 13px;
@@ -176,6 +175,20 @@ body {
   border: none;
   border-radius: 0;
   box-shadow: none;
+}
+
+.menubar > .tooltip .thumbnail {
+  width: 177px;
+}
+
+.menubar > .btn-thumbnail + .tooltip {
+  left: auto !important;
+  right: 0;
+}
+
+.menubar > .btn-thumbnail + .tooltip .tooltip-arrow {
+  left: auto;
+  right: 22px;
 }
 
 .btn-notifications-dropdown .dropdown-menu {
