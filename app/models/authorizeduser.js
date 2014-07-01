@@ -221,7 +221,7 @@ var AuthorizedUser = User.extend({
     this.save({
       photoUrl: photoUrl,
       present: photo.hasFaces(),
-      lastUpdatedAt: _.now()
+      lastUpdatedAt: Platform.getTime()
     });
   },
 

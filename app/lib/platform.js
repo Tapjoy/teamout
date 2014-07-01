@@ -18,6 +18,18 @@ var Platform = {
   },
 
   /**
+   * The amount of time difference between client and server
+   */
+  timeOffset: 0,
+
+  /**
+   * Gets the current time on the server
+   */
+  getTime: function() {
+    return _.now() + this.timeOffset;
+  },
+
+  /**
    * Gets the data seeding this app
    */
   getSeedData: function() {
@@ -456,6 +468,13 @@ var Platform = {
         return !key.match(/\/_\//);
       }
     }, this);
+
+    // Update time offset; network latency is assumed to be 50ms on average
+    // between when the key was updated and when it got delivered to the client
+    if (event.addedKeys.length) {
+      var mostRecentKey = _.max(event.addedKeys, function(entry) { return entry.timestamp });
+      this.timeOffset = mostRecentKey.timestamp + 50 - _.now();
+    }
 
     this.trigger('statechanged', {updates: updates, removes: removes});
   },

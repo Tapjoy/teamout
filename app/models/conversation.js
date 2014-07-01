@@ -2,13 +2,14 @@ var $ = require('jquery');
 var _ = require('underscore');
 
 var Model = require('../lib/model.js');
+var Platform = require('../lib/platform.js');
 var Users = require('../collections/users.js');
 
 // An active chat between a subset of users in the room
 var Conversation = Model.extend({
   defaults: function() {
     return {
-      startedAt: _.now(),
+      startedAt: Platform.getTime(),
       userIds: [],
       locked: false,
       users: new Users()
