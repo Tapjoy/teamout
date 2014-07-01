@@ -139,10 +139,10 @@ var Hangout = Backbone.Model.extend({
         delete this.get('state')[removes[i]];
       }
 
-      var addedKeys = {};
+      var addedKeys = [];
       for (var key in updates) {
         this.get('state')[key] = updates[key];
-        addedKeys[key] = {key: key, value: updates[key]};
+        addedKeys.push({key: key, value: updates[key], timestamp: _.now()});
       }
 
       setTimeout(_.bind(function() {
