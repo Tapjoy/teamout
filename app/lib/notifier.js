@@ -3,6 +3,35 @@ var _ = require('underscore');
 
 var Platform = require('./platform.js');
 
+// Provide a cross-browser API for notifications
+if (window.Notification) {
+  // Provide a wrapper to the permission property in order to have a single API
+  // across multiple browsers
+  Notification.getPermission = function() {
+    return this.permission;
+  };
+} else if (window.webkitNotifications) {
+  // Expose webkit notifications under the standard Notification API
+  window.Notification = function(title, options) {
+    if (!options) { options = {} };
+    this.notification = webkitNotifications.createNotification(options.icon, title, options.body);
+    this.notification.show();
+  };
+
+  _.extend(Notification, {
+    requestPermission: webkitNotifications.requestPermission,
+    getPermission: function() {
+      return webkitNotifications.checkPermission() == 0 ? 'granted' : 'default';
+    }
+  });
+
+  _.extend(Notification.prototype, {
+    close: function() {
+      this.notification.cancel();
+    }
+  });
+}
+
 var Notifier = {
   defaults: {
     // The amount of time to allow to pass before notifications are automatically hidden
@@ -22,6 +51,11 @@ var Notifier = {
   },
 
   /**
+   * Whether desktop notification access is supported in this browser
+   */
+  desktopSupported: window.Notification != undefined,
+
+  /**
    * Cache of sounds mapped by event name
    */
   sounds: {},
@@ -30,7 +64,9 @@ var Notifier = {
    * Requests permission to show desktop notifications
    */
   requestDesktopPermission: function(onSuccess, onError) {
-    if (this.hasDesktopPermission()) {
+    if (!this.desktopSupported) {
+      onError();
+    } else if (this.hasDesktopPermission()) {
       onSuccess();
     } else {
       var callback = _.bind(function() {
@@ -41,11 +77,7 @@ var Notifier = {
         }
       }, this);
 
-      if (window.webkitNotifications) {
-        webkitNotifications.requestPermission(callback);
-      } else if (window.Notification) {
-        Notification.requestPermission(callback);
-      }
+      Notification.requestPermission(callback);
 
       // Make sure the user notices the authorization
       this.show('notifications', 'Please select Allow above to start using desktop notifications');
@@ -57,14 +89,7 @@ var Notifier = {
    * notifications
    */
   hasDesktopPermission: function() {
-    var hasPermission = false;
-    if (window.webkitNotifications) {
-      hasPermission = webkitNotifications.checkPermission() == 0;
-    } else if (window.Notification) {
-      hasPermission = Notification.permission == 'granted';
-    }
-
-    return hasPermission;
+    return this.desktopSupported && Notification.getPermission() == 'granted';
   },
 
   /**
@@ -78,16 +103,9 @@ var Notifier = {
         var title = options.title;
         var icon = options.icon;
         var timeout = options.timeout;
-        var notification;
 
-        if (window.webkitNotifications) {
-          notification = webkitNotifications.createNotification(icon, title, content);
-          notification.show();
-          setTimeout(_.bind(notification.cancel, notification), timeout);
-        } else {
-          notification = new Notification(title, {icon: icon, body: content});
-          setTimeout(_.bind(notification.close, notification), timeout);
-        }
+        var notification = new Notification(title, {icon: icon, body: content});
+        setTimeout(_.bind(notification.close, notification), timeout);
       } else {
         Platform.displayNotice(content);
       }

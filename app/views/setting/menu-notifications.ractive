@@ -7,7 +7,7 @@
     <span class="glyphicon glyphicon-chevron-right glyphicon-rotate-right"></span>
   </button>
   <div class="dropdown-menu">
-    <label class="btn btn-desktop {{#useDesktopNotifications}}btn-primary active{{/useDesktopNotifications}}{{^useDesktopNotifications}}btn-default{{/useDesktopNotifications}}">
+    <label class="btn btn-desktop {{#useDesktopNotifications}}btn-primary active{{/useDesktopNotifications}}{{^useDesktopNotifications}}btn-default{{/useDesktopNotifications}} {{^desktopNotificationsSupported}}disabled{{/desktopNotificationsSupported}}">
       <input type="checkbox" checked="{{useDesktopNotifications}}" class="hidden"> Use Desktop Notifications
     </label>
     <div class="form-group">

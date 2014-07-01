@@ -2,6 +2,7 @@ var $ = require('jquery');
 var _ = require('underscore');
 
 var View = require('../../lib/view.js');
+var Notifier = require('../../lib/notifier.js');
 var Camera = require('../../models/camera.js');
 var DialogView = require('../shared/dialog.js');
 var HelpShowView = require('../help/show.js');
@@ -27,7 +28,8 @@ var SettingListView = View.extend({
       {value: 'silhouette', name: 'Presence Only'}
     ],
     photoSources: [],
-    photoSupported: Camera.supported
+    photoSupported: Camera.supported,
+    desktopNotificationsSupported: Notifier.desktopSupported
   },
   partials: {
     menuAvailable: require('./menu-available.ractive'),
