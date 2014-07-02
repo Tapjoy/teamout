@@ -93,6 +93,7 @@ var SettingListView = View.extend({
       data: {
         id: 'rooms',
         title: 'Room Directory',
+        room: app.get('room'),
         rooms: app.get('rooms')
       }
     });

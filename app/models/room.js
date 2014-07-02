@@ -25,13 +25,6 @@ var Room = Model.extend({
   },
 
   /**
-   * Navigates the browser to this room
-   */
-  switch: function() {
-    window.top.location = this.shareUrl();
-  },
-
-  /**
    * Registers the current user with this room
    */
   enter: function() {

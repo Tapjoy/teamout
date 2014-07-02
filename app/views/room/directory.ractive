@@ -13,7 +13,7 @@
         {{#rooms}}
           {{^isHidden(this)}}
           <li data-roomId="{{id}}">
-            <a href="{{shareUrl(this)}}">
+            <a href="{{shareUrl(this)}}" target="_top">
               {{id}}
               <span class="glyphicon glyphicon-remove" on-click="hideRoom:{{this}}" title="Remove">
             </a>
