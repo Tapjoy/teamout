@@ -60,7 +60,6 @@ release:
 	sed -i "s/\$$ENV(host)/$(HOST)\/$(VERSION)/g" $(DIST)/main.xml
 	touch -r app/main.xml $(DIST)/main.xml
 	mkdir -p $(DIST)/$(VERSION)/assets
-	mv $(DIST)/main.xml $(DIST)/$(VERSION)/main.xml
 	cp -pR $(DIST)/assets/* $(DIST)/$(VERSION)/assets/
 	rm -rf $(DIST)/assets
 
