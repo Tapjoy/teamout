@@ -1,13 +1,4 @@
 {
   "name": "ccv",
-  "_cacheHeaders": {
-    "ETag": "\"8bb3e76477192ae435ba780dacddf50585601ac3\"",
-    "Content-Length": "16722",
-    "Content-Type": "text/plain; charset=utf-8"
-  },
-  "_release": "e-tag:8bb3e7647",
-  "main": "index.js",
-  "_source": "https://raw.githubusercontent.com/liuliu/ccv/r0.6-rc1/js/ccv.js",
-  "_target": "*",
-  "_originalSource": "https://raw.githubusercontent.com/liuliu/ccv/r0.6-rc1/js/ccv.js"
+  "main": "index.js"
 }
