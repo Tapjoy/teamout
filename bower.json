@@ -9,18 +9,19 @@
   "private": true,
   "dependencies": {
     "backbone": "1.1.2",
-    "bootstrap": "3.1.1",
+    "bootstrap": "3.2.0",
     "face": "https://raw.githubusercontent.com/liuliu/ccv/r0.6-rc1/js/face.js",
     "jquery": "2.1.1",
     "jssha": "1.5.0",
-    "nanoscroller": "0.8.0",
-    "ractive": "0.4.0",
+    "nanoscroller": "0.8.4",
+    "node-uuid": "1.4.1",
+    "ractive": "0.6.1",
+    "ractive-adaptors-backbone": "0.2.0",
     "ractive-transitions-fade": "0.1.2",
     "ractive-transitions-slide": "0.1.2",
     "StackBlur": "https://raw.githubusercontent.com/flozz/StackBlur/master/StackBlur.js",
-    "strftime": "git://github.com/samsonjs/strftime.git#v0.8.0",
-    "underscore": "1.6.0",
-    "node-uuid": "1.4.1",
+    "strftime": "git://github.com/samsonjs/strftime.git#v0.8.2",
+    "underscore": "1.7.0",
     "webfont": "http://ajax.googleapis.com/ajax/libs/webfont/1.5.2/webfont.js"
   }
 }
