@@ -2,29 +2,29 @@
 <a class="thumbnail" href="#" on-click="join:{{this}}">
   {{#photos}}
     <img class="img-thumbnail" src="{{this}}" intro="fade:{duration:500}" />
-  {{/photos}}
+  {{/}}
   <div class="caption">
     <span class="glyphicon glyphicon-circle_background"></span>
-    <span class="glyphicon {{#available}}glyphicon-circle_ok{{/available}} {{^available}}glyphicon-circle_exclamation_mark{{/available}}"></span>
+    <span class="glyphicon {{#available}}glyphicon-circle_ok{{else}}glyphicon-circle_exclamation_mark{{/}}"></span>
     <span class="caption-name">{{name}}</span>
     <span class="caption-timestamp">
       {{#lastUpdatedAt}}
         {{formatTimestamp(lastUpdatedAt, '%l:%M %p')}}
-      {{/lastUpdatedAt}}
+      {{/}}
     </span>
   </div>
   <div class="action">
     {{#conversation}}
       <conversation user="{{user}}" />
-    {{/conversation}}
-    <span class="glyphicon {{#available}}glyphicon-facetime_video{{/available}} {{^available}}glyphicon-circle_exclamation_mark{{/available}} {{#conversation.locked}}glyphicon-lock{{/conversation.locked}}"></span>
+    {{/}}
+    <span class="glyphicon {{#available}}glyphicon-facetime_video{{else}}glyphicon-circle_exclamation_mark{{/}} {{#conversation.locked}}glyphicon-lock{{/}}"></span>
     <span class="action-start">
-      {{#conversation.locked}}Conversation Locked{{/conversation.locked}}
-      {{^conversation.locked}}
-        {{#conversation}}Join Conversation{{/conversation}}
-        {{^conversation}}Start Conversation{{/conversation}}
-      {{/conversation.locked}}
+      {{#conversation.locked}}
+        Conversation Locked
+      {{else}}
+        {{#conversation}}Join Conversation{{else}}Start Conversation{{/}}
+      {{/}}
     </span>
   </div>
 </a>
-{{/user}}
+{{/}}

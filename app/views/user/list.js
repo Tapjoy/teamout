@@ -7,15 +7,23 @@ var UserListView = View.extend({
   components: {
     user: UserView
   },
-  data: {
-    isJoinable: function(user) {
-      return user.isJoinable();
+  computed: {
+    joinableUsers: function() {
+      return this.get('users').joinable();
     }
   },
-  computed: {
-    isEmpty: function() {
-      return this.get('users').joinable().length == 0;
-    }
+
+  init: function() {
+    View.prototype.init.apply(this, arguments);
+
+    this.get('users').on('change', this._onUserChanged, this);
+  },
+
+  /**
+   * Callback when the data associated with a user has changed
+   */
+  _onUserChanged: function(user) {
+    this.update('joinableUsers');
   }
 });
 

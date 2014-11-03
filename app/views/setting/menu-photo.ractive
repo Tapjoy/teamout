@@ -1,8 +1,8 @@
-<label class="btn btn-photo {{#photoDisabled}}active{{/photoDisabled}} {{^photoSupported}}disabled{{/photoSupported}}" data-toggle="tooltip" data-title-off="Turn snapshots off" data-title-on="Turn snapshots on">
+<label class="btn btn-photo {{#photoDisabled}}active{{/}} {{^photoSupported}}disabled{{/}}" data-toggle="tooltip" data-title-off="Turn snapshots off" data-title-on="Turn snapshots on">
   <input type="checkbox" checked="{{photoDisabled}}">
   <span class="glyphicon glyphicon-camera"></span>
 </label>
-<div class="btn btn-dropdown btn-photo-dropdown {{^photoSupported}}disabled{{/photoSupported}}">
+<div class="btn btn-dropdown btn-photo-dropdown {{^photoSupported}}disabled{{/}}">
   <button type="button" class="btn dropdown-toggle">
     <span class="glyphicon glyphicon-chevron-right glyphicon-rotate-right"></span>
   </button>
@@ -17,7 +17,7 @@
       <select class="form-control" value="{{photoPrivacy}}">
         {{#photoPrivacies}}
           <option value="{{value}}">{{name}}</option>
-        {{/photoPrivacies}}
+        {{/}}
       </select>
     </div>
     <div class="form-group setting-photo_interval">
@@ -25,21 +25,24 @@
       <select class="form-control" value="{{photoInterval}}">
         {{#photoIntervals}}
           <option value="{{value}}">{{name}}</option>
-        {{/photoIntervals}}
+        {{/}}
       </select>
     </div>
-    {{#photoSources.length}}
+    {{#if photoSources}}
     <div class="form-group setting-photo_source">
       <label>Photo Source:</label>
       <select class="form-control" value="{{photoSource}}">
         {{#photoSources}}
           <option value="{{id}}">
-            {{#label}}{{label}}{{/label}}
-            {{^label}}Default{{/label}}
+            {{#label}}
+              {{label}}
+            {{else}}
+              Default
+            {{/}}
           </option>
-        {{/photoSources}}
+        {{/}}
       </select>
     </div>
-    {{/photoSources}}
+    {{/if}}
   </div>
 </div>

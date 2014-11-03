@@ -5,18 +5,18 @@ var RoomDirectoryView = View.extend({
   template: require('./directory.ractive'),
   eventNames: ['shareRoom', 'hideRoom', 'createRoom', 'pressKey'],
   data: {
-    newRoomId: '',
-    shareUrl: function(room) {
-      return room.shareUrl();
-    },
-    isHidden: function(room) {
-      return room.isHidden();
-    }
+    newRoomId: ''
   },
   computed: {
-    hasVisibleRooms: function() {
-      return this.get('rooms').visible().length > 0;
+    visibleRooms: function() {
+      return this.get('rooms').visible();
     }
+  },
+
+  init: function() {
+    View.prototype.init.apply(this, arguments);
+
+    this.get('rooms').on('change', this._onRoomChanged, this);
   },
 
   /**
@@ -60,6 +60,13 @@ var RoomDirectoryView = View.extend({
     if (event.original.which == '13') {
       this.createRoom(event);
     }
+  },
+
+  /**
+   * Callback when the data associated with a room has changed
+   */
+  _onRoomChanged: function(room) {
+    this.update('visibleRooms');
   }
 });
 

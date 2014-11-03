@@ -7,16 +7,18 @@
     </a>
     <div class="dropdown-menu">
       <li><a href="#" on-click="toggleLock">
-        {{#locked}}<span class="glyphicon glyphicon-unlock"></span> Unlock conversation{{/locked}}
-        {{^locked}}<span class="glyphicon glyphicon-lock"></span> Lock conversation{{/locked}}
+        {{#locked}}
+        <span class="glyphicon glyphicon-unlock"></span> Unlock conversation
+        {{else}}
+        <span class="glyphicon glyphicon-lock"></span> Lock conversation
+        {{/}}
       </a></li>
     </div>
-    <span class="names" title="{{#users:index}}{{^authorized}}{{firstName(this)}}{{^isLast(users, index)}}, {{/isLast}}{{/authorized}}{{/users}}">
-      {{#users:index}}{{^authorized}}{{firstName(this)}}{{^isLast(users, index)}}, {{/isLast}}{{/authorized}}{{/users}}
+    <span class="names" title="{{#users:index}}{{^authorized}}{{this.getFirstName()}}{{^isLast(users, index)}},&nbsp;{{/}}{{/}}{{/}}">
+      {{#users:index}}{{^authorized}}{{this.getFirstName()}}{{^isLast(users, index)}},&nbsp;{{/}}{{/}}{{/}}
     </span>
     <button type="button" on-click="leave" class="btn btn-leave btn-danger" data-toggle="tooltip" title="Leave conversation">Leave</button>
-  {{/user.authorized}}
-  {{^user.authorized}}
+  {{else}}
     <span class="title glyphicon glyphicon-facetime_video"></span>
     <ul class="avatars list-group">
       {{#users}}
@@ -26,9 +28,9 @@
             <img class="img-thumbnail" src="{{avatar.imageUrl}}" />
           </div>
         </li>
-        {{/authorized}}
-      {{/users}}
+        {{/}}
+      {{/}}
     </ul>
-  {{/user.authorized}}
+  {{/}}
 </div>
-{{/user.conversation}}
+{{/}}

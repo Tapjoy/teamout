@@ -4,9 +4,6 @@ var ConversationView = View.extend({
   template: require('./show.ractive'),
   eventNames: ['leave', 'toggleLock'],
   data: {
-    firstName: function(user) {
-      return user.getFirstName();
-    },
     isLast: function(users, index) {
       return index == users.length - 1 || index == users.length - 2 && users.at(users.length - 1).get('authorized');
     }

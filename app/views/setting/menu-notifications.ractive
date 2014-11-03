@@ -1,4 +1,4 @@
-<label class="btn btn-notifications {{#notificationsDisabled}}active{{/notificationsDisabled}}" data-toggle="tooltip" data-title-off="Turn notifications off" data-title-on="Turn notifications on">
+<label class="btn btn-notifications {{#notificationsDisabled}}active{{/}}" data-toggle="tooltip" data-title-off="Turn notifications off" data-title-on="Turn notifications on">
   <input type="checkbox" checked="{{notificationsDisabled}}">
   <span class="glyphicon glyphicon-bullhorn"></span>
 </label>
@@ -7,15 +7,15 @@
     <span class="glyphicon glyphicon-chevron-right glyphicon-rotate-right"></span>
   </button>
   <div class="dropdown-menu">
-    <label class="btn btn-desktop {{#useDesktopNotifications}}btn-primary active{{/useDesktopNotifications}}{{^useDesktopNotifications}}btn-default{{/useDesktopNotifications}} {{^desktopNotificationsSupported}}disabled{{/desktopNotificationsSupported}}">
+    <label class="btn btn-desktop {{#useDesktopNotifications}}btn-primary active{{else}}btn-default{{/}} {{^desktopNotificationsSupported}}disabled{{/}}">
       <input type="checkbox" checked="{{useDesktopNotifications}}" class="hidden"> Use Desktop Notifications
     </label>
     <div class="form-group">
       <div class="btn-group" data-toggle="buttons">
-        <label class="btn {{#soundOnEnterRoom}}btn-primary active{{/soundOnEnterRoom}}{{^soundOnEnterRoom}}btn-default{{/soundOnEnterRoom}}">
+        <label class="btn {{#soundOnEnterRoom}}btn-primary active{{else}}btn-default{{/}}">
           <input type="checkbox" checked="{{soundOnEnterRoom}}"> <span class="glyphicon glyphicon-volume_up"></span>
         </label>
-        <label class="btn {{#notifyOnEnterRoom}}btn-primary active{{/notifyOnEnterRoom}}{{^notifyOnEnterRoom}}btn-default{{/notifyOnEnterRoom}}">
+        <label class="btn {{#notifyOnEnterRoom}}btn-primary active{{else}}btn-default{{/}}">
           <input type="checkbox" checked="{{notifyOnEnterRoom}}"> <span class="glyphicon glyphicon-display"></span>
         </label>
       </div>
@@ -23,10 +23,10 @@
     </div>
     <div class="form-group">
       <div class="btn-group" data-toggle="buttons">
-        <label class="btn {{#soundOnLeaveRoom}}btn-primary active{{/soundOnLeaveRoom}}{{^soundOnLeaveRoom}}btn-default{{/soundOnLeaveRoom}}">
+        <label class="btn {{#soundOnLeaveRoom}}btn-primary active{{else}}btn-default{{/}}">
           <input type="checkbox" checked="{{soundOnLeaveRoom}}"> <span class="glyphicon glyphicon-volume_up"></span>
         </label>
-        <label class="btn {{#notifyOnLeaveRoom}}btn-primary active{{/notifyOnLeaveRoom}}{{^notifyOnLeaveRoom}}btn-default{{/notifyOnLeaveRoom}}">
+        <label class="btn {{#notifyOnLeaveRoom}}btn-primary active{{else}}btn-default{{/}}">
           <input type="checkbox" checked="{{notifyOnLeaveRoom}}"> <span class="glyphicon glyphicon-display"></span>
         </label>
       </div>
@@ -34,10 +34,10 @@
     </div>
     <div class="form-group">
       <div class="btn-group" data-toggle="buttons">
-        <label class="btn {{#soundOnStartConversation}}btn-primary active{{/soundOnStartConversation}}{{^soundOnStartConversation}}btn-default{{/soundOnStartConversation}}">
+        <label class="btn {{#soundOnStartConversation}}btn-primary active{{else}}btn-default{{/}}">
           <input type="checkbox" checked="{{soundOnStartConversation}}"> <span class="glyphicon glyphicon-volume_up"></span>
         </label>
-        <label class="btn {{#notifyOnStartConversation}}btn-primary active{{/notifyOnStartConversation}}{{^notifyOnStartConversation}}btn-default{{/notifyOnStartConversation}}">
+        <label class="btn {{#notifyOnStartConversation}}btn-primary active{{else}}btn-default{{/}}">
           <input type="checkbox" checked="{{notifyOnStartConversation}}"> <span class="glyphicon glyphicon-display"></span>
         </label>
       </div>
@@ -45,10 +45,10 @@
     </div>
     <div class="form-group">
       <div class="btn-group" data-toggle="buttons">
-        <label class="btn {{#soundOnJoinConversation}}btn-primary active{{/soundOnJoinConversation}}{{^soundOnJoinConversation}}btn-default{{/soundOnJoinConversation}}">
+        <label class="btn {{#soundOnJoinConversation}}btn-primary active{{else}}btn-default{{/}}">
           <input type="checkbox" checked="{{soundOnJoinConversation}}"> <span class="glyphicon glyphicon-volume_up"></span>
         </label>
-        <label class="btn {{#notifyOnJoinConversation}}btn-primary active{{/notifyOnJoinConversation}}{{^notifyOnJoinConversation}}btn-default{{/notifyOnJoinConversation}}">
+        <label class="btn {{#notifyOnJoinConversation}}btn-primary active{{else}}btn-default{{/}}">
           <input type="checkbox" checked="{{notifyOnJoinConversation}}"> <span class="glyphicon glyphicon-display"></span>
         </label>
       </div>
@@ -56,10 +56,10 @@
     </div>
     <div class="form-group">
       <div class="btn-group" data-toggle="buttons">
-        <label class="btn {{#soundOnLeaveConversation}}btn-primary active{{/soundOnLeaveConversation}}{{^soundOnLeaveConversation}}btn-default{{/soundOnLeaveConversation}}">
+        <label class="btn {{#soundOnLeaveConversation}}btn-primary active{{else}}btn-default{{/}}">
           <input type="checkbox" checked="{{soundOnLeaveConversation}}"> <span class="glyphicon glyphicon-volume_up"></span>
         </label>
-        <label class="btn {{#notifyOnLeaveConversation}}btn-primary active{{/notifyOnLeaveConversation}}{{^notifyOnLeaveConversation}}btn-default{{/notifyOnLeaveConversation}}">
+        <label class="btn {{#notifyOnLeaveConversation}}btn-primary active{{else}}btn-default{{/}}">
           <input type="checkbox" checked="{{notifyOnLeaveConversation}}"> <span class="glyphicon glyphicon-display"></span>
         </label>
       </div>

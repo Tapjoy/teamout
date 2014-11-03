@@ -19,7 +19,7 @@ var AppView = View.extend({
   init: function() {
     View.prototype.init.apply(this, arguments);
 
-    this.findComponent('users').observe('users.*', this.updateScrollbar);
+    this.findComponent('users').observe('joinableUsers.*', this.updateScrollbar);
     this.updateScrollbar();
 
     if (!Camera.supported) {

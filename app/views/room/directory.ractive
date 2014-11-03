@@ -2,29 +2,26 @@
   {{#room}}
   <div class="form-group rooms-share">
     <label for="room-share">Link to share (<span class="rooms-share-name">@{{id}}</span>)</label>
-    <input type="text" class="form-control" id="room-share" on-click="shareRoom" value="{{shareUrl(this)}}" readonly="readonly">
+    <input type="text" class="form-control" id="room-share" on-click="shareRoom" value="{{this.shareUrl()}}" readonly="readonly">
   </div>
-  {{/room}}
+  {{/}}
 
   <div class="form-group rooms-other">
     <label>Other rooms</label>
-    {{#hasVisibleRooms}}
+    {{#if visibleRooms}}
       <ul class="nav nav-pills nav-stacked">
-        {{#rooms}}
-          {{^isHidden(this)}}
+        {{#visibleRooms}}
           <li data-roomId="{{id}}">
-            <a href="{{shareUrl(this)}}" target="_top">
+            <a href="{{this.shareUrl()}}" target="_top">
               {{id}}
               <span class="glyphicon glyphicon-remove" on-click="hideRoom:{{this}}" title="Remove">
             </a>
           </li>
-          {{/end of isHidden}}
-        {{/rooms}}
+        {{/}}
       </ul>
-    {{/hasVisibleRooms}}
-    {{^hasVisibleRooms}}
+    {{else}}
       <span class="rooms-none">No rooms available</span>
-    {{/hasVisibleRooms}}
+    {{/if}}
   </div>
 
   <div class="form-group rooms-create">
