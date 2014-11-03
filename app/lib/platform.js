@@ -35,12 +35,9 @@ var Platform = {
   getSeedData: function() {
     var data = {};
 
-    var startData = gapi.hangout.getStartData();
-    if (startData) {
-      var parts = startData.match(/([^,]+),(.+)/);
-      data.id = parts[1];
-      data.roomId = parts[2];
-    }
+    var parts = gapi.hangout.getHangoutUrl().match(/[^\/]+$/)[0].split('-');
+    data.id = parts[0];
+    data.roomId = parts[1];
 
     return data;
   },
@@ -261,9 +258,9 @@ var Platform = {
    */
   getRoomUrl: function(room, appId) {
     var startData = appId + ',' + room.id;
-    var hangoutId = (new jsSHA(startData, 'TEXT')).getHash('SHA-1', 'HEX');
+    var hangoutId = appId + '-' + room.id;
 
-    return 'https://talkgadget.google.com/hangouts/_/widget/' + hangoutId + '?gid=' + this._gadgetId() + '&gd=' + startData;
+    return 'https://talkgadget.google.com/hangouts/_/widget/' + hangoutId + '?gid=' + this._gadgetId();
   },
 
   /**

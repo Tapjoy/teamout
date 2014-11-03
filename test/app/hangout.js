@@ -98,8 +98,8 @@ var Hangout = Backbone.Model.extend({
   isApiReady: function() {
     return this.get('apiReady');
   },
-  getStartData: function() {
-    return location.search.substr(1);
+  getHangoutUrl: function() {
+    return location.href.replace('?', '/');
   },
   getLocalParticipant: function() {
     return this.getParticipantById('session-default');
