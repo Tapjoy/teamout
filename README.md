@@ -1,6 +1,12 @@
 # Teamout
 
-Google Hangouts for Teams: "always-on" video conferencing for remote teams
+Google Hangouts for Teams: "always-on" video conferencing for remote teams.
+
+Teamout allows employees to instantly see and hear each other without the
+need to call while at the same time focusing on the privacy of its users.
+It also allows for multiple simultaneous conversations to take place in the
+same Google Hangout, easily integrating with teams who already use Google
+Hangouts.
 
 ![](app/assets/images/screenshot.png)
 
@@ -10,7 +16,7 @@ Google Hangouts for Teams: "always-on" video conferencing for remote teams
 
 The app will periodically turn on the webcam, take a quick snapshot, and share
 it with the rest of the users in the room.  This allows users to quickly see
-if someones around before they attempt to start a video conversation.
+if someone is around before they attempt to start a video conversation.
 
 The webcam used for snapshots can be configured as well as the frequency with
 which snapshots are taken.
@@ -19,8 +25,8 @@ which snapshots are taken.
 
 We know privacy is important.  For that reason, you can choose to blur or
 pixelate the snapshots taken from your webcam.  In addition, you can choose to
-enable face-detection only -- will only be notified as to whether you're in the
-view of the webcam or not.
+enable face-detection only -- other users will only be notified as to whether
+you're in the view of the webcam or not.
 
 In addition, you can enable a "busy" mode.  This will notify other users in the
 room that you consider yourself busy.  If a user attempts to start a conversation
@@ -34,7 +40,21 @@ conversation critical enough.
 Various notifications are used throughout the app for alerting when a new
 conversation is started or browser permissions need to be enabled.  The app
 supports both desktop and audio notifications -- both of which can be turned
-on / off.
+on / off.  Audio / visual notifications currently include:
+* User enters room
+* User leaves room
+* User starts conversation
+* User joins conversation
+* User leaves conversation
+
+### Locked Conversations
+
+When a conversation is started, you may not want to allow other users to join it.
+For example, you may be having a private 1:1 conversation with your employee.
+To help facilitate these types of conversations, Teamout allows you to "lock" a
+conversations.  This allows other users to see that you're having a 1:1 but
+prevents them from joining.  The conversation will appear as "locked" to other
+users.
 
 ### Room Directory
 
