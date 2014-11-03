@@ -185,8 +185,3 @@ Widget.  To do so, walk through the following steps:
    Make Public: Unchecked
 5. **Save setting**. Click "Save" at the bottom of the page.
 6. **Launch a Hangout**.  Click the "Enter a hangout" link below the "Save" button.
-
-## Contributing
-
-See the CONTRIBUTING.md documentation for more information on contributing to
-this project.
